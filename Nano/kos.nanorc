@@ -1,0 +1,37 @@
+##kOS Syntax highlighting support for Nano editor
+##Copyright (C) 2015 Hamish West https://github.com/TN-1
+##
+##This program is free software: you can redistribute it and/or modify
+##it under the terms of the GNU General Public License as published by
+##the Free Software Foundation, either version 3 of the License, or
+##(at your option) any later version.
+##
+##This program is distributed in the hope that it will be useful,
+##but WITHOUT ANY WARRANTY; without even the implied warranty of
+##MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##GNU General Public License for more details.
+##
+##You should have received a copy of the GNU General Public License
+##along with this program.  If not, see <http://www.gnu.org/licenses/>.
+##
+
+syntax "kos" "\ks$"
+
+color green "[+|*|\/|\^|\(|\)]"
+color green "[-]"
+icolor brightred "(not|and|or|true|false)"
+color brightred "([\<|\>|=])"
+icolor cyan "(set|\bif\b|else|until|lock|unlock|print|\bat\b|\bon\b|toggle|wait|when|then|off|stage|clearscreen|add|remove|\blog\b|break|preserve|declare|parameter|switch|copy|from|rename|volume|file|delete|edit|\brun\b|compile|list|reboot|shutdown|\bfor\b|unset|batch|deploy|\bin\b|\ball\b)"
+icolor cyan "(\bto\b)"
+color black,white "(\{|\}|\[|\])"
+
+## String highlighting.  You will in general want your comments and
+## strings to come last, because syntax highlighting rules will be
+## applied in the order they are read in.
+color brightyellow "<[^= 	]*>" ""(\\.|[^"])*""
+##
+## This string is VERY resource intensive!
+color brightyellow start=""(\\.|[^"])*\\[[:space:]]*$" end="^(\\.|[^"])*""
+
+## Comment highlighting
+color brightblue "//.*"
