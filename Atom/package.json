@@ -1,0 +1,12 @@
+{
+  "name": "language-kos",
+  "main": "./lib/language-kos",
+  "version": "0.0.2",
+  "description": "Syntax highlighting for kOS",
+  "repository": "https://github.com/chzwhl/language-kos",
+  "license": "MIT",
+  "engines": {
+    "atom": "*"
+  },
+  "dependencies": {}
+}
