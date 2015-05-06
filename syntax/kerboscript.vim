@@ -72,6 +72,12 @@ hi def link	ksOperator	Operator
 syn match	ksComment	"//.*$" contains=ksTodo
 hi def link	ksComment	Comment
 
+" Regions "{{{1
+syn region	ksParens	start='(' end=')' fold transparent
+syn region	ksCodeBlock	start='{' end='}' fold transparent
+syn region	ksArraryIndex	start='\[' end='\]' fold transparent
+
+
 " Repeats "{{{1
 syn keyword	ksRepeat	for until
 hi def link	ksRepeat	Repeat
