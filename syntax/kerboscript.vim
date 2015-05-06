@@ -10,13 +10,12 @@ syn keyword	kerboscriptBoolean	true false
 syn keyword	kerboscriptConditional	if else when then on off and or not
 syn keyword	kerboscriptConstant	pi e g
 syn keyword	kerboscriptFunction	add remove stage clearscreen log copy rename delete edit run compile reboot shutdown batch deploy print
-syn keyword	kerboscriptKeyword	set to lock unlock declare parameter toggle
+syn keyword	kerboscriptKeyword	set to lock unlock declare parameter toggle return
 syn keyword	kerboscriptOperator	abs ceiling floor ln log10 mod min max round sqrt sin cos tan arcsin arccos arctan arctan2
 syn keyword	kerboscriptRepeat	for until
 syn keyword	kerboscriptStatement	wait break preserve
 syn keyword	kerboscriptStorageClass	global local
-syn keyword	kerboscriptType		function
-
+syn keyword	kerboscriptType		function v vector direction latlng parameter
 syn keyword	kerboscriptTodo		contained TODO
 
 syn match	kerboscriptComment	"//.*" contains=kerboscriptTodo
