@@ -23,66 +23,67 @@ if exists("b:current_syntax")
 	finish
 endif
 
-" Booleans
+" Booleans "{{{1
 syn keyword	kerboscriptBoolean	true false
 hi def link kerboscriptBoolean		Boolean
 
-" Comments
+" Comments "{{{1
 syn match	kerboscriptComment	"//.*" contains=kerboscriptTodo
 hi def link kerboscriptComment		Comment
 
-" Conditionals
+" Conditionals "{{{1
 syn keyword	kerboscriptConditional	if else when then on off and or not
 hi def link kerboscriptConditional	Conditional
 
-" Constants
+" Constants "{{{1
 syn keyword	kerboscriptConstant	pi e g
 hi def link kerboscriptConstant		Constant
 
-" Floats
+" Floats "{{{1
 syn match	kerboscriptFloat	"\.\d\+\>"
 syn match	kerboscriptFloat	"\<\d\+\.\d*\>"
 hi def link kerboscriptFloat		Float
 
-" Functions
+" Functions "{{{1
 syn keyword	kerboscriptFunction	add remove stage clearscreen log copy rename delete edit run compile reboot shutdown batch deploy print
 hi def link kerboscriptFunction		Function
 
-" Keywords
+" Keywords "{{{1
 syn keyword	kerboscriptKeyword	set to lock unlock declare parameter toggle return
 hi def link kerboscriptKeyword		Keyword
 
-" Numbers
+" Numbers "{{{1
 syn match	kerboscriptNumber	"\<\d\+\>"
 hi def link kerboscriptNumber		Number
 
-" Operators
+" Operators "{{{1
 syn keyword	kerboscriptOperator	abs ceiling floor ln log10 mod min max round sqrt sin cos tan arcsin arccos arctan arctan2
 hi def link kerboscriptOperator		Operator
 
-" Repeats
+" Repeats "{{{1
 syn keyword	kerboscriptRepeat	for until
 hi def link kerboscriptRepeat		Repeat
 
-" Statements
+" Statements "{{{1
 syn keyword	kerboscriptStatement	wait break preserve
 hi def link kerboscriptStatement	Statement
 
-" StorageClasses
+" StorageClasses "{{{1
 syn keyword	kerboscriptStorageClass	global local
 hi def link kerboscriptStorageClass	StorageClass
 
-" Strings
+" Strings "{{{1
 syn region	kerboscriptString	start=+"+ end=+"+
 hi def link kerboscriptString		String
 
-" TODOs
+" TODOs "{{{1
 syn keyword	kerboscriptTodo		contained TODO
 hi def link kerboscriptTodo		Todo
 
-" Types
+" Types "{{{1
 syn keyword	kerboscriptType		function v vector direction latlng parameter
 hi def link kerboscriptType		Type
+" }}}
 
 let b:current_syntax = "kerboscript"
-" vim: set ts=8 sw=8 tw=78 noet :
+" vim: set ts=8 sw=8 tw=78 fdm=marker noet :
