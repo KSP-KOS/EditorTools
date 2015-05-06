@@ -24,65 +24,77 @@ if exists("b:current_syntax")
 endif
 
 " Booleans "{{{1
-syn keyword	kerboscriptBoolean	true false
-hi def link kerboscriptBoolean		Boolean
-
-" Comments "{{{1
-syn match	kerboscriptComment	"//.*" contains=kerboscriptTodo
-hi def link kerboscriptComment		Comment
+syn keyword	ksBoolean	true false
+hi def link	ksBoolean	Boolean
 
 " Conditionals "{{{1
-syn keyword	kerboscriptConditional	if else when then on off and or not
-hi def link kerboscriptConditional	Conditional
+syn keyword	ksConditional	if else when then on off and or not
+hi def link	ksConditional	Conditional
 
 " Constants "{{{1
-syn keyword	kerboscriptConstant	pi e g
-hi def link kerboscriptConstant		Constant
+syn keyword	ksConstant	pi e g
+hi def link	ksConstant	Constant
 
 " Floats "{{{1
-syn match	kerboscriptFloat	"\.\d\+\>"
-syn match	kerboscriptFloat	"\<\d\+\.\d*\>"
-hi def link kerboscriptFloat		Float
+syn match	ksFloat		"\.\d\+\>"
+syn match	ksFloat		"\<\d\+\.\d*\>"
+hi def link	ksFloat		Float
 
 " Functions "{{{1
-syn keyword	kerboscriptFunction	add remove stage clearscreen log copy rename delete edit run compile reboot shutdown batch deploy print
-hi def link kerboscriptFunction		Function
+syn keyword	ksFunction	add remove stage clearscreen log copy rename delete edit run compile reboot shutdown batch deploy print
+hi def link	ksFunction	Function
 
 " Keywords "{{{1
-syn keyword	kerboscriptKeyword	set to lock unlock declare parameter toggle return
-hi def link kerboscriptKeyword		Keyword
+syn keyword	ksKeyword	set to lock unlock declare parameter toggle return
+hi def link	ksKeyword	Keyword
 
 " Numbers "{{{1
-syn match	kerboscriptNumber	"\<\d\+\>"
-hi def link kerboscriptNumber		Number
+syn match	ksNumber	"\<\d\+\>"
+hi def link	ksNumber	Number
 
 " Operators "{{{1
-syn keyword	kerboscriptOperator	abs ceiling floor ln log10 mod min max round sqrt sin cos tan arcsin arccos arctan arctan2
-hi def link kerboscriptOperator		Operator
+syn keyword	ksOperator	abs ceiling floor ln log10 mod min max round sqrt sin cos tan arcsin arccos arctan arctan2
+syn match	ksOperator	'\*'
+syn match	ksOperator	'\^'
+syn match	ksOperator	'/'
+syn match	ksOperator	'-'
+syn match	ksOperator	'+'
+syn match	ksOperator	'<='
+syn match	ksOperator	'>='
+syn match	ksOperator	'<>'
+syn match	ksOperator	'=='
+syn match	ksOperator	'='
+syn match	ksOperator	'<'
+syn match	ksOperator	'>'
+hi def link	ksOperator	Operator
+
+" Comments "{{{1
+syn match	ksComment	"//.*$" contains=ksTodo
+hi def link	ksComment	Comment
 
 " Repeats "{{{1
-syn keyword	kerboscriptRepeat	for until
-hi def link kerboscriptRepeat		Repeat
+syn keyword	ksRepeat	for until
+hi def link	ksRepeat	Repeat
 
 " Statements "{{{1
-syn keyword	kerboscriptStatement	wait break preserve
-hi def link kerboscriptStatement	Statement
+syn keyword	ksStatement	wait break preserve
+hi def link	ksStatement	Statement
 
 " StorageClasses "{{{1
-syn keyword	kerboscriptStorageClass	global local
-hi def link kerboscriptStorageClass	StorageClass
+syn keyword	ksStorageClass	global local
+hi def link	ksStorageClass	StorageClass
 
 " Strings "{{{1
-syn region	kerboscriptString	start=+"+ end=+"+
-hi def link kerboscriptString		String
+syn region	ksString	start=+"+ end=+"+
+hi def link	ksString	String
 
 " TODOs "{{{1
-syn keyword	kerboscriptTodo		contained TODO
-hi def link kerboscriptTodo		Todo
+syn keyword	ksTodo		contained TODO
+hi def link	ksTodo		Todo
 
 " Types "{{{1
-syn keyword	kerboscriptType		function v vector direction latlng parameter
-hi def link kerboscriptType		Type
+syn keyword	ksType		function v vector direction latlng parameter
+hi def link	ksType		Type
 " }}}
 
 let b:current_syntax = "kerboscript"
