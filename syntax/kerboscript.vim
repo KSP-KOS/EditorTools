@@ -101,7 +101,7 @@ syn keyword	ksTodo		contained TODO
 hi def link	ksTodo		Todo
 
 " Types "{{{1
-syn keyword	ksType		function v vector direction latlng parameter
+syn keyword	ksType		function v r latlng parameter
 hi def link	ksType		Type
 " }}}
 
