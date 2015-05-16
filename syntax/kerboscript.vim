@@ -47,7 +47,7 @@ syn keyword	ksFunction	add remove stage clearscreen log copy rename delete edit 
 hi def link	ksFunction	Function
 
 " Keywords "{{{1
-syn keyword	ksKeyword	set to lock unlock declare parameter toggle return
+syn keyword	ksKeyword	set to is lock unlock declare parameter toggle return
 hi def link	ksKeyword	Keyword
 
 " Numbers "{{{1
@@ -81,7 +81,7 @@ syn region	ksArraryIndex	start='\[' end='\]' fold transparent
 
 
 " Repeats "{{{1
-syn keyword	ksRepeat	for until
+syn keyword	ksRepeat	for until in
 hi def link	ksRepeat	Repeat
 
 " Statements "{{{1
