@@ -37,9 +37,13 @@ hi def link	ksConditional	Conditional
 syn keyword	ksConstant	pi e g
 hi def link	ksConstant	Constant
 
-" Floats "{{{1
-syn match	ksFloat		"\.\d\+\>"
-syn match	ksFloat		"\<\d\+\.\d*\>"
+" Numeric literals "{{{1
+" Regex design borrowed from python.vim. Order matters.
+syn match	ksNumber	"\v<\d+>"
+syn match	ksFloat		"\v<\d+e[-+]?\d+>"
+syn match	ksFloat		"\v<\d+\.%(e[-+]?\d+)?%(\W|$)@="
+syn match	ksFloat		"\v%(^|\W)@<=\d*\.\d+%(e[-+]?\d+)?>"
+hi def link	ksNumber	Number
 hi def link	ksFloat		Float
 
 " Functions "{{{1
@@ -49,10 +53,6 @@ hi def link	ksFunction	Function
 " Keywords "{{{1
 syn keyword	ksKeyword	set to is lock unlock declare parameter toggle return
 hi def link	ksKeyword	Keyword
-
-" Numbers "{{{1
-syn match	ksNumber	"\<\d\+\>"
-hi def link	ksNumber	Number
 
 " Operators "{{{1
 syn keyword	ksOperator	abs ceiling floor ln log10 mod min max round sqrt sin cos tan arcsin arccos arctan arctan2
