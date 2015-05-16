@@ -23,6 +23,8 @@ if exists("b:current_syntax")
 	finish
 endif
 
+syn case ignore
+
 " Booleans "{{{1
 syn keyword	ksBoolean	true false
 hi def link	ksBoolean	Boolean
