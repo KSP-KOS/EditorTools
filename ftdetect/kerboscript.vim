@@ -16,3 +16,5 @@
 " 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 au BufRead,BufNewFile *.ks set filetype=kerboscript
+
+" vim: set ts=8 sw=8 tw=78 noet :
