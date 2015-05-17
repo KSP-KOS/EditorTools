@@ -23,6 +23,8 @@ if exists("b:current_syntax")
 	finish
 endif
 
+syn case ignore
+
 " Booleans "{{{1
 syn keyword	ksBoolean	true false
 hi def link	ksBoolean	Boolean
@@ -35,9 +37,13 @@ hi def link	ksConditional	Conditional
 syn keyword	ksConstant	pi e g
 hi def link	ksConstant	Constant
 
-" Floats "{{{1
-syn match	ksFloat		"\.\d\+\>"
-syn match	ksFloat		"\<\d\+\.\d*\>"
+" Numeric literals "{{{1
+" Regex design borrowed from python.vim. Order matters.
+syn match	ksNumber	"\v<\d+>"
+syn match	ksFloat		"\v<\d+e[-+]?\d+>"
+syn match	ksFloat		"\v<\d+\.%(e[-+]?\d+)?%(\W|$)@="
+syn match	ksFloat		"\v%(^|\W)@<=\d*\.\d+%(e[-+]?\d+)?>"
+hi def link	ksNumber	Number
 hi def link	ksFloat		Float
 
 " Functions "{{{1
@@ -45,12 +51,8 @@ syn keyword	ksFunction	add remove stage clearscreen log copy rename delete edit 
 hi def link	ksFunction	Function
 
 " Keywords "{{{1
-syn keyword	ksKeyword	set to lock unlock declare parameter toggle return
+syn keyword	ksKeyword	set to is lock unlock declare parameter toggle return
 hi def link	ksKeyword	Keyword
-
-" Numbers "{{{1
-syn match	ksNumber	"\<\d\+\>"
-hi def link	ksNumber	Number
 
 " Operators "{{{1
 syn keyword	ksOperator	abs ceiling floor ln log10 mod min max round sqrt sin cos tan arcsin arccos arctan arctan2
@@ -79,7 +81,7 @@ syn region	ksArraryIndex	start='\[' end='\]' fold transparent
 
 
 " Repeats "{{{1
-syn keyword	ksRepeat	for until
+syn keyword	ksRepeat	for until in
 hi def link	ksRepeat	Repeat
 
 " Statements "{{{1
@@ -99,7 +101,7 @@ syn keyword	ksTodo		contained TODO
 hi def link	ksTodo		Todo
 
 " Types "{{{1
-syn keyword	ksType		function v vector direction latlng parameter
+syn keyword	ksType		function v r latlng parameter
 hi def link	ksType		Type
 " }}}
 
