@@ -17,7 +17,7 @@ This plugin enables support for kOS syntax highlighting in Notepad++ for Windows
 
 ###INSTALLATION###
 
-* Download the KerboScript_dark.xml or KerboScript_light.xml to a directory of your choice.
+* Download the `KerboScript_dark.xml` or `KerboScript_light.xml` to a directory of your choice.
 * Open N++, then go to the **Language** menu
 * Click **Define your language...**
 * Click **Import**
