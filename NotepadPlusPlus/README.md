@@ -5,7 +5,11 @@ This plugin enables support for kOS syntax highlighting in Notepad++ for Windows
 
 *****
 
+###Dark Version:
+
 ![Dark Version](https://github.com/space-is-hard/EditorTools/blob/develop/NotepadPlusPlus/preview/preview_KerboScript_dark.png "Dark Version")
+
+###Light Version:
 
 ![Light Version](https://github.com/space-is-hard/EditorTools/blob/develop/NotepadPlusPlus/preview/preview_KerboScript_light.png "Light Version")
 
