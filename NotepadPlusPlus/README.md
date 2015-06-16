@@ -28,4 +28,4 @@ Be sure to make Notepad++ your default editor for .ks files!
 
 **Notes**
 
-* I've been experimenting with way to highlight the end-of-line periods something bright so that you don't miss them, but the **Define Your Language** tool isn't set up to accomodate this, so it ends up screwing up other things (for instance, lines that end with a number `SET X TO 10.` end up having the blue highlight of the number 10 disabled). For now, you'll just have to rely on your eyeballs to make sure you don't forget a period.
+* I've been experimenting with way to highlight the end-of-line periods something bright so that you don't miss them, but the **Define Your Language** tool isn't set up to accomodate this, so it ends up screwing up other things (for instance, lines that end with a number, for example: `SET X TO 10.` end up having the blue highlight of the number 10 disabled). For now, you'll just have to rely on your eyeballs to make sure you don't forget a period.
