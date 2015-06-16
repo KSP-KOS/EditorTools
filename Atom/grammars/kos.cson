@@ -3,6 +3,10 @@
 'fileTypes': ['ks']
 'patterns': [
   {
+    'match': '\\b(([0-9]+\\.?[0-9]*)|(\\.[0-9]+))\\b'
+    'name': 'constant.numeric.kos'
+  }
+  {
     'comment': 'string literal'
     'name': 'string.quoted.double.kos'
     'begin': '\\"'
@@ -13,6 +17,10 @@
     'name': 'comment.line.double-slash.kos'
     'begin': '//'
     'end': '\\n'
+  }
+  {
+    'match': '(\\.)\\b'
+    'name': 'punctuation.terminator.kos'
   }
   {
     'comment': 'flow control conditional'
@@ -58,6 +66,10 @@
     'comment': 'assignment keywords'
     'name': 'keyword.operator.assignment.kos'
     'match': '\\b(?i:(set|to|lock|unlock|declare|parameter|toggle|on|off))\\b'
+  }
+  {
+    'match': '\\b(?i:(global|local|parameter))\\b'
+    'name': 'storage.modifier.kos'
   }
   {
     'comment': 'support functions'
