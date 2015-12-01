@@ -9,7 +9,7 @@ Current kOS version supported: 0.18.2
 
 ###Preview:
 
-![Preview](linkgoeshere "Preview")
+![Preview](https://github.com/KSP-KOS/EditorTools/blob/npp-0.18.2/NotepadPlusPlus/preview/kerboscript.png "Preview")
 
 *****
 
