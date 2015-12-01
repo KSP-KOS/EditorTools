@@ -13,8 +13,8 @@ Current kOS version supported: 0.18.2
 
 ![Kerboscript - Frozen](https://github.com/KSP-KOS/EditorTools/blob/npp-0.18.2/NotepadPlusPlus/preview/kerboscript_frozen.png "Kerboscript - Frozen")
 
-**Style: Synic**
-![Kerboscript - Synic](https://github.com/KSP-KOS/EditorTools/blob/npp-0.18.2/NotepadPlusPlus/preview/kerboscript_synic.png "Kerboscript - Synic")
+**Style: Monokai**
+![Kerboscript - Monokai](https://github.com/KSP-KOS/EditorTools/blob/npp-0.18.2/NotepadPlusPlus/preview/kerboscript_monokai.png "Kerboscript - Monokai")
 
 *****
 
