@@ -7,20 +7,20 @@ Current kOS version supported: 0.18.2
 
 *****
 
-###Preview:
+###Previews:
 
-![Preview](https://github.com/KSP-KOS/EditorTools/blob/npp-0.18.2/NotepadPlusPlus/preview/kerboscript.png "Preview")
+![Kerboscript - Frozen](https://github.com/KSP-KOS/EditorTools/blob/npp-0.18.2/NotepadPlusPlus/preview/kerboscript_frozen.png "Kerboscript - Frozen")
 
 *****
 
 ###Installation
 
-* Download `KerboScript.xml` to a directory of your choice.
+* Download `KerboScript_[style].xml` to a directory of your choice.
 * Open N++, then go to the **Language** menu
 * Click **Define your language...**
 * Click **Import**
 * Find the .xml and click **Import**
-* Make sure to click **Save As** and name it *KerboScript*
+* Make sure to click **Save As** and name it *KerboScript [style]*
 
 It should now show up at the bottom of the **Language** menu when you open N++.
 
