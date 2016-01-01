@@ -1,37 +1,42 @@
-<idea-plugin version="2">
-  <id>kos-ksp.idea-plugin</id>
-  <name>KerboScript(kOS)</name>
-  <version>1.0</version>
-  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+<idea-plugin version="2" url="https://github.com/KSP-KOS/EditorTools/tree/develop/IDEA">
+    <id>kos-ksp.idea-plugin</id>
+    <name>KerboScript(kOS)</name>
+    <version>1.0.0</version>
+    <vendor email="ynicorn@gmail.com" url="https://github.com/valery-labuzhsky">Valery Labuzhsky
+    </vendor>
 
-  <description><![CDATA[
-      Enter short description for your plugin here.<br>
-      <em>most HTML tags may be used</em>
+    <description><![CDATA[
+This plugin enables support for kOS KerboScript in IntelliJ IDEA IDE.<br/>
+kOS version supported: 0.18.2
     ]]></description>
 
-  <change-notes><![CDATA[
-      Add change notes here.<br>
-      <em>most HTML tags may be used</em>
+    <change-notes><![CDATA[
+  <strong>Changes in version 1.0.0:</strong>
+<ul>
+    <li>Basic syntax highlights</li>
+</ul>
     ]]>
-  </change-notes>
+    </change-notes>
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-  <idea-version since-build="141.0"/>
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
+    <idea-version since-build="141.0"/>
 
-  <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
-       on how to target different products -->
-  <!-- uncomment to enable plugin in all products
-  <depends>com.intellij.modules.lang</depends>
-  -->
+    <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.java</depends>
+    -->
 
-  <extensions defaultExtensionNs="com.intellij">
-    <fileTypeFactory implementation="ksp.kos.ideaplugin.KerboScriptFileTypeFactory"/>
-    <lang.parserDefinition language="KerboScript" implementationClass="ksp.kos.ideaplugin.KerboScriptParserDefinition"/>
-    <lang.syntaxHighlighterFactory language="KerboScript" implementationClass="ksp.kos.ideaplugin.KerboScriptSyntaxHighlighterFactory"/>
-  </extensions>
+    <extensions defaultExtensionNs="com.intellij">
+        <fileTypeFactory implementation="ksp.kos.ideaplugin.KerboScriptFileTypeFactory"/>
+        <lang.parserDefinition language="KerboScript"
+                               implementationClass="ksp.kos.ideaplugin.KerboScriptParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="KerboScript"
+                                       implementationClass="ksp.kos.ideaplugin.KerboScriptSyntaxHighlighterFactory"/>
+    </extensions>
 
-  <actions>
-    <!-- Add your actions here -->
-  </actions>
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
 
 </idea-plugin>
