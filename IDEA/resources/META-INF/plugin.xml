@@ -33,6 +33,9 @@ kOS version supported: 0.18.2
                                implementationClass="ksp.kos.ideaplugin.KerboScriptParserDefinition"/>
         <lang.syntaxHighlighterFactory language="KerboScript"
                                        implementationClass="ksp.kos.ideaplugin.KerboScriptSyntaxHighlighterFactory"/>
+        <lang.refactoringSupport language="KerboScript"
+                                 implementationClass="ksp.kos.ideaplugin.KerboScriptRefactoringSupportProvider"/>
+        <lang.findUsagesProvider language="KerboScript" implementationClass="ksp.kos.ideaplugin.KerboScriptFindUsagesProvider"/>
     </extensions>
 
     <actions>

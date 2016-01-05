@@ -1,16 +1,17 @@
 {
-  parserClass="ksp.kos.ideaplugin.parser.KerboScriptParser"
+    parserClass="ksp.kos.ideaplugin.parser.KerboScriptParser"
 
-  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+    mixin="ksp.kos.ideaplugin.psi.impl.KerboScriptElementImpl"
+    implements="ksp.kos.ideaplugin.psi.KerboScriptNamedElement"
 
-  psiClassPrefix="KerboScript"
-  psiImplClassSuffix="Impl"
-  psiPackage="ksp.kos.ideaplugin.psi"
-  psiImplPackage="ksp.kos.ideaplugin.psi.impl"
+    psiClassPrefix="KerboScript"
+    psiImplClassSuffix="Impl"
+    psiPackage="ksp.kos.ideaplugin.psi"
+    psiImplPackage="ksp.kos.ideaplugin.psi.impl"
 
-  elementTypeHolderClass="ksp.kos.ideaplugin.psi.KerboScriptTypes"
-  elementTypeClass="ksp.kos.ideaplugin.psi.KerboScriptElementType"
-  tokenTypeClass="ksp.kos.ideaplugin.psi.KerboScriptTokenType"
+    elementTypeHolderClass="ksp.kos.ideaplugin.psi.KerboScriptTypes"
+    elementTypeClass="ksp.kos.ideaplugin.psi.KerboScriptElementType"
+    tokenTypeClass="ksp.kos.ideaplugin.psi.KerboScriptTokenType"
 }
 
 // Rules

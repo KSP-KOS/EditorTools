@@ -1,5 +1,6 @@
 package ksp.kos.ideaplugin;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import org.jetbrains.annotations.NotNull;
@@ -45,6 +46,6 @@ public class KerboScriptFileType extends LanguageFileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return null;
+        return AllIcons.FileTypes.Text;
     }
 }
