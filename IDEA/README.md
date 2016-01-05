@@ -1,5 +1,5 @@
 # kOS-IDEs
-This plugin enables support for kOS syntax highlighting in IntelliJ IDEA IDE.
+This plugin enables support for kOS KerboScript in IntelliJ IDEA IDE.
 Current kOS version supported: 0.18.2
 https://www.jetbrains.com/idea/
 
