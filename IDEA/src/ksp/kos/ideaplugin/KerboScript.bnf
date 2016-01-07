@@ -1,5 +1,6 @@
 {
     parserClass="ksp.kos.ideaplugin.parser.KerboScriptParser"
+    parserUtilClass="ksp.kos.ideaplugin.parser.KerboScriptParserUtil"
 
     mixin="ksp.kos.ideaplugin.psi.impl.KerboScriptElementImpl"
     implements="ksp.kos.ideaplugin.psi.KerboScriptNamedElement"
