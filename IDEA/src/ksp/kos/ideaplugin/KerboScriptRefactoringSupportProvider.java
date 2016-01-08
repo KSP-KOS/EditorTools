@@ -13,7 +13,6 @@ import org.jetbrains.annotations.NotNull;
 public class KerboScriptRefactoringSupportProvider extends RefactoringSupportProvider {
     @Override
     public boolean isMemberInplaceRenameAvailable(@NotNull PsiElement element, PsiElement context) {
-        return false;
-//        return (element instanceof PsiNameIdentifierOwner) && ((PsiNameIdentifierOwner) element).getNameIdentifier()!=null;
+        return (element instanceof PsiNameIdentifierOwner) && ((PsiNameIdentifierOwner) element).getNameIdentifier()!=null;
     }
 }

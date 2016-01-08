@@ -14,6 +14,8 @@ import java.util.function.Supplier;
  * @author ptasha
  */
 public interface KerboScriptElement extends PsiElement {
+    KerboScriptScope getScope();
+
     @NotNull
     default <T> CachedValue<T> createCachedValue(Supplier<T> supplier) {
         return createCachedValue(supplier, this);

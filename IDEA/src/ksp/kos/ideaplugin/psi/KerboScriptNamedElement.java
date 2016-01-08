@@ -1,6 +1,7 @@
 package ksp.kos.ideaplugin.psi;
 
 import com.intellij.psi.PsiNameIdentifierOwner;
+import ksp.kos.ideaplugin.reference.NamedType;
 
 /**
  * Created on 02/01/16.
@@ -8,5 +9,6 @@ import com.intellij.psi.PsiNameIdentifierOwner;
  * @author ptasha
  */
 public interface KerboScriptNamedElement extends PsiNameIdentifierOwner, KerboScriptElement {
-    boolean isLocal();
+    NamedType getType();
+    void setType(NamedType type);
 }

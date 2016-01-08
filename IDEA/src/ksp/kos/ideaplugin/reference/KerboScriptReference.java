@@ -1,10 +1,11 @@
-package ksp.kos.ideaplugin;
+package ksp.kos.ideaplugin.reference;
 
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.*;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiReferenceBase;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.IncorrectOperationException;
-import ksp.kos.ideaplugin.psi.impl.KerboScriptElementImpl;
+import ksp.kos.ideaplugin.psi.impl.KerboScriptNamedElementImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,9 +14,12 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author ptasha
  */
-public class KerboScriptReference extends PsiReferenceBase<KerboScriptElementImpl> {
-    public KerboScriptReference(@NotNull KerboScriptElementImpl element) {
+public class KerboScriptReference extends PsiReferenceBase<KerboScriptNamedElementImpl> {
+    public KerboScriptReference(@NotNull KerboScriptNamedElementImpl element) {
         super(element);
+        if (element.getNameIdentifier()==null) {
+            throw new NullPointerException();
+        }
     }
 
     @Override
