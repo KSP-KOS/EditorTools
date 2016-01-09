@@ -14,8 +14,6 @@ import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
 import ksp.kos.ideaplugin.KerboScriptFile;
 import ksp.kos.ideaplugin.KerboScriptLanguage;
-import ksp.kos.ideaplugin.parser.KerboScriptLexerAdapter;
-import ksp.kos.ideaplugin.parser.KerboScriptParser;
 import ksp.kos.ideaplugin.psi.KerboScriptTypes;
 import org.jetbrains.annotations.NotNull;
 

@@ -1,9 +1,7 @@
 package ksp.kos.ideaplugin.reference;
 
 
-import com.intellij.psi.PsiElement;
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
-import ksp.kos.ideaplugin.psi.KerboScriptScope;
 
 import java.util.HashMap;
 

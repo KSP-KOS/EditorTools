@@ -2,12 +2,15 @@ package ksp.kos.ideaplugin;
 
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.problems.WolfTheProblemSolver;
 import com.intellij.psi.FileViewProvider;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FileTypeIndex;
-import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.GlobalSearchScopesCore;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.indexing.FileBasedIndex;
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
@@ -30,6 +33,13 @@ public class KerboScriptFile extends PsiFileBase implements KerboScriptScope {
 
     public KerboScriptFile(@NotNull FileViewProvider viewProvider) {
         super(viewProvider, KerboScriptLanguage.INSTANCE);
+        DumbService.getInstance(getProject()).runWhenSmart(() -> {
+            VirtualFile virtualFile = getVirtualFile();
+            if (virtualFile != null) {
+                WolfTheProblemSolver wolf = WolfTheProblemSolver.getInstance(getProject());
+                wolf.queue(virtualFile);
+            }
+        });
     }
 
     @NotNull
@@ -73,8 +83,10 @@ public class KerboScriptFile extends PsiFileBase implements KerboScriptScope {
     }
 
     public KerboScriptFile resolveFile(KerboScriptNamedElement element) {
+        PsiDirectory directory = getContainingDirectory();
+        if (directory == null) return null;
         Collection<VirtualFile> virtualFiles = FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, KerboScriptFileType.INSTANCE,
-                GlobalSearchScope.allScope(getProject()));
+                GlobalSearchScopesCore.directoryScope(directory, false));
         for (VirtualFile virtualFile : virtualFiles) {
             if (virtualFile.getName().equalsIgnoreCase(element.getName() + ".ks")) {
                 return (KerboScriptFile) PsiManager.getInstance(getProject()).findFile(virtualFile);
