@@ -1,8 +1,12 @@
 {
     parserClass="ksp.kos.ideaplugin.parser.KerboScriptParser"
+    parserUtilClass="ksp.kos.ideaplugin.parser.KerboScriptParserUtil"
 
-    mixin="ksp.kos.ideaplugin.psi.impl.KerboScriptElementImpl"
-    implements="ksp.kos.ideaplugin.psi.KerboScriptNamedElement"
+    extends("atom|declare_identifier_clause|declare_parameter_clause|declare_function_clause|run_stmt")="ksp.kos.ideaplugin.psi.impl.KerboScriptNamedElementImpl"
+    implements("atom|declare_identifier_clause|declare_parameter_clause|declare_function_clause|run_stmt")="ksp.kos.ideaplugin.psi.KerboScriptNamedElement"
+
+    extends("instruction_block")="ksp.kos.ideaplugin.psi.impl.KerboScriptScopeImpl"
+    implements("instruction_block")="ksp.kos.ideaplugin.psi.KerboScriptScope"
 
     psiClassPrefix="KerboScript"
     psiImplClassSuffix="Impl"
@@ -12,6 +16,12 @@
     elementTypeHolderClass="ksp.kos.ideaplugin.psi.KerboScriptTypes"
     elementTypeClass="ksp.kos.ideaplugin.psi.KerboScriptElementType"
     tokenTypeClass="ksp.kos.ideaplugin.psi.KerboScriptTokenType"
+
+    extends(".*_stmt|directive|instruction_block")=instruction
+    extends("lazyglobal_directive")=directive
+    extends("function_trailer|array_trailer")=suffixterm_trailer
+    extends("varidentifier")=suffix
+    extends("[a-z]*_expr|factor|suffix|suffixterm|atom|.*number")=expr
 }
 
 // Rules
@@ -55,7 +65,6 @@ instruction ::= set_stmt |
 
 // ------------ directives --------------------
 lazyglobal_directive ::= ATSIGN LAZYGLOBAL onoff_trailer EOI
-//lazyglobal_directive ::= LAZYGLOBAL onoff_trailer EOI
 directive            ::= lazyglobal_directive // Add to this list later if we make other directives.
 
 // ------------ statements --------------------

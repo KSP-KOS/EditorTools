@@ -1,4 +1,4 @@
-package ksp.kos.ideaplugin;
+package ksp.kos.ideaplugin.parser;
 
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
@@ -12,7 +12,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
-import ksp.kos.ideaplugin.parser.KerboScriptParser;
+import ksp.kos.ideaplugin.KerboScriptFile;
+import ksp.kos.ideaplugin.KerboScriptLanguage;
 import ksp.kos.ideaplugin.psi.KerboScriptTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -33,21 +34,25 @@ public class KerboScriptParserDefinition implements ParserDefinition {
         return new KerboScriptLexerAdapter();
     }
 
+    @Override
     @NotNull
     public TokenSet getWhitespaceTokens() {
         return WHITE_SPACES;
     }
 
+    @Override
     @NotNull
     public TokenSet getCommentTokens() {
         return COMMENTS;
     }
 
+    @Override
     @NotNull
     public TokenSet getStringLiteralElements() {
         return TokenSet.EMPTY;
     }
 
+    @Override
     @NotNull
     public PsiParser createParser(final Project project) {
         return new KerboScriptParser();
@@ -58,14 +63,17 @@ public class KerboScriptParserDefinition implements ParserDefinition {
         return FILE;
     }
 
+    @Override
     public PsiFile createFile(FileViewProvider viewProvider) {
         return new KerboScriptFile(viewProvider);
     }
 
+    @Override
     public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {
         return SpaceRequirements.MAY;
     }
 
+    @Override
     @NotNull
     public PsiElement createElement(ASTNode node) {
         return KerboScriptTypes.Factory.createElement(node);

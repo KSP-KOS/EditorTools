@@ -7,8 +7,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.TokenSet;
+import ksp.kos.ideaplugin.parser.KerboScriptLexerAdapter;
 import ksp.kos.ideaplugin.psi.KerboScriptTypes;
-import ksp.kos.ideaplugin.psi.impl.KerboScriptElementImpl;
+import ksp.kos.ideaplugin.psi.impl.KerboScriptNamedElementImpl;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,8 +41,8 @@ public class KerboScriptFindUsagesProvider implements FindUsagesProvider {
     @NotNull
     @Override
     public String getType(@NotNull PsiElement element) {
-        if (element instanceof KerboScriptElementImpl) {
-            KerboScriptElementImpl kerboScriptElement = (KerboScriptElementImpl) element;
+        if (element instanceof KerboScriptNamedElementImpl) {
+            KerboScriptNamedElementImpl kerboScriptElement = (KerboScriptNamedElementImpl) element;
             if (kerboScriptElement.isFunction()) {
                 return "function";
             } else if (kerboScriptElement.isVariable()) {

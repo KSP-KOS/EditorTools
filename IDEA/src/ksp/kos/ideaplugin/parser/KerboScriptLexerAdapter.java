@@ -1,7 +1,6 @@
-package ksp.kos.ideaplugin;
+package ksp.kos.ideaplugin.parser;
 
 import com.intellij.lexer.FlexAdapter;
-import com.intellij.lexer.FlexLexer;
 
 /**
  * Created on 26/12/15.

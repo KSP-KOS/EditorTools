@@ -1,4 +1,4 @@
-package ksp.kos.ideaplugin;
+package ksp.kos.ideaplugin.parser;
 
 import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;

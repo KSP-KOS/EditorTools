@@ -1,7 +1,7 @@
 <idea-plugin version="2" url="https://github.com/KSP-KOS/EditorTools/tree/develop/IDEA">
     <id>kos-ksp.idea-plugin</id>
     <name>KerboScript(kOS)</name>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <vendor email="ynicorn@gmail.com" url="https://github.com/valery-labuzhsky">Valery Labuzhsky
     </vendor>
 
@@ -11,6 +11,12 @@ kOS version supported: 0.18.2
     ]]></description>
 
     <change-notes><![CDATA[
+  <strong>Changes in version 1.0.2:</strong>
+<ul>
+    <li>Stateful lexer allows keywords as identifiers</li>
+    <li>Highlight files with errors</li>
+</ul>
+
   <strong>Changes in version 1.0.1:</strong>
 <ul>
     <li>Added Find Usages</li>
@@ -36,12 +42,13 @@ kOS version supported: 0.18.2
     <extensions defaultExtensionNs="com.intellij">
         <fileTypeFactory implementation="ksp.kos.ideaplugin.KerboScriptFileTypeFactory"/>
         <lang.parserDefinition language="KerboScript"
-                               implementationClass="ksp.kos.ideaplugin.KerboScriptParserDefinition"/>
+                               implementationClass="ksp.kos.ideaplugin.parser.KerboScriptParserDefinition"/>
         <lang.syntaxHighlighterFactory language="KerboScript"
                                        implementationClass="ksp.kos.ideaplugin.KerboScriptSyntaxHighlighterFactory"/>
         <lang.refactoringSupport language="KerboScript"
                                  implementationClass="ksp.kos.ideaplugin.KerboScriptRefactoringSupportProvider"/>
         <lang.findUsagesProvider language="KerboScript" implementationClass="ksp.kos.ideaplugin.KerboScriptFindUsagesProvider"/>
+        <problemFileHighlightFilter implementation="ksp.kos.ideaplugin.KerboScriptHighlightFilter"/>
     </extensions>
 
     <actions>

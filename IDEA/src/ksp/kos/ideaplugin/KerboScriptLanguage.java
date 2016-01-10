@@ -13,4 +13,9 @@ public class KerboScriptLanguage extends Language {
     public KerboScriptLanguage() {
         super("KerboScript");
     }
+
+    @Override
+    public boolean isCaseSensitive() {
+        return false;
+    }
 }

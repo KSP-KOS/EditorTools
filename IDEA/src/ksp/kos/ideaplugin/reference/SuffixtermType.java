@@ -1,4 +1,4 @@
-package ksp.kos.ideaplugin.psi;
+package ksp.kos.ideaplugin.reference;
 
 /**
  * Created on 03/01/16.
