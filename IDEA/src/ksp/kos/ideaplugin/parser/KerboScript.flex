@@ -193,6 +193,6 @@ COMMENTLINE=\/\/[^\n]*\n?
 {EOI}    {return KerboScriptTypes.EOI;}
 //Special
 {WHITESPACE}    {return TokenType.WHITE_SPACE;}
-{COMMENTLINE}    {return TokenType.WHITE_SPACE;}
+{COMMENTLINE}    {return KerboScriptTypes.COMMENTLINE;}
 
 [^]                { return TokenType.BAD_CHARACTER; }
