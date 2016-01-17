@@ -104,7 +104,7 @@ LAZYGLOBAL=lazyglobal
 //[Skip]
 WHITESPACE=[\ \n\r\t]+
 //[Skip]
-COMMENTLINE=\/\/[^\n]*\n?
+COMMENTLINE=\/\/[^\n]*
 
 %%
 

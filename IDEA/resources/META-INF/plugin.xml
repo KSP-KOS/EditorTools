@@ -48,6 +48,7 @@ kOS version supported: 0.18.2
         <lang.refactoringSupport language="KerboScript"
                                  implementationClass="ksp.kos.ideaplugin.KerboScriptRefactoringSupportProvider"/>
         <lang.findUsagesProvider language="KerboScript" implementationClass="ksp.kos.ideaplugin.KerboScriptFindUsagesProvider"/>
+        <lang.formatter language="KerboScript" implementationClass="ksp.kos.ideaplugin.format.KerboScriptFormattingModelBuilder"/>
         <problemFileHighlightFilter implementation="ksp.kos.ideaplugin.KerboScriptHighlightFilter"/>
     </extensions>
 
