@@ -1,5 +1,6 @@
 package ksp.kos.ideaplugin.psi.impl;
 
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author ptasha
  */
-public class KerboScriptScopeImpl extends KerboScriptElementImpl implements KerboScriptScope {
+public class KerboScriptScopeImpl extends ASTWrapperPsiElement implements KerboScriptScope {
     private final Cache<LocalScope> cache = new Cache<>(this, new LocalScope());
 
     public KerboScriptScopeImpl(@NotNull ASTNode node) {

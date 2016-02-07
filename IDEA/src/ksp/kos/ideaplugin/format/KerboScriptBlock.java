@@ -65,4 +65,10 @@ public class KerboScriptBlock extends AbstractBlock {
     public boolean isLeaf() {
         return getNode() instanceof LeafElement;
     }
+
+    @Nullable
+    @Override
+    protected Indent getChildIndent() {
+        return getNode().getPsi() instanceof KerboScriptInstructionBlock?Indent.getNormalIndent():Indent.getNoneIndent();
+    }
 }

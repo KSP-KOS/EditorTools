@@ -106,13 +106,17 @@ WHITESPACE=[\ \n\r\t]+
 //[Skip]
 COMMENTLINE=\/\/[^\n]*
 
+%xstate E
+
 %%
 
 {PLUSMINUS}    {return KerboScriptTypes.PLUSMINUS;}
 {MULT}    {return KerboScriptTypes.MULT;}
 {DIV}    {return KerboScriptTypes.DIV;}
 {POWER}    {return KerboScriptTypes.POWER;}
-{E}    {return KerboScriptTypes.E;}
+{INTEGER}/{E}    {yybegin(E); return KerboScriptTypes.INTEGER;}
+{DOUBLE}/{E}    {yybegin(E); return KerboScriptTypes.DOUBLE;}
+<E> {E}    {yybegin(YYINITIAL); return KerboScriptTypes.E;}
 //Logic
 {NOT}    {return KerboScriptTypes.NOT;}
 {AND}    {return KerboScriptTypes.AND;}

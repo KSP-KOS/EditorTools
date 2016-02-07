@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
  *
  * @author ptasha
  */
-public interface KerboScriptScope extends KerboScriptElement {
+public interface KerboScriptScope extends KerboScriptBaseElement {
     void register(KerboScriptNamedElement element);
 
     PsiElement resolveFunction(KerboScriptNamedElement element);

@@ -50,10 +50,21 @@ kOS version supported: 0.18.2
         <lang.findUsagesProvider language="KerboScript" implementationClass="ksp.kos.ideaplugin.KerboScriptFindUsagesProvider"/>
         <lang.formatter language="KerboScript" implementationClass="ksp.kos.ideaplugin.format.KerboScriptFormattingModelBuilder"/>
         <problemFileHighlightFilter implementation="ksp.kos.ideaplugin.KerboScriptHighlightFilter"/>
+        <refactoring.inlineHandler language="KerboScript" implementationClass="ksp.kos.ideaplugin.refactoring.VariableInlineHandler"/>
     </extensions>
 
     <actions>
         <!-- Add your actions here -->
+        <action id="ksp.kos.ideaplugin.actions.Differentiate" class="ksp.kos.ideaplugin.actions.Differentiate"
+                text="Differentiate..." description="Compute a derivative">
+            <add-to-group group-id="RefactoringMenu4" anchor="last"/>
+            <keyboard-shortcut first-keystroke="control alt D" keymap="$default"/>
+        </action>
+        <action id="ksp.kos.ideaplugin.actions.Simplify" class="ksp.kos.ideaplugin.actions.Simplify" text="Simplify..."
+                description="Simplifies expression">
+            <add-to-group group-id="RefactoringMenu4" anchor="last"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl S"/>
+        </action>
     </actions>
 
 </idea-plugin>

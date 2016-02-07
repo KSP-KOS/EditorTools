@@ -1,16 +1,13 @@
 package ksp.kos.ideaplugin.psi.impl;
 
+import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.impl.source.tree.Factory;
-import com.intellij.psi.impl.source.tree.SharedImplUtil;
 import com.intellij.util.IncorrectOperationException;
-import ksp.kos.ideaplugin.reference.KerboScriptReference;
-import ksp.kos.ideaplugin.psi.*;
-import ksp.kos.ideaplugin.reference.Cache;
-import ksp.kos.ideaplugin.reference.NamedType;
-import ksp.kos.ideaplugin.reference.ReferenceType;
-import ksp.kos.ideaplugin.reference.SuffixtermType;
+import ksp.kos.ideaplugin.psi.KerboScriptElementFactory;
+import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
+import ksp.kos.ideaplugin.psi.KerboScriptTypes;
+import ksp.kos.ideaplugin.reference.*;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author ptasha
  */
-public class KerboScriptNamedElementImpl extends KerboScriptElementImpl implements KerboScriptNamedElement {
+public class KerboScriptNamedElementImpl extends ASTWrapperPsiElement implements KerboScriptNamedElement {
     private final Cache<NamedScope> cache = new Cache<>(this, new NamedScope());
 
     public KerboScriptNamedElementImpl(@NotNull ASTNode node) {
@@ -31,16 +28,31 @@ public class KerboScriptNamedElementImpl extends KerboScriptElementImpl implemen
     @Override
     public PsiElement getNameIdentifier() {
         if (isFile() || isFunction() || isVariable()) {
-            ASTNode identifier = this.getNode().findChildByType(KerboScriptTypes.IDENTIFIER);
-            if (identifier != null) {
-                return identifier.getPsi();
-            }
-            identifier = this.getNode().findChildByType(KerboScriptTypes.FILEIDENT);
-            if (identifier != null) {
-                return identifier.getPsi();
-            }
+            PsiElement identifier = getRawNameIdentifier();
+            if (identifier != null) return identifier;
         }
         return null;
+    }
+
+    @Nullable
+    public PsiElement getRawNameIdentifier() {
+        ASTNode identifier = this.getNode().findChildByType(KerboScriptTypes.IDENTIFIER);
+        if (identifier != null) {
+            return identifier.getPsi();
+        }
+        identifier = this.getNode().findChildByType(KerboScriptTypes.FILEIDENT);
+        if (identifier != null) {
+            return identifier.getPsi();
+        }
+        return null;
+    }
+
+    @Override
+    public void rawRename(String name) {
+        PsiElement nameIdentifier = getRawNameIdentifier();
+        if (nameIdentifier!=null) {
+            this.getNode().replaceChild(nameIdentifier.getNode(), KerboScriptElementFactory.leaf(KerboScriptTypes.IDENTIFIER, name));
+        }
     }
 
     @Override
@@ -53,12 +65,21 @@ public class KerboScriptNamedElementImpl extends KerboScriptElementImpl implemen
     }
 
     @Override
+    public String getRawName() {
+        PsiElement nameIdentifier = getRawNameIdentifier();
+        if (nameIdentifier != null) {
+            return nameIdentifier.getText();
+        }
+        return null;
+    }
+
+    @Override
     public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException {
         PsiElement nameIdentifier = getNameIdentifier();
         if (nameIdentifier == null) {
             throw new IncorrectOperationException("Renaming of " + this + " is not possible: it's not true named element");
         }
-        this.getNode().replaceChild(nameIdentifier.getNode(), Factory.createSingleLeafElement(KerboScriptTypes.IDENTIFIER, name, SharedImplUtil.findCharTableByTree(nameIdentifier.getNode()), getManager()));
+        this.getNode().replaceChild(nameIdentifier.getNode(),  KerboScriptElementFactory.leaf(KerboScriptTypes.IDENTIFIER, name));
         return this;
     }
 
@@ -74,7 +95,7 @@ public class KerboScriptNamedElementImpl extends KerboScriptElementImpl implemen
         if (type.getReferenceType().isDecaration()) {
             getScope().register(this);
         } else if (type.getType() == SuffixtermType.FILE) {
-            getContainingFile().registerFile(this);
+            getKerboScriptFile().registerFile(this);
         }
     }
 
@@ -109,7 +130,7 @@ public class KerboScriptNamedElementImpl extends KerboScriptElementImpl implemen
             return getScope().resolveVariable(element);
         }
         if (element.isFile()) {
-            return getContainingFile().resolveFile(element);
+            return getKerboScriptFile().resolveFile(element);
         }
         return null;
     }

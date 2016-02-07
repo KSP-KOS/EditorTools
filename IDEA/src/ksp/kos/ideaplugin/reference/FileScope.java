@@ -1,13 +1,9 @@
 package ksp.kos.ideaplugin.reference;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFileFactory;
 import ksp.kos.ideaplugin.KerboScriptFile;
-import ksp.kos.ideaplugin.KerboScriptLanguage;
-import ksp.kos.ideaplugin.psi.KerboScriptDeclareFunctionClause;
-import ksp.kos.ideaplugin.psi.KerboScriptDeclareStmt;
-import ksp.kos.ideaplugin.psi.KerboScriptInstruction;
-import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
+import ksp.kos.ideaplugin.psi.*;
 
 import java.util.ArrayList;
 import java.util.function.BiFunction;
@@ -57,10 +53,7 @@ public class FileScope extends LocalScope {
 
     @SuppressWarnings("ConstantConditions")
     private KerboScriptDeclareFunctionClause createVirtualFunction(String name) {
-        KerboScriptFile file = (KerboScriptFile) PsiFileFactory.getInstance(kerboScriptFile.getProject()).createFileFromText("undefined.ks", KerboScriptLanguage.INSTANCE,
-                "function " + name + " {}", false, false);
-        KerboScriptInstruction instruction = (KerboScriptInstruction) file.getFirstChild();
-        return ((KerboScriptDeclareStmt) instruction).getDeclareFunctionClause();
+        return KerboScriptElementFactory.function(kerboScriptFile.getProject(), name);
     }
 
     public KerboScriptNamedElement getVirtualVariable(KerboScriptNamedElement element) {
@@ -74,10 +67,8 @@ public class FileScope extends LocalScope {
 
     @SuppressWarnings("ConstantConditions")
     private KerboScriptNamedElement createVirtualVariable(String name) {
-        KerboScriptFile file = (KerboScriptFile) PsiFileFactory.getInstance(kerboScriptFile.getProject()).createFileFromText("undefined.ks", KerboScriptLanguage.INSTANCE,
-                "local " + name + " to 0.", false, false);
-        KerboScriptInstruction instruction = (KerboScriptInstruction) file.getFirstChild();
-        return ((KerboScriptDeclareStmt) instruction).getDeclareIdentifierClause();
+        Project project = kerboScriptFile.getProject();
+        return KerboScriptElementFactory.variable(project, name);
     }
 
     public enum Resolver {

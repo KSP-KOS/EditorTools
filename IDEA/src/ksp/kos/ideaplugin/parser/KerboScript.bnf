@@ -2,8 +2,14 @@
     parserClass="ksp.kos.ideaplugin.parser.KerboScriptParser"
     parserUtilClass="ksp.kos.ideaplugin.parser.KerboScriptParserUtil"
 
+    implements="ksp.kos.ideaplugin.psi.KerboScriptBaseElement"
+
+    implements("declare_identifier_clause") = ["ksp.kos.ideaplugin.psi.ExpressionHolder" "ksp.kos.ideaplugin.psi.KerboScriptNamedElement"]
+
     extends("atom|declare_identifier_clause|declare_parameter_clause|declare_function_clause|run_stmt")="ksp.kos.ideaplugin.psi.impl.KerboScriptNamedElementImpl"
     implements("atom|declare_identifier_clause|declare_parameter_clause|declare_function_clause|run_stmt")="ksp.kos.ideaplugin.psi.KerboScriptNamedElement"
+
+    implements("declare_identifier_clause|set_stmt|return_stmt")="ksp.kos.ideaplugin.psi.ExpressionHolder"
 
     extends("instruction_block")="ksp.kos.ideaplugin.psi.impl.KerboScriptScopeImpl"
     implements("instruction_block")="ksp.kos.ideaplugin.psi.KerboScriptScope"
@@ -20,7 +26,6 @@
     extends(".*_stmt|directive|instruction_block")=instruction
     extends("lazyglobal_directive")=directive
     extends("function_trailer|array_trailer")=suffixterm_trailer
-    extends("varidentifier")=suffix
     extends("[a-z]*_expr|factor|suffix|suffixterm|atom|.*number")=expr
 
     tokens=[COMMENTLINE="COMMENTLINE"]
