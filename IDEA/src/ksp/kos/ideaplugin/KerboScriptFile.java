@@ -48,21 +48,6 @@ public class KerboScriptFile extends PsiFileBase implements KerboScriptScope {
         return KerboScriptFileType.INSTANCE;
     }
 
-    @NotNull
-    @Override
-    public String getName() {
-        String name = super.getName();
-        if (name.endsWith(".ks")) {
-            name = name.substring(0, name.length() - 3);
-        }
-        return name;
-    }
-
-    @Override
-    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        return super.setName(name + ".ks");
-    }
-
     @Override
     public void register(KerboScriptNamedElement element) {
         getFileScope().register(element);
