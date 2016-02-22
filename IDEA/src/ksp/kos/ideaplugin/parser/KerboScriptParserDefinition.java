@@ -24,7 +24,9 @@ import org.jetbrains.annotations.NotNull;
  */
 public class KerboScriptParserDefinition implements ParserDefinition {
     public static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
-    public static final TokenSet COMMENTS = TokenSet.create(TokenType.WHITE_SPACE);
+    public static final TokenSet COMMENTS = TokenSet.create(KerboScriptTypes.COMMENTLINE);
+    public static final TokenSet IDENTIFIERS = TokenSet.create(KerboScriptTypes.IDENTIFIER, KerboScriptTypes.FILEIDENT);
+    public static final TokenSet STRING_LITERALS = TokenSet.create(KerboScriptTypes.STRING);
 
     public static final IFileElementType FILE = new IFileElementType(Language.findInstance(KerboScriptLanguage.class));
 
@@ -49,7 +51,7 @@ public class KerboScriptParserDefinition implements ParserDefinition {
     @Override
     @NotNull
     public TokenSet getStringLiteralElements() {
-        return TokenSet.EMPTY;
+        return STRING_LITERALS;
     }
 
     @Override

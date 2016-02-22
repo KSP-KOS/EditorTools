@@ -28,7 +28,7 @@ public class KerboScriptScopeImpl extends KerboScriptElementImpl implements Kerb
     @Override
     public PsiElement resolveFunction(KerboScriptNamedElement element) {
         KerboScriptNamedElement function = getLocalScope().resolveFunction(element);
-        if (function==null) {
+        if (function == null) {
             return getScope().resolveFunction(element);
         }
         return function;
@@ -37,7 +37,7 @@ public class KerboScriptScopeImpl extends KerboScriptElementImpl implements Kerb
     @Override
     public PsiElement resolveVariable(KerboScriptNamedElement element) {
         KerboScriptNamedElement variable = getLocalScope().resolveVariable(element);
-        if (variable==null) {
+        if (variable == null) {
             return getScope().resolveVariable(element);
         }
         return variable;

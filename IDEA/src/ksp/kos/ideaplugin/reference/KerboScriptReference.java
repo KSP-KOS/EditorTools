@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 public class KerboScriptReference extends PsiReferenceBase<KerboScriptNamedElementImpl> {
     public KerboScriptReference(@NotNull KerboScriptNamedElementImpl element) {
         super(element);
-        if (element.getNameIdentifier()==null) {
+        if (element.getNameIdentifier() == null) {
             throw new NullPointerException();
         }
     }
@@ -25,7 +25,7 @@ public class KerboScriptReference extends PsiReferenceBase<KerboScriptNamedEleme
     @Override
     protected TextRange calculateDefaultRangeInElement() {
         PsiElement nameIdentifier = myElement.getNameIdentifier();
-        if (nameIdentifier==null) {
+        if (nameIdentifier == null) {
             return myElement.getTextRange().shiftRight(-myElement.getTextOffset());
         }
         return nameIdentifier.getTextRange().shiftRight(-myElement.getTextOffset());

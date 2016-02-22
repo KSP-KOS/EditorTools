@@ -11,7 +11,6 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScopesCore;
-import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.indexing.FileBasedIndex;
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
 import ksp.kos.ideaplugin.psi.KerboScriptPsiWalker;
@@ -46,21 +45,6 @@ public class KerboScriptFile extends PsiFileBase implements KerboScriptScope {
     @Override
     public FileType getFileType() {
         return KerboScriptFileType.INSTANCE;
-    }
-
-    @NotNull
-    @Override
-    public String getName() {
-        String name = super.getName();
-        if (name.endsWith(".ks")) {
-            name = name.substring(0, name.length() - 3);
-        }
-        return name;
-    }
-
-    @Override
-    public PsiElement setName(@NotNull String name) throws IncorrectOperationException {
-        return super.setName(name + ".ks");
     }
 
     @Override
