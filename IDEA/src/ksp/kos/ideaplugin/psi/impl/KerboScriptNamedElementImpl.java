@@ -127,7 +127,7 @@ public class KerboScriptNamedElementImpl extends KerboScriptElementImpl implemen
     @Override
     public PsiElement getNavigationElement() {
         PsiElement nameIdentifier = getNameIdentifier();
-        if (nameIdentifier!=null) return nameIdentifier;
+        if (nameIdentifier != null) return nameIdentifier;
         return super.getNavigationElement();
     }
 

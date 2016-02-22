@@ -16,7 +16,7 @@ public class LocalScope {
 
     public KerboScriptNamedElement resolveVariable(KerboScriptNamedElement element) {
         KerboScriptNamedElement resolved = variables.get(element.getName());
-        if (resolved!=null && resolved.getTextOffset()>element.getTextOffset()) {
+        if (resolved != null && resolved.getTextOffset() > element.getTextOffset()) {
             return null;
         }
         return resolved;
@@ -33,7 +33,7 @@ public class LocalScope {
 
     public void register(KerboScriptNamedElement element) {
         String name = element.getName();
-        if (name!=null) {
+        if (name != null) {
             switch (element.getType().getType()) {
                 case FUNCTION:
                     functions.put(name, element);

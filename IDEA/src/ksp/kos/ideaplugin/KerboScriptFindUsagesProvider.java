@@ -59,7 +59,7 @@ public class KerboScriptFindUsagesProvider implements FindUsagesProvider {
     public String getDescriptiveName(@NotNull PsiElement element) {
         if (element instanceof PsiNamedElement) {
             String name = ((PsiNamedElement) element).getName();
-            if (name!=null) {
+            if (name != null) {
                 return name;
             }
         }
@@ -70,4 +70,5 @@ public class KerboScriptFindUsagesProvider implements FindUsagesProvider {
     @Override
     public String getNodeText(@NotNull PsiElement element, boolean useFullName) {
         return getDescriptiveName(element);
-    }}
+    }
+}
