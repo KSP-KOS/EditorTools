@@ -4,9 +4,9 @@ import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
-import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import ksp.kos.ideaplugin.parser.KerboScriptLexerAdapter;
+import ksp.kos.ideaplugin.parser.KerboScriptParserDefinition;
 import ksp.kos.ideaplugin.psi.KerboScriptTypes;
 import org.jetbrains.annotations.NotNull;
 
@@ -96,7 +96,7 @@ public class KerboScriptSyntaxHighlighter extends SyntaxHighlighterBase {
     public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
         if (tokenType.equals(KerboScriptTypes.IDENTIFIER)) {
             return createKeys(IDENTIFIER);
-        } else if (tokenType.equals(TokenType.WHITE_SPACE)) {
+        } else if (KerboScriptParserDefinition.COMMENTS.contains(tokenType)) {
             return createKeys(COMMENT);
         } else if (tokenType.equals(KerboScriptTypes.STRING)) {
             return createKeys(STRING);

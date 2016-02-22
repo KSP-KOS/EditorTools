@@ -5,9 +5,9 @@ import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.TokenSet;
 import ksp.kos.ideaplugin.parser.KerboScriptLexerAdapter;
+import ksp.kos.ideaplugin.parser.KerboScriptParserDefinition;
 import ksp.kos.ideaplugin.psi.KerboScriptTypes;
 import ksp.kos.ideaplugin.psi.impl.KerboScriptNamedElementImpl;
 import org.jetbrains.annotations.NotNull;
@@ -24,7 +24,7 @@ public class KerboScriptFindUsagesProvider implements FindUsagesProvider {
     public WordsScanner getWordsScanner() {
         return new DefaultWordsScanner(new KerboScriptLexerAdapter(),
                 TokenSet.create(KerboScriptTypes.IDENTIFIER, KerboScriptTypes.FILEIDENT),
-                TokenSet.create(TokenType.WHITE_SPACE), TokenSet.create(KerboScriptTypes.STRING));
+                KerboScriptParserDefinition.COMMENTS, TokenSet.create(KerboScriptTypes.STRING));
     }
 
     @Override
