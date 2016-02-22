@@ -4,7 +4,8 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import ksp.kos.ideaplugin.KerboScriptFile;
-import ksp.kos.ideaplugin.psi.*;
+import ksp.kos.ideaplugin.psi.KerboScriptElement;
+import ksp.kos.ideaplugin.psi.KerboScriptScope;
 import org.jetbrains.annotations.NotNull;
 
 /**
