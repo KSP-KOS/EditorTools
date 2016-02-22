@@ -11,6 +11,9 @@ import ksp.kos.ideaplugin.parser.KerboScriptParserDefinition;
 import ksp.kos.ideaplugin.psi.KerboScriptTypes;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Created on 27/12/15.
  *
@@ -18,11 +21,11 @@ import org.jetbrains.annotations.NotNull;
  */
 public class KerboScriptSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final String PREFIX = "KOS.";
-    public static final TextAttributesKey KEYWORD = TextAttributesKey.createTextAttributesKey(PREFIX + "KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
-    public static final TextAttributesKey IDENTIFIER = TextAttributesKey.createTextAttributesKey(PREFIX + "IDENTIFIER", DefaultLanguageHighlighterColors.IDENTIFIER);
-    public static final TextAttributesKey COMMENT = TextAttributesKey.createTextAttributesKey(PREFIX + "COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
-    public static final TextAttributesKey STRING = TextAttributesKey.createTextAttributesKey(PREFIX + "STRING", DefaultLanguageHighlighterColors.STRING);
-    public static final TextAttributesKey NUMBER = TextAttributesKey.createTextAttributesKey(PREFIX + "NUMBER", DefaultLanguageHighlighterColors.NUMBER);
+    public static final TextAttributesKey KEYWORDS_KEY = TextAttributesKey.createTextAttributesKey(PREFIX + "KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
+    public static final TextAttributesKey IDENTIFIER_KEY = TextAttributesKey.createTextAttributesKey(PREFIX + "IDENTIFIER", DefaultLanguageHighlighterColors.IDENTIFIER);
+    public static final TextAttributesKey COMMENT_KEY = TextAttributesKey.createTextAttributesKey(PREFIX + "COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
+    public static final TextAttributesKey STRING_KEY = TextAttributesKey.createTextAttributesKey(PREFIX + "STRING", DefaultLanguageHighlighterColors.STRING);
+    public static final TextAttributesKey NUMBERS_KEY = TextAttributesKey.createTextAttributesKey(PREFIX + "NUMBER", DefaultLanguageHighlighterColors.NUMBER);
     public static final TextAttributesKey OPERATORS_KEY = TextAttributesKey.createTextAttributesKey(PREFIX + "OPERATOR_SIGN", DefaultLanguageHighlighterColors.OPERATION_SIGN);
     public static final TextAttributesKey PARENTHESES_KEY = TextAttributesKey.createTextAttributesKey(PREFIX + "PARENTHESES", DefaultLanguageHighlighterColors.PARENTHESES);
     public static final TextAttributesKey BRACES_KEY = TextAttributesKey.createTextAttributesKey(PREFIX + "BRACES", DefaultLanguageHighlighterColors.BRACES);
@@ -119,6 +122,22 @@ public class KerboScriptSyntaxHighlighter extends SyntaxHighlighterBase {
             KerboScriptTypes.SQUARECLOSE
     );
 
+    private static final Map<IElementType, TextAttributesKey> myAttributesMap = new HashMap<>();
+
+    static {
+        fillMap(myAttributesMap, EOI_KEY, KerboScriptTypes.EOI);
+        fillMap(myAttributesMap, COLON_KEY, KerboScriptTypes.COLON);
+
+        fillMap(myAttributesMap, KerboScriptParserDefinition.IDENTIFIERS, IDENTIFIER_KEY);
+        fillMap(myAttributesMap, KerboScriptParserDefinition.STRING_LITERALS, STRING_KEY);
+        fillMap(myAttributesMap, KerboScriptParserDefinition.COMMENTS, COMMENT_KEY);
+        fillMap(myAttributesMap, KEYWORDS, KEYWORDS_KEY);
+        fillMap(myAttributesMap, NUMBERS, NUMBERS_KEY);
+        fillMap(myAttributesMap, OPERATORS, OPERATORS_KEY);
+        fillMap(myAttributesMap, PARENTHESES, PARENTHESES_KEY);
+        fillMap(myAttributesMap, BRACES, BRACES_KEY);
+        fillMap(myAttributesMap, BRACKETS, BRACKETS_KEY);
+    }
 
     @NotNull
     @Override
@@ -129,30 +148,7 @@ public class KerboScriptSyntaxHighlighter extends SyntaxHighlighterBase {
     @NotNull
     @Override
     public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
-        if (KerboScriptTypes.IDENTIFIER.equals(tokenType)) {
-            return pack(IDENTIFIER);
-        } else if (KerboScriptParserDefinition.COMMENTS.contains(tokenType)) {
-            return pack(COMMENT);
-        } else if (KerboScriptTypes.STRING.equals(tokenType)) {
-            return pack(STRING);
-        } else if (KerboScriptTypes.EOI.equals(tokenType)) {
-            return pack(EOI_KEY);
-        } else if (KerboScriptTypes.COLON.equals(tokenType)) {
-            return pack(COLON_KEY);
-        } else if (KEYWORDS.contains(tokenType)) {
-            return pack(KEYWORD);
-        } else if (NUMBERS.contains(tokenType)) {
-            return pack(NUMBER);
-        } else if (OPERATORS.contains(tokenType)) {
-            return pack(OPERATORS_KEY);
-        } else if (PARENTHESES.contains(tokenType)) {
-            return pack(PARENTHESES_KEY);
-        } else if (BRACES.contains(tokenType)) {
-            return pack(BRACES_KEY);
-        } else if (BRACKETS.contains(tokenType)) {
-            return pack(BRACKETS_KEY);
-        }
-        return new TextAttributesKey[0];
+        return pack(myAttributesMap.get(tokenType));
     }
 
 }
