@@ -8,10 +8,7 @@ import com.intellij.refactoring.RefactoringBundle;
 import com.intellij.refactoring.util.CommonRefactoringUtil;
 import com.intellij.usageView.UsageInfo;
 import com.intellij.util.containers.MultiMap;
-import ksp.kos.ideaplugin.psi.KerboScriptAtom;
-import ksp.kos.ideaplugin.psi.KerboScriptDeclareIdentifierClause;
-import ksp.kos.ideaplugin.psi.KerboScriptDeclareStmt;
-import ksp.kos.ideaplugin.psi.KerboScriptExpr;
+import ksp.kos.ideaplugin.psi.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -60,7 +57,7 @@ public class VariableInlineHandler implements InlineHandler {
                     if (element!=null) {
                         PsiElement parent = element.getParent();
                         if (parent instanceof KerboScriptAtom) {
-                            parent.getParent().replace(expr);
+                            parent.getParent().replace(KerboScriptElementFactory.expression(expr.getProject(), "("+expr.getText()+")"));
                         }
                     }
                 }
