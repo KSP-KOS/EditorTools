@@ -1,8 +1,11 @@
 package ksp.kos.ideaplugin.expressions;
 
-import ksp.kos.ideaplugin.psi.KerboScriptExpr;
 import ksp.kos.ideaplugin.psi.KerboScriptMultdivExpr;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created on 30/01/16.
@@ -15,6 +18,10 @@ public class Multiplication extends MultiExpression<Multiplication.Op, Element> 
         super();
     }
 
+    protected Multiplication(List<Item<Op, Element>> items) {
+        super(items);
+    }
+
     public Multiplication(Expression... expressions) {
         super(expressions);
     }
@@ -23,30 +30,67 @@ public class Multiplication extends MultiExpression<Multiplication.Op, Element> 
         super(muldiv);
     }
 
-    @NotNull
     @Override
-    protected Op[] operators() {
-        return Op.values();
-    }
+    public MultiExpressionBuilder<Op, Element> createBuilder() {
+        return new MultiExpressionBuilder<Op, Element>(Multiplication.class) {
+            @Override
+            protected Expression zero() {
+                return Number.ZERO;
+            }
 
-    @Override
-    protected Expression singleItemExpression(Item<Op, Element> item) {
-        if (item.getOperation()==Op.MUL) {
-            return item.getExpression();
-        } else {
-            items.add(0, new Item<>(Op.MUL, toElement(Number.ONE)));
-            return this;
-        }
-    }
+            @Override
+            protected Expression one() {
+                return Number.ONE;
+            }
 
-    @Override
-    protected Element parseElement(KerboScriptExpr element) throws SyntaxException {
-        return Element.parse(element);
-    }
+            @Override
+            protected Expression singleItemExpression(Item<Op, Element> item) {
+                if (item.getOperation()==Op.MUL) {
+                    Element expression = item.getExpression();
+                    if (expression.isSimple()) {
+                        return expression.getAtom();
+                    }
+                    return expression;
+                } else {
+                    items.add(0, new Item<>(Op.MUL, toElement(Number.ONE)));
+                    return createExpression();
+                }
+            }
 
-    @Override
-    protected Element toElement(Expression expression) {
-        return Element.toElement(expression);
+            @NotNull
+            @Override
+            protected Op[] operators() {
+                return Op.values();
+            }
+
+            @Override
+            protected Element toElement(Expression expression) {
+                return Element.toElement(expression);
+            }
+
+            @Override
+            protected void normalize() {
+                LinkedList<Item<Op, Element>> items = new LinkedList<>();
+                for (Iterator<Item<Op, Element>> iterator = this.items.iterator(); iterator.hasNext(); ) {
+                    Item<Op, Element> item = iterator.next();
+                    if (item.getOperation() == Op.MUL) {
+                        items.add(item);
+                        iterator.remove();
+                    }
+                }
+                if (items.isEmpty()) {
+                    items.add(new Item<>(Op.MUL, toElement(Number.ONE)));
+                }
+                items.addAll(this.items);
+                this.items.clear();
+                this.items.addAll(items);
+            }
+
+            @Override
+            protected MultiExpression<Op, Element> createExpression(List<Item<Op, Element>> items) {
+                return new Multiplication(items);
+            }
+        };
     }
 
     @Override
@@ -57,15 +101,15 @@ public class Multiplication extends MultiExpression<Multiplication.Op, Element> 
             for (Item<Op, Element> ditem : items) {
                 if (item!=ditem) {
                     if (item.getOperation()==Op.MUL) {
-                        id = id.multiply(ditem.getExpression().copy());
+                        id = id.multiply(ditem.getExpression());
                     } else {
-                        id = id.divide(ditem.getExpression().copy());
+                        id = id.divide(ditem.getExpression());
                     }
                 } else {
                     if (item.getOperation()==Op.MUL) {
-                        id = id.multiply(ditem.getExpression().copy().differentiate());
+                        id = id.multiply(ditem.getExpression().differentiate());
                     } else {
-                        id = id.multiply(ditem.getExpression().copy().power(Number.create(-1)).differentiate());
+                        id = id.multiply(ditem.getExpression().power(Number.create(-1)).differentiate());
                     }
                 }
             }
@@ -114,15 +158,5 @@ public class Multiplication extends MultiExpression<Multiplication.Op, Element> 
         public Expression apply(Expression exp1, Expression exp2) {
             return operation.apply(exp1, exp2);
         }
-    }
-
-    @Override
-    protected Expression zero() {
-        return Number.ZERO;
-    }
-
-    @Override
-    protected Expression one() {
-        return Number.ONE;
     }
 }

@@ -6,7 +6,7 @@ package ksp.kos.ideaplugin.expressions;
  * @author ptasha
  */
 public class Escaped extends Atom {
-    private Expression expression;
+    private final Expression expression;
 
     public Escaped(Expression expression) {
         this.expression = expression;
@@ -22,18 +22,12 @@ public class Escaped extends Atom {
         return expression.differentiate();
     }
 
-    @Override
-    public Expression copy() {
-        return new Escaped(expression.copy());
-    }
-
     public Expression getExpression() {
         return expression;
     }
 
     @Override
     public Expression simplify() {
-        expression = expression.simplify();
-        return expression;
+        return expression.simplify();
     }
 }

@@ -41,9 +41,4 @@ public class Constant extends Atom {
     public Expression differentiate() {
         return Number.ZERO;
     }
-
-    @Override
-    public Expression copy() {
-        return new Constant(psi);
-    }
 }

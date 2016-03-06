@@ -59,12 +59,12 @@ public class Function extends Atom {
     }
 
     @Override
-    public Expression copy() {
-        Function copy = new Function(name, args);
-        for (int i = 0; i < args.length; i++) {
-            args[i] = args[i].copy();
+    public Expression simplify() {
+        Expression[] args = new Expression[this.args.length];
+        for (int i = 0; i < this.args.length; i++) {
+            args[i] = this.args[i].simplify();
         }
-        return copy;
+        return new Function(name, args);
     }
 
     public static Expression log(Expression arg) {

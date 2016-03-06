@@ -3,6 +3,8 @@ package ksp.kos.ideaplugin.expressions;
 import ksp.kos.ideaplugin.psi.KerboScriptArithExpr;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 /**
  * Created on 31/01/16.
  *
@@ -14,6 +16,10 @@ public class Addition extends MultiExpression<Addition.Op,Expression> {
         super();
     }
 
+    protected Addition(List<Item<Op, Expression>> items) {
+        super(items);
+    }
+
     public Addition(Expression... expressions) {
         super(expressions);
     }
@@ -22,27 +28,43 @@ public class Addition extends MultiExpression<Addition.Op,Expression> {
         super(arith);
     }
 
-    @NotNull
     @Override
-    protected Op[] operators() {
-        return Op.values();
-    }
+    public MultiExpressionBuilder<Op, Expression> createBuilder() {
+        return new MultiExpressionBuilder<Op, Expression>(Addition.class) {
+            @Override
+            protected Expression one() {
+                return Number.ZERO;
+            }
 
-    @Override
-    protected Expression singleItemExpression(Item<Op, Expression> item) {
-        if (item.getOperation()==Op.PLUS) {
-            return item.getExpression();
-        } else {
-            return item.getExpression().minus();
-        }
+            @Override
+            protected Expression singleItemExpression(Item<Op, Expression> item) {
+                if (item.getOperation()==Op.PLUS) {
+                    return item.getExpression();
+                } else {
+                    return item.getExpression().minus();
+                }
+            }
+
+            @NotNull
+            @Override
+            protected Op[] operators() {
+                return Op.values();
+            }
+
+            @Override
+            protected MultiExpression<Op, Expression> createExpression(List<Item<Op, Expression>> items) {
+                return new Addition(items);
+            }
+        };
     }
 
     @Override
     public Expression differentiate() {
+        MultiExpressionBuilder<Op, Expression> builder = createBuilder();
         for (Item<Op, Expression> item : items) {
-            item.setExpression(item.getExpression().differentiate());
+            builder.addExpression(item.getOperation(), item.getExpression().differentiate());
         }
-        return this;
+        return builder.createExpression();
     }
 
     @Override
@@ -80,10 +102,5 @@ public class Addition extends MultiExpression<Addition.Op,Expression> {
         public Expression apply(Expression exp1, Expression exp2) {
             return operation.apply(exp1, exp2);
         }
-    }
-
-    @Override
-    protected Expression one() {
-        return Number.ZERO;
     }
 }

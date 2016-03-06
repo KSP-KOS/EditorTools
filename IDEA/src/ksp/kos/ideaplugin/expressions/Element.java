@@ -15,14 +15,14 @@ import java.util.List;
  * @author ptasha
  */
 public class Element extends Expression {
-    private int sign;
-    private Atom atom;
-    private Expression power;
+    private final int sign;
+    private final Atom atom;
+    private final Atom power;
 
     public Element(int sign, Atom atom, Expression power) {
         this.sign = sign;
         this.atom = atom;
-        this.power = power;
+        this.power = Atom.toAtom(power);
     }
 
     public int getSign() {
@@ -100,18 +100,8 @@ public class Element extends Expression {
             text+="-";
         }
         text+=atom.getText();
-        if (power instanceof Atom) {
-            if (!power.equals(Number.ONE)) {
-                text += "^" + power.getText();
-            }
-        } else if (power instanceof Element) {
-            text+="^"+power.getText();
-        } else if (power instanceof Addition) {
-            text+="^("+power.getText()+")";
-        } else if (power instanceof Multiplication) {
-            text+="^("+power.getText()+")";
-        } else {
-            throw new RuntimeException("Unexpected expression "+power+": "+power.getText());
+        if (!power.equals(Number.ONE)) {
+            text += "^" + power.getText();
         }
         return text;
     }
@@ -125,12 +115,7 @@ public class Element extends Expression {
             }
             return diff;
         }
-        return power.copy().multiply(Function.log(atom.copy())).differentiate().multiply(this);
-    }
-
-    @Override
-    public Expression copy() {
-        return new Element(sign, (Atom) atom.copy(), power.copy());
+        return power.multiply(Function.log(atom)).differentiate().multiply(this);
     }
 
     public static Element toElement(Expression expression) {
@@ -147,19 +132,19 @@ public class Element extends Expression {
 
     @Override
     public Expression simplify() {
-        power = power.simplify();
-        if (power.equals(Number.ONE)) {
-            return applySign(atom.simplify());
-        } else if (power.equals(Number.ZERO)) {
-            return applySign(Number.ONE);
-        }
-        atom = Atom.toAtom(atom.simplify());
+        Atom atom = Atom.toAtom(this.atom.simplify());
         if (atom.equals(Number.ZERO)){
             return Number.ZERO;
         } else if (atom.equals(Number.ONE)) {
             return applySign(Number.ONE);
         }
-        return this;
+        Expression power = this.power.simplify();
+        if (power.equals(Number.ONE)) {
+            return applySign(atom.simplify());
+        } else if (power.equals(Number.ZERO)) {
+            return applySign(Number.ONE);
+        }
+        return new Element(sign, atom, power);
     }
 
     public Expression applySign(Expression expression) {
@@ -171,8 +156,8 @@ public class Element extends Expression {
 
     @Override
     public Expression power(Expression expression) {
-        power = power.multiply(expression);
-        return this;
+        Expression power = this.power.multiply(expression);
+        return new Element(sign, atom, power);
     }
 
     @Override
@@ -198,7 +183,6 @@ public class Element extends Expression {
 
     @Override
     public Element minus() {
-        sign *= -1;
-        return this;
+        return new Element(-sign, atom, power);
     }
 }

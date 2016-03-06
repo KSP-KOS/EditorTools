@@ -35,7 +35,11 @@ public abstract class Expression {
                 if (identifier !=null) {
                     KerboScriptSuffixtermTrailer trailer = suffixterm.getSuffixtermTrailerList().get(0);
                     if (trailer instanceof KerboScriptFunctionTrailer) {
-                        return new Function(identifier.getText(), ((KerboScriptFunctionTrailer) trailer).getArglist().getExprList());
+                        KerboScriptArglist arglist = ((KerboScriptFunctionTrailer) trailer).getArglist();
+                        if (arglist==null) {
+                            return new Function(identifier.getText());
+                        }
+                        return new Function(identifier.getText(), arglist.getExprList());
                     }
                 }
             }
@@ -78,8 +82,6 @@ public abstract class Expression {
     }
 
     public Expression power(Expression expression) {
-        return new Element(1, Atom.toAtom(this), expression);
+        return new Element(1, Atom.toAtom(this), Atom.toAtom(expression));
     }
-
-    public abstract Expression copy();
 }

@@ -129,11 +129,6 @@ public class Number extends Atom {
     }
 
     @Override
-    public Expression copy() {
-        return new Number(number, point, e);
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

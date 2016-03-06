@@ -21,9 +21,4 @@ public class Variable extends Atom {
     public Expression differentiate() {
         return new Variable(name+"_");
     }
-
-    @Override
-    public Expression copy() {
-        return new Variable(name);
-    }
 }
