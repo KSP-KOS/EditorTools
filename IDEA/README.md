@@ -1,6 +1,6 @@
 # kOS-IDEs
 This plugin enables support for kOS KerboScript in IntelliJ IDEA IDE.
-Current kOS version supported: 0.18.2
+Current kOS version supported: 0.19.0
 https://www.jetbrains.com/idea/
 
 ###INSTALL###

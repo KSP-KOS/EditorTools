@@ -1,16 +1,24 @@
 <idea-plugin version="2" url="https://github.com/KSP-KOS/EditorTools/tree/develop/IDEA">
     <id>kos-ksp.idea-plugin</id>
     <name>KerboScript(kOS)</name>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <vendor email="ynicorn@gmail.com" url="https://github.com/valery-labuzhsky">Valery Labuzhsky
     </vendor>
 
     <description><![CDATA[
 This plugin enables support for kOS KerboScript in IntelliJ IDEA IDE.<br/>
-kOS version supported: 0.18.2
+kOS version supported: 0.19.0
     ]]></description>
 
     <change-notes><![CDATA[
+  <strong>Changes in version 1.0.3:</strong>
+<ul>
+    <li>Support of kOS 0.19.0</li>
+    <li>Base formatting</li>
+    <li>Refactoring: inline variable, differentiate, simplify</li>
+    <li>Bugfix</li>
+</ul>
+
   <strong>Changes in version 1.0.2:</strong>
 <ul>
     <li>Stateful lexer allows keywords as identifiers</li>
