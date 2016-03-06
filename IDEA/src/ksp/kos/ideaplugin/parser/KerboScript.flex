@@ -17,94 +17,97 @@ import com.intellij.psi.TokenType;
 %eof{  return;
 %eof}
 
-PLUSMINUS=(\+|-)
-MULT=\*
-DIV=\/
-POWER=\^
-E=e
+// Terminals
+// ===================================================
+//Math
+PLUSMINUS    = (\+|-)
+MULT         = \*
+DIV          = \/
+POWER        = \^
+E            = e
 //Logic
-NOT=not
-AND=and
-OR=or
-TRUEFALSE=true|false
-COMPARATOR=<>|>=|<=|=|>|<
+NOT          = not
+AND          = and
+OR           = or
+TRUEFALSE    = true|false
+COMPARATOR   = <>|>=|<=|=|>|<
 //Instructions tokens
-SET=set
-TO=to
-IS=is
-IF=if
-ELSE=else
-UNTIL=until
-STEP=step
-DO=do
-LOCK=lock
-UNLOCK=unlock
-PRINT=print
-AT=at
-ON=on
-TOGGLE=toggle
-WAIT=wait
-WHEN=when
-THEN=then
-OFF=off
-STAGE=stage
-CLEARSCREEN=clearscreen
-ADD=add
-REMOVE=remove
-LOG=log
-BREAK=break
-PRESERVE=preserve
-DECLARE=declare
-DEFINED=defined
-LOCAL=local
-GLOBAL=global
-PARAMETER=parameter
-FUNCTION=function
-RETURN=return
-SWITCH=switch
-COPY=copy
-FROM=from
-RENAME=rename
-VOLUME=volume
-FILE=file
-DELETE=delete
-EDIT=edit
-RUN=run
-ONCE=once
-COMPILE=compile
-LIST=list
-REBOOT=reboot
-SHUTDOWN=shutdown
-FOR=for
-UNSET=unset
+SET          = set
+TO           = to
+IS           = is
+IF           = if
+ELSE         = else
+UNTIL        = until
+STEP         = step
+DO           = do
+LOCK         = lock
+UNLOCK       = unlock
+PRINT        = print
+AT           = at
+ON           = on
+TOGGLE       = toggle
+WAIT         = wait
+WHEN         = when
+THEN         = then
+OFF          = off
+STAGE        = stage
+CLEARSCREEN  = clearscreen
+ADD          = add
+REMOVE       = remove
+LOG          = log
+BREAK        = break
+PRESERVE     = preserve
+DECLARE      = declare
+DEFINED      = defined
+LOCAL        = local
+GLOBAL       = global
+PARAMETER    = parameter
+FUNCTION     = function
+RETURN       = return
+SWITCH       = switch
+COPY         = copy
+FROM         = from
+RENAME       = rename
+VOLUME       = volume
+FILE         = file
+DELETE       = delete
+EDIT         = edit
+RUN          = run
+ONCE         = once
+COMPILE      = compile
+LIST         = list
+REBOOT       = reboot
+SHUTDOWN     = shutdown
+FOR          = for
+UNSET        = unset
 
 //Generic
-BRACKETOPEN=\(
-BRACKETCLOSE=\)
-CURLYOPEN=\{
-CURLYCLOSE=\}
-SQUAREOPEN=\[
-SQUARECLOSE=\]
-COMMA=,
-COLON=:
-IN=in
-ARRAYINDEX=#
-ALL=all
-IDENTIFIER=[a-zA-Z_][a-zA-Z0-9_]*
-FILEIDENT=[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z0-9_][a-zA-Z0-9_]*)*
-INTEGER=[0-9]+
-DOUBLE=[0-9]*\.[0-9]+
-STRING=@?\"(\"\"|[^\"])*\"
-EOI=\.
+BRACKETOPEN  = \(
+BRACKETCLOSE = \)
+CURLYOPEN    = \{
+CURLYCLOSE   = \}
+SQUAREOPEN   = \[
+SQUARECLOSE  = \]
+COMMA        = ,
+COLON        = :
+IN           = in
+ARRAYINDEX   = #
+ALL          = all
+IDENTIFIER   = [a-zA-Z_][a-zA-Z0-9_]*
+FILEIDENT    = [a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z0-9_][a-zA-Z0-9_]*)*
+INTEGER      = [0-9]+
+DOUBLE       = [0-9]*\.[0-9]+
+STRING       = @?\"(\"\"|[^\"])*\"
+EOI          = \.
 //Compiler Directives
-ATSIGN=@
-LAZYGLOBAL=lazyglobal
+ATSIGN       = @
+LAZYGLOBAL   = lazyglobal
 //Special
-//EOF=\z
+//EOF          = ^$
 //[Skip]
-WHITESPACE=[\ \n\r\t]+
+WHITESPACE   = [\ \n\r\t]+
 //[Skip]
-COMMENTLINE=\/\/[^\n]*
+COMMENTLINE  = \/\/[^\n]*
 
 %xstate E
 

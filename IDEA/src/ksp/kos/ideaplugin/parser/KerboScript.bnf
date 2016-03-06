@@ -35,7 +35,7 @@
 // ===================================================
 Start ::= (instruction)*
 instruction_block ::= CURLYOPEN instruction* CURLYCLOSE EOI?
-instruction ::= set_stmt | 
+instruction ::= set_stmt |
                if_stmt |
                until_stmt |
                fromloop_stmt |
@@ -103,7 +103,7 @@ declare_stmt   ::= // declare|global|local are all optional for function and par
                   // but mandatory for declaring an identifier.  This was the only
                   // way to get the LL(1) parser to understand that without barfing on
                   // ambiguity.
-                  (   
+                  (
                       declare_parameter_clause |
                       declare_function_clause |
                       declare_lock_clause |
@@ -126,7 +126,7 @@ copy_stmt      ::= COPY expr (FROM | TO) expr EOI
 rename_stmt    ::= RENAME (VOLUME | FILE)? expr TO expr EOI
 delete_stmt    ::= DELETE expr (FROM expr)? EOI
 edit_stmt      ::= EDIT expr EOI
-run_stmt       ::= RUN (ONCE)? (FILEIDENT|IDENTIFIER) (BRACKETOPEN arglist BRACKETCLOSE)? (ON expr)? EOI
+run_stmt       ::= RUN (ONCE)? FILEIDENT (BRACKETOPEN arglist BRACKETCLOSE)? (ON expr)? EOI
 compile_stmt   ::= COMPILE expr (TO expr)? EOI
 list_stmt      ::= LIST (IDENTIFIER (IN IDENTIFIER)?)? EOI
 reboot_stmt    ::= REBOOT EOI
@@ -151,7 +151,7 @@ suffix_trailer     ::= (COLON suffixterm)
 suffixterm         ::= atom suffixterm_trailer*
 suffixterm_trailer ::= (function_trailer | array_trailer)
 
-function_trailer   ::= (BRACKETOPEN arglist? BRACKETCLOSE)
+function_trailer   ::= (BRACKETOPEN arglist? BRACKETCLOSE) | ATSIGN
 array_trailer      ::= ( (ARRAYINDEX (IDENTIFIER | INTEGER)) | (SQUAREOPEN expr SQUARECLOSE) )
 
 atom               ::= ( sci_number |
