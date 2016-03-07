@@ -1,6 +1,7 @@
 package ksp.kos.ideaplugin.expressions;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.util.containers.HashMap;
 import ksp.kos.ideaplugin.psi.KerboScriptNumber;
 import ksp.kos.ideaplugin.psi.KerboScriptSciNumber;
 import ksp.kos.ideaplugin.psi.KerboScriptTypes;
@@ -121,6 +122,11 @@ public class Number extends Atom {
             return ZERO;
         }
         return super.divide(expression);
+    }
+
+    @Override
+    public Expression inline(HashMap<String, Expression> args) {
+        return this;
     }
 
     @Override

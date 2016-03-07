@@ -2,6 +2,7 @@ package ksp.kos.ideaplugin.psi;
 
 import com.intellij.lang.ASTFactory;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectManager;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.impl.source.codeStyle.CodeEditUtil;
 import com.intellij.psi.impl.source.tree.LeafElement;
@@ -24,6 +25,10 @@ public class KerboScriptElementFactory {
         KerboScriptInstruction instruction = (KerboScriptInstruction) file.getFirstChild();
         return ((KerboScriptDeclareStmt) instruction).getDeclareFunctionClause();
 
+    }
+
+    public static KerboScriptFile file(String text) {
+        return file(ProjectManager.getInstance().getDefaultProject(), text);
     }
 
     public static KerboScriptFile file(Project project, String text) {

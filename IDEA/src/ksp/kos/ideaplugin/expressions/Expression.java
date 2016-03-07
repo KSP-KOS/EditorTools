@@ -1,6 +1,7 @@
 package ksp.kos.ideaplugin.expressions;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.util.containers.HashMap;
 import ksp.kos.ideaplugin.psi.*;
 
 /**
@@ -84,4 +85,6 @@ public abstract class Expression {
     public Expression power(Expression expression) {
         return new Element(1, Atom.toAtom(this), Atom.toAtom(expression));
     }
+
+    public abstract Expression inline(HashMap<String, Expression> args);
 }

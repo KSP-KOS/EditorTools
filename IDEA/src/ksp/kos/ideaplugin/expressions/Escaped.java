@@ -1,5 +1,7 @@
 package ksp.kos.ideaplugin.expressions;
 
+import com.intellij.util.containers.HashMap;
+
 /**
  * Created on 29/01/16.
  *
@@ -20,6 +22,11 @@ public class Escaped extends Atom {
     @Override
     public Expression differentiate() {
         return expression.differentiate();
+    }
+
+    @Override
+    public Expression inline(HashMap<String, Expression> args) {
+        return expression.inline(args);
     }
 
     public Expression getExpression() {

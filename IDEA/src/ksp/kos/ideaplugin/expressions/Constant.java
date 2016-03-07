@@ -3,6 +3,7 @@ package ksp.kos.ideaplugin.expressions;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
+import com.intellij.util.containers.HashMap;
 
 /**
  * Created on 30/01/16.
@@ -40,5 +41,10 @@ public class Constant extends Atom {
     @Override
     public Expression differentiate() {
         return Number.ZERO;
+    }
+
+    @Override
+    public Expression inline(HashMap<String, Expression> args) {
+        return this;
     }
 }

@@ -1,5 +1,7 @@
 package ksp.kos.ideaplugin.expressions;
 
+import com.intellij.util.containers.HashMap;
+import ksp.kos.ideaplugin.expressions.inline.InlineFunctions;
 import ksp.kos.ideaplugin.psi.KerboScriptExpr;
 
 import java.util.List;
@@ -27,6 +29,14 @@ public class Function extends Atom {
         }
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public Expression[] getArgs() {
+        return args;
+    }
+
     @Override
     public String getText() {
         String text = this.name + "(";
@@ -48,14 +58,24 @@ public class Function extends Atom {
             return Number.ZERO;
         }
         if (args.length==1) {
-            return new Function(name+"_", args).multiply(args[0].differentiate());
+            return new Function(name+"_", args).inline().multiply(args[0].differentiate());
         }
         Expression diff = Number.ZERO;
         for (int i = 0; i < args.length; i++) {
-            Expression ad = new Function(name + "_" + (i + 1), args).multiply(args[i].differentiate());
+            Function function = new Function(name + "_" + (i + 1), args);
+            Expression ad = function.inline().multiply(args[i].differentiate());
             diff = diff.plus(ad);
         }
         return diff;
+    }
+
+    @Override
+    public Expression inline(HashMap<String, Expression> parameters) {
+        Expression[] args = new Expression[this.args.length];
+        for (int i = 0; i < this.args.length; i++) {
+            args[i] = this.args[i].inline(parameters);
+        }
+        return new Function(name, args);
     }
 
     @Override
@@ -64,7 +84,11 @@ public class Function extends Atom {
         for (int i = 0; i < this.args.length; i++) {
             args[i] = this.args[i].simplify();
         }
-        return new Function(name, args);
+        return new Function(name, args).inline();
+    }
+
+    private Expression inline() {
+        return InlineFunctions.getInstance().inline(this);
     }
 
     public static Expression log(Expression arg) {

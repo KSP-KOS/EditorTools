@@ -1,5 +1,7 @@
 package ksp.kos.ideaplugin.expressions;
 
+import com.intellij.util.containers.HashMap;
+
 /**
  * Created on 29/01/16.
  *
@@ -20,5 +22,14 @@ public class Variable extends Atom {
     @Override
     public Expression differentiate() {
         return new Variable(name+"_");
+    }
+
+    @Override
+    public Expression inline(HashMap<String, Expression> args) {
+        Expression expression = args.get(name);
+        if (expression!=null) {
+            return expression;
+        }
+        return this;
     }
 }

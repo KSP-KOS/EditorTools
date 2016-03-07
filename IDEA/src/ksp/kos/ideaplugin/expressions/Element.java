@@ -1,6 +1,7 @@
 package ksp.kos.ideaplugin.expressions;
 
 import com.intellij.lang.ASTNode;
+import com.intellij.util.containers.HashMap;
 import ksp.kos.ideaplugin.psi.KerboScriptExpr;
 import ksp.kos.ideaplugin.psi.KerboScriptFactor;
 import ksp.kos.ideaplugin.psi.KerboScriptTypes;
@@ -19,9 +20,9 @@ public class Element extends Expression {
     private final Atom atom;
     private final Atom power;
 
-    public Element(int sign, Atom atom, Expression power) {
+    public Element(int sign, Expression atom, Expression power) {
         this.sign = sign;
-        this.atom = atom;
+        this.atom = Atom.toAtom(atom);
         this.power = Atom.toAtom(power);
     }
 
@@ -158,6 +159,14 @@ public class Element extends Expression {
     public Expression power(Expression expression) {
         Expression power = this.power.multiply(expression);
         return new Element(sign, atom, power);
+    }
+
+    @Override
+    public Expression inline(HashMap<String, Expression> args) {
+        if (isSimple()) {
+            return atom.inline(args);
+        }
+        return new Element(sign, atom.inline(args), power.inline(args));
     }
 
     @Override
