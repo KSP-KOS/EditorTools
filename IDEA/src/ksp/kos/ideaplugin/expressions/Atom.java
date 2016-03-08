@@ -38,4 +38,8 @@ public abstract class Atom extends Expression {
             return new Escaped(expression);
         }
     }
+
+    public boolean isAddition() {
+        return false;
+    }
 }

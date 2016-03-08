@@ -32,65 +32,7 @@ public class Multiplication extends MultiExpression<Multiplication.Op, Element> 
 
     @Override
     public MultiExpressionBuilder<Op, Element> createBuilder() {
-        return new MultiExpressionBuilder<Op, Element>(Multiplication.class) {
-            @Override
-            protected Expression zero() {
-                return Number.ZERO;
-            }
-
-            @Override
-            protected Expression one() {
-                return Number.ONE;
-            }
-
-            @Override
-            protected Expression singleItemExpression(Item<Op, Element> item) {
-                if (item.getOperation()==Op.MUL) {
-                    Element expression = item.getExpression();
-                    if (expression.isSimple()) {
-                        return expression.getAtom();
-                    }
-                    return expression;
-                } else {
-                    items.add(0, new Item<>(Op.MUL, toElement(Number.ONE)));
-                    return createExpression();
-                }
-            }
-
-            @NotNull
-            @Override
-            protected Op[] operators() {
-                return Op.values();
-            }
-
-            @Override
-            protected Element toElement(Expression expression) {
-                return Element.toElement(expression);
-            }
-
-            @Override
-            protected void normalize() {
-                LinkedList<Item<Op, Element>> items = new LinkedList<>();
-                for (Iterator<Item<Op, Element>> iterator = this.items.iterator(); iterator.hasNext(); ) {
-                    Item<Op, Element> item = iterator.next();
-                    if (item.getOperation() == Op.MUL) {
-                        items.add(item);
-                        iterator.remove();
-                    }
-                }
-                if (items.isEmpty()) {
-                    items.add(new Item<>(Op.MUL, toElement(Number.ONE)));
-                }
-                items.addAll(this.items);
-                this.items.clear();
-                this.items.addAll(items);
-            }
-
-            @Override
-            protected MultiExpression<Op, Element> createExpression(List<Item<Op, Element>> items) {
-                return new Multiplication(items);
-            }
-        };
+        return new MultiplicationBuilder();
     }
 
     @Override
@@ -133,6 +75,25 @@ public class Multiplication extends MultiExpression<Multiplication.Op, Element> 
         return addExpression(Op.DIV, expression);
     }
 
+    @Override
+    public Expression minus() {
+        boolean first = true;
+        MultiExpressionBuilder<Op, Element> builder = createBuilder();
+        for (Item<Op, Element> item : items) {
+            if (first) {
+                item = builder.createItem(item.getOperation(), item.getExpression().minus());
+                first = false;
+            }
+            builder.addItem(item);
+        }
+        return builder.createExpression();
+    }
+
+    @Override
+    public boolean isNegative() {
+        return items.get(0).getExpression().isNegative();
+    }
+
     public enum Op implements MultiExpression.Op {
         MUL("*", Expression::multiply),
         DIV("/", Expression::divide);
@@ -157,6 +118,143 @@ public class Multiplication extends MultiExpression<Multiplication.Op, Element> 
         @Override
         public Expression apply(Expression exp1, Expression exp2) {
             return operation.apply(exp1, exp2);
+        }
+    }
+
+    private static class MultiplicationBuilder extends MultiExpressionBuilder<Op, Element> implements ConsumeSupported<Op, Element> {
+        public MultiplicationBuilder() {
+            super(Multiplication.class);
+        }
+
+        @Override
+        protected Expression zero() {
+            return Number.ZERO;
+        }
+
+        @Override
+        protected Expression one() {
+            return Number.ONE;
+        }
+
+        @Override
+        protected Expression singleItemExpression(Item<Op, Element> item) {
+            if (item.getOperation()== Op.MUL) {
+                Element expression = item.getExpression();
+                if (expression.isSimple()) {
+                    return expression.getAtom();
+                }
+                return expression;
+            } else {
+                items.add(0, createItem(Op.MUL, toElement(Number.ONE)));
+                return createExpression();
+            }
+        }
+
+        @NotNull
+        @Override
+        protected Op[] operators() {
+            return Op.values();
+        }
+
+        @Override
+        protected Element toElement(Expression expression) {
+            return Element.toElement(expression);
+        }
+
+        @Override
+        protected void normalize() {
+            int sign = 1;
+            LinkedList<Item<Op, Element>> mult = new LinkedList<>();
+            LinkedList<Item<Op, Element>> div = new LinkedList<>();
+            for (Item<Op, Element> item : this.items) {
+                if (item.getExpression().isNegative()) {
+                    item = createItem(item.getOperation(), item.getExpression().minus());
+                    sign*=-1;
+                }
+                if (item.getOperation() == Op.MUL) {
+                    mult.add(item);
+                } else {
+                    div.add(item);
+                }
+            }
+            normalize(mult);
+            if (mult.isEmpty()) {
+                mult.add(createItem(Op.MUL, toElement(Number.ONE)));
+            }
+            normalize(div);
+            if (sign<0) {
+                mult.set(0, createItem(Op.MUL, mult.get(0).getExpression().minus()));
+            }
+            this.items.clear();
+            this.items.addAll(mult);
+            this.items.addAll(div);
+        }
+
+        private void normalize(LinkedList<Item<Op, Element>> items) {
+            Expression number = Number.ONE;
+            int index = -1;
+            float score = 0;
+            int i = 0;
+            for (Iterator<Item<Op, Element>> iterator = items.iterator(); iterator.hasNext(); i++) {
+                Item<Op, Element> item = iterator.next();
+                Element expression = item.getExpression();
+                if (expression.isNumber()) {
+                    number = number.multiply(expression);
+                    iterator.remove();
+                    i--;
+                } else if (expression.isAddition()) {
+                    float newScore = getNumbersScore(getAddition(expression));
+                    if (newScore>score) {
+                        index = i;
+                        score = newScore;
+                    }
+                }
+            }
+            if (!number.equals(Number.ONE)) {
+                if (score>0) {
+                    Item<Op, Element> addition = items.get(index);
+                    Expression expression = getAddition(addition.getExpression()).multiplyItems(number);
+                    items.set(index, createItem(addition.getOperation(), toElement(expression)));
+                } else {
+                    items.addFirst(createItem(Op.MUL, toElement(number)));
+                }
+            }
+        }
+
+        private float getNumbersScore(Addition addition) {
+            float numbers = 0;
+            for (Item<Addition.Op, Expression> item : addition.items) {
+                Expression expression = item.getExpression();
+                if (expression instanceof Number) {
+                    numbers++;
+                } else if (expression instanceof Multiplication) {
+                    for (Item<Op, Element> mulItem : ((Multiplication) expression).items) {
+                        if (mulItem.getExpression().isNumber()) {
+                            numbers++;
+                            break;
+                        }
+                    }
+                }
+            }
+            return numbers/addition.items.size();
+        }
+
+        private Addition getAddition(Element expression) {
+            return (Addition)((Escaped)expression.getAtom()).getExpression();
+        }
+
+        @Override
+        protected MultiExpression<Op, Element> createExpression(List<Item<Op, Element>> items) {
+            return new Multiplication(items);
+        }
+
+        @Override
+        public Item<Op, Element> consume(Item<Op, Element> item, Item<Op, Element> newItem) {
+            if (item.getExpression().canMultiply(newItem.getExpression())) {
+                Expression merged = merge(item.getOperation(), newItem.getOperation()).apply(item.getExpression(), newItem.getExpression());
+                return createItem(item.getOperation(), toElement(merged));
+            }
+            return null;
         }
     }
 }

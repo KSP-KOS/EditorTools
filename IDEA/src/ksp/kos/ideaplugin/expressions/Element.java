@@ -20,6 +20,29 @@ public class Element extends Expression {
     private final Atom atom;
     private final Atom power;
 
+    public static Expression create(int sign, Expression atom) {
+        return create(sign, atom, Number.ONE);
+    }
+
+    public static Expression create(int sign, Expression atom, Expression power) {
+        if (atom.equals(Number.ZERO)){
+            power = Number.ONE;
+            sign = 1;
+        } else if (atom.equals(Number.ONE)) {
+            power = Number.ONE;
+        }
+        if (power.equals(Number.ONE)) {
+            if (sign == 1) {
+                return atom;
+            }
+        } else if (power.equals(Number.ZERO)) {
+            return Number.ONE;
+        } else if (power.isNegative()) {
+            return Number.ONE.divide(create(sign, atom, power.minus()));
+        }
+        return new Element(sign, atom, power);
+    }
+
     public Element(int sign, Expression atom, Expression power) {
         this.sign = sign;
         this.atom = Atom.toAtom(atom);
@@ -116,7 +139,7 @@ public class Element extends Expression {
             }
             return diff;
         }
-        return power.multiply(Function.log(atom)).differentiate().multiply(this);
+        return Function.log(atom).multiply(power).differentiate().multiply(this);
     }
 
     public static Element toElement(Expression expression) {
@@ -133,40 +156,72 @@ public class Element extends Expression {
 
     @Override
     public Expression simplify() {
-        Atom atom = Atom.toAtom(this.atom.simplify());
-        if (atom.equals(Number.ZERO)){
-            return Number.ZERO;
-        } else if (atom.equals(Number.ONE)) {
-            return applySign(Number.ONE);
-        }
-        Expression power = this.power.simplify();
-        if (power.equals(Number.ONE)) {
-            return applySign(atom.simplify());
-        } else if (power.equals(Number.ZERO)) {
-            return applySign(Number.ONE);
-        }
-        return new Element(sign, atom, power);
-    }
-
-    public Expression applySign(Expression expression) {
-        if (sign<0) {
-            return expression.minus();
-        }
-        return expression;
+        return create(sign, atom.simplify(), power.simplify());
     }
 
     @Override
     public Expression power(Expression expression) {
         Expression power = this.power.multiply(expression);
-        return new Element(sign, atom, power);
+        return create(sign, atom, power);
     }
 
     @Override
     public Expression inline(HashMap<String, Expression> args) {
-        if (isSimple()) {
-            return atom.inline(args);
+        return create(sign, atom.inline(args), power.inline(args));
+    }
+
+    @Override
+    public Expression multiply(Expression expression) {
+        if (canMultiply(expression)) {
+            Element element = (Element) expression;
+            if (this.isNumber() && element.isNumber()) {
+                return create(sign*element.sign, atom.multiply(element.getAtom()));
+            }
+            return create(sign*element.sign, atom, power.plus(element.power));
+        } else if (isNumber()) {
+            if (expression instanceof Element) {
+                Element element = (Element) expression;
+                if (element.isNumber()) {
+                    return create(sign*element.sign, atom.multiply(element.getAtom()));
+                }
+            }
         }
-        return new Element(sign, atom.inline(args), power.inline(args));
+        return super.multiply(expression);
+    }
+
+    @Override
+    public Expression divide(Expression expression) {
+        if (canMultiply(expression)) {
+            Element element = (Element) expression;
+            return create(sign*element.sign, atom, power.minus(element.power));
+        }
+        return super.divide(expression);
+    }
+
+    @Override
+    public boolean canMultiply(Expression expression) {
+        if (expression instanceof Element) {
+            return atom.equals(((Element) expression).atom);
+        }
+        return false;
+    }
+
+    @Override
+    public Expression minus() {
+        return create(-sign, atom, power);
+    }
+
+    @Override
+    public boolean isNegative() {
+        return sign < 0;
+    }
+
+    public boolean isNumber() {
+        return (atom instanceof Number) && power.equals(Number.ONE);
+    }
+
+    public boolean isAddition() {
+        return atom.isAddition() && power.equals(Number.ONE);
     }
 
     @Override
@@ -188,10 +243,5 @@ public class Element extends Expression {
         result = 31 * result + atom.hashCode();
         result = 31 * result + power.hashCode();
         return result;
-    }
-
-    @Override
-    public Element minus() {
-        return new Element(-sign, atom, power);
     }
 }

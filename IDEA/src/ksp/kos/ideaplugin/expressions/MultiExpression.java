@@ -9,7 +9,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 
 /**
  * Created on 31/01/16.
@@ -37,7 +36,7 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
         boolean first = true;
         for (Item<O, E> item : items) {
             if (!first) {
-                text+= item.operation;
+                text += item.operation;
             } else {
                 first = false;
             }
@@ -50,7 +49,7 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
         private final O operation;
         private final E expression;
 
-        public Item(O operation, E expression) {
+        private Item(O operation, E expression) {
             this.operation = operation;
             this.expression = expression;
         }
@@ -69,7 +68,8 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
     }
 
     public interface Operation
-            extends BiFunction<Expression, Expression, Expression> {}
+            extends BiFunction<Expression, Expression, Expression> {
+    }
 
     public abstract static class MultiExpressionBuilder<O extends Enum<O> & MultiExpression.Op, E extends Expression> {
         private final Class<? extends MultiExpression<O, E>> expressionClass;
@@ -82,9 +82,13 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
             this.expressionClass = expressionClass;
         }
 
+        public Item<O, E> createItem(O operation, Expression expression) {
+            return new Item<>(operation, toElement(expression));
+        }
+
         public MultiExpressionBuilder<O, E> addExpressions(Expression... expressions) {
             for (Expression expression : expressions) {
-                addItem(new Item<>(defaultOperator(), toElement(expression)));
+                addExpression(defaultOperator(), expression);
             }
             return this;
         }
@@ -96,8 +100,8 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
 
         protected MultiExpressionBuilder<O, E> addExpression(O operator, Expression expression) {
             MultiExpression<O, E> associate = associate(expression);
-            if (associate==null) {
-                addItem(new Item<>(operator, toElement(expression)));
+            if (associate == null) {
+                addItem(createItem(operator, toElement(expression)));
             } else {
                 addExpression(operator, associate);
             }
@@ -106,31 +110,11 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
 
         private void addExpression(O operator, MultiExpression<O, E> associate) {
             for (Item<O, E> item : associate.items) {
-                addItem(new Item<>(merge(operator, item.getOperation()),  item.getExpression()));
+                addItem(createItem(merge(operator, item.getOperation()), item.getExpression()));
             }
-        }
-
-        protected MultiExpressionBuilder<O, E> addExpressionLeft(Expression expression) {
-            MultiExpression<O, E> associate = associate(expression);
-            if (associate==null) {
-                addItemFirst(new Item<>(defaultOperator(), toElement(expression)));
-            } else {
-                for (ListIterator<Item<O, E>> iterator = associate.items.listIterator(associate.items.size()); iterator.hasPrevious(); ) {
-                    addItemFirst(iterator.previous());
-                }
-            }
-            return this;
         }
 
         protected void addItem(Item<O, E> newItem) {
-            addItem(newItem, items::addLast);
-        }
-
-        private void addItemFirst(Item<O, E> newItem) {
-            addItem(newItem, items::addFirst);
-        }
-
-        protected void addItem(Item<O, E> newItem, Consumer<Item<O, E>> consumer) {
             if (nullifyEverything(newItem)) {
                 items.clear();
                 items.add(newItem);
@@ -140,11 +124,20 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
                 return;
             }
             if (this instanceof ConsumeSupported) {
-                if (this.consume(newItem)) {
+                Item<O, E> consumed = this.consume(newItem);
+                if (consumed!=null) {
+                    addExpression(consumed.getOperation(), consumed.getExpression());
                     return;
                 }
             }
-            consumer.accept(newItem);
+            items.add(newItem);
+        }
+
+        public MultiExpressionBuilder<O, E> addItems(List<Item<O, E>> items) {
+            for (Item<O, E> item : items) {
+                this.addItem(item);
+            }
+            return this;
         }
 
         protected Expression zero() {
@@ -154,30 +147,33 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
         protected abstract Expression one();
 
         protected boolean nullifyEverything(Item<O, E> item) {
-            return item.operation==defaultOperator() && item.expression.equals(zero);
+            return item.operation == defaultOperator() && item.expression.equals(zero);
         }
 
         protected boolean omit(Item<O, E> item) {
             return item.expression.equals(one);
         }
 
-        protected boolean consume(Item<O, E> newItem) {
-            for (Item<O, E> item : items) {
-                if (consumeItem(item, newItem)) {
-                    return true;
+        protected Item<O, E> consume(Item<O, E> newItem) {
+            for (Iterator<Item<O, E>> iterator = items.iterator(); iterator.hasNext(); ) {
+                Item<O, E> item = iterator.next();
+                item = consumeItem(item, newItem);
+                if (item != null) {
+                    iterator.remove();
+                    return item;
                 }
             }
-            return false;
+            return null;
         }
 
         @SuppressWarnings("unchecked")
-        protected boolean consumeItem(Item<O, E> item, Item<O, E> newItem) {
+        protected Item<O, E> consumeItem(Item<O, E> item, Item<O, E> newItem) {
             return ((ConsumeSupported<O, E>) this).consume(item, newItem);
         }
 
         @SuppressWarnings("unchecked")
         protected MultiExpression<O, E> associate(Expression expression) {
-            if (expression.getClass()==expressionClass) {
+            if (expression.getClass() == expressionClass) {
                 return (MultiExpression<O, E>) expression;
             } else if (expression instanceof Escaped) {
                 return associate(((Escaped) expression).getExpression());
@@ -197,9 +193,9 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
         }
 
         protected O merge(O operation1, O operation2) {
-            if (operation1==operation2) {
+            if (operation1 == operation2) {
                 return defaultOperator();
-            } else if (operation1==defaultOperator()) {
+            } else if (operation1 == defaultOperator()) {
                 return operation2;
             } else {
                 return operation1;
@@ -222,9 +218,9 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
                 switch (state) {
                     case 0:
                         if (element instanceof KerboScriptExpr) {
-                            addItem(new Item<>(operation, parseElement((KerboScriptExpr) element)));
+                            addItem(createItem(operation, parseElement((KerboScriptExpr) element)));
                         } else {
-                            throw new SyntaxException("Expression is required: found "+element+": "+element.getText());
+                            throw new SyntaxException("Expression is required: found " + element + ": " + element.getText());
                         }
                         state = 1;
                         break;
@@ -244,7 +240,7 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
                     return o;
                 }
             }
-            throw new SyntaxException("One of "+ Arrays.toString(operators()) +" is required: found "+element+": "+text);
+            throw new SyntaxException("One of " + Arrays.toString(operators()) + " is required: found " + element + ": " + text);
         }
 
         @SuppressWarnings("unchecked")
@@ -255,15 +251,16 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
         public Expression createExpression() {
             if (items.isEmpty()) {
                 return one();
-            } if (items.size()==1) {
+            }
+            if (items.size() == 1) {
                 return singleItemExpression(items.get(0));
             }
             return createExpression(createItems());
         }
 
-        protected abstract MultiExpression<O, E> createExpression(List<Item<O,E>> items);
+        protected abstract MultiExpression<O, E> createExpression(List<Item<O, E>> items);
 
-        public List<Item<O,E>> createItems() {
+        public List<Item<O, E>> createItems() {
             normalize();
             return Collections.unmodifiableList(items);
         }
@@ -275,11 +272,7 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
     public abstract MultiExpressionBuilder<O, E> createBuilder();
 
     protected MultiExpressionBuilder<O, E> createBuilder(MultiExpression<O, E> expression) {
-        MultiExpressionBuilder<O, E> builder = createBuilder();
-        for (Item<O, E> item : expression.items) {
-            builder.addItem(item);
-        }
-        return builder;
+        return createBuilder().addItems(expression.items);
     }
 
     @SuppressWarnings("unchecked")
@@ -301,7 +294,7 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
     }
 
     protected Expression addExpressionLeft(Expression expression) {
-        return createBuilder(this).addExpressionLeft(expression).createExpression();
+        return createBuilder().addExpression(expression).addItems(items).createExpression();
     }
 
     @Override

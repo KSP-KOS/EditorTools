@@ -45,6 +45,18 @@ public class Addition extends MultiExpression<Addition.Op,Expression> {
                 }
             }
 
+            @Override
+            protected void addItem(Item<Op, Expression> newItem) {
+                if (items.isEmpty()) {
+                    if (newItem.getOperation()==Op.MINUS) {
+                        newItem = createItem(Op.PLUS, newItem.getExpression().minus());
+                    }
+                } else if (newItem.getExpression().isNegative()) {
+                    newItem = createItem(merge(newItem.getOperation(), Op.MINUS), newItem.getExpression().minus());
+                }
+                super.addItem(newItem);
+            }
+
             @NotNull
             @Override
             protected Op[] operators() {
@@ -75,6 +87,19 @@ public class Addition extends MultiExpression<Addition.Op,Expression> {
     @Override
     public Expression minus(Expression expression) {
         return addExpression(Op.MINUS, expression);
+    }
+
+    @Override
+    public boolean canMultiply(Expression expression) {
+        return false;
+    }
+
+    public Expression multiplyItems(Expression expression) {
+        MultiExpressionBuilder<Op, Expression> builder = createBuilder();
+        for (Item<Op, Expression> item : items) {
+            builder.addExpression(item.getOperation(), item.getExpression().multiply(expression));
+        }
+        return builder.createExpression();
     }
 
     public enum Op implements MultiExpression.Op {

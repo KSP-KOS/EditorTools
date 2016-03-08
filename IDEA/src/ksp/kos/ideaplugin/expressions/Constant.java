@@ -5,6 +5,8 @@ import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.util.containers.HashMap;
 
+import java.util.Objects;
+
 /**
  * Created on 30/01/16.
  *
@@ -46,5 +48,18 @@ public class Constant extends Atom {
     @Override
     public Expression inline(HashMap<String, Expression> args) {
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Constant constant = (Constant) o;
+        return Objects.equals(key, constant.key);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(key);
     }
 }

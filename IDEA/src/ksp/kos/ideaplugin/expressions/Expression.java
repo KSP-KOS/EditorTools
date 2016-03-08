@@ -59,7 +59,7 @@ public abstract class Expression {
     public abstract Expression differentiate();
 
     public Expression minus() {
-        return new Element(-1, Atom.toAtom(this), Number.ONE);
+        return Element.create(-1, Atom.toAtom(this));
     }
 
     public Expression plus(Expression expression) {
@@ -70,7 +70,14 @@ public abstract class Expression {
         return new Addition(this).minus(expression);
     }
 
+    public boolean isNegative() {
+        return false;
+    }
+
     public Expression multiply(Expression expression) {
+        if (this.equals(expression)) {
+            return Element.create(1, this, new Number(2));
+        }
         return new Multiplication(this).multiply(expression);
     }
 
@@ -79,11 +86,18 @@ public abstract class Expression {
     }
 
     public Expression divide(Expression expression) {
+        if (canMultiply(expression)) {
+            return Number.ONE;
+        }
         return new Multiplication(this).divide(expression);
     }
 
+    public boolean canMultiply(Expression expression) {
+        return this.equals(expression);
+    }
+
     public Expression power(Expression expression) {
-        return new Element(1, Atom.toAtom(this), Atom.toAtom(expression));
+        return Element.create(1, Atom.toAtom(this), Atom.toAtom(expression));
     }
 
     public abstract Expression inline(HashMap<String, Expression> args);

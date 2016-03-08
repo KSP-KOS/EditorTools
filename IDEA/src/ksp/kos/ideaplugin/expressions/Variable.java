@@ -2,6 +2,8 @@ package ksp.kos.ideaplugin.expressions;
 
 import com.intellij.util.containers.HashMap;
 
+import java.util.Objects;
+
 /**
  * Created on 29/01/16.
  *
@@ -31,5 +33,18 @@ public class Variable extends Atom {
             return expression;
         }
         return this;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Variable variable = (Variable) o;
+        return Objects.equals(name, variable.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

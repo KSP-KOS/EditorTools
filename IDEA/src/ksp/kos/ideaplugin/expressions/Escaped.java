@@ -37,4 +37,22 @@ public class Escaped extends Atom {
     public Expression simplify() {
         return expression.simplify();
     }
+
+    @Override
+    public Expression minus() {
+        return expression.minus();
+    }
+
+    @Override
+    public boolean isNegative() {
+        return expression.isNegative();
+    }
+
+    @Override
+    public boolean isAddition() {
+        if (expression instanceof Addition) {
+            return true;
+        }
+        return super.isAddition();
+    }
 }
