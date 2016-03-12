@@ -30,13 +30,17 @@ public class KerboScriptBlock extends AbstractBlock {
         List<Block> blocks = new ArrayList<>();
         ASTNode child = myNode.getFirstChildNode();
         while (child != null) {
-            if (child.getElementType() != TokenType.WHITE_SPACE) {
-                Block block = new KerboScriptBlock(child, null, null);
-                blocks.add(block);
-            }
+            addChild(blocks, child);
             child = child.getTreeNext();
         }
         return blocks;
+    }
+
+    private void addChild(List<Block> blocks, ASTNode child) {
+        if (child.getElementType() != TokenType.WHITE_SPACE && child.getTextRange().getLength()>0) {
+            Block block = new KerboScriptBlock(child, null, null);
+            blocks.add(block);
+        }
     }
 
     @Override

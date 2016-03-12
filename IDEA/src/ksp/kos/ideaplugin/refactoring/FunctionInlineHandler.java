@@ -114,7 +114,7 @@ public class FunctionInlineHandler implements InlineHandler {
                                 KerboScriptArglist arglist = ((KerboScriptFunctionTrailer) trailer).getArglist();
                                 if (arglist != null) {
                                     List<KerboScriptExpr> arguments = arglist.getExprList();
-                                    for (int i = 0; i < arguments.size(); i++) {
+                                    for (int i = 0; i < Math.min(arguments.size(), paramsUsages.size()); i++) {
                                         KerboScriptExpr argument = arguments.get(i);
                                         ArrayList<PsiElement> paramUsages = paramsUsages.get(i);
                                         for (PsiElement paramUsage : paramUsages) {

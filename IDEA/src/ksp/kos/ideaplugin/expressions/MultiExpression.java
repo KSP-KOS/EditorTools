@@ -115,6 +115,9 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
         }
 
         protected void addItem(Item<O, E> newItem) {
+            if (items.size()==1 && nullifyEverything(items.get(0))) {
+                return;
+            }
             if (nullifyEverything(newItem)) {
                 items.clear();
                 items.add(newItem);

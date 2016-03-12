@@ -60,13 +60,12 @@ public class Function extends Atom {
         if (args.length==1) {
             return new Function(name+"_", args).inline().multiply(args[0].differentiate());
         }
-        Expression diff = Number.ZERO;
+        Expression[] diffArgs = new Expression[args.length*2];
         for (int i = 0; i < args.length; i++) {
-            Function function = new Function(name + "_" + (i + 1), args);
-            Expression ad = function.inline().multiply(args[i].differentiate());
-            diff = diff.plus(ad);
+            diffArgs[i] = args[i];
+            diffArgs[i + args.length] = args[i].differentiate();
         }
-        return diff;
+        return new Function(name+"_", diffArgs).inline();
     }
 
     @Override
