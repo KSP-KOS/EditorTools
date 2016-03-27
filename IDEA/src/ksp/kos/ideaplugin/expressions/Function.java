@@ -1,10 +1,12 @@
 package ksp.kos.ideaplugin.expressions;
 
-import com.intellij.util.containers.HashMap;
 import ksp.kos.ideaplugin.expressions.inline.InlineFunctions;
 import ksp.kos.ideaplugin.psi.KerboScriptExpr;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created on 30/01/16.
@@ -88,6 +90,15 @@ public class Function extends Atom {
 
     private Expression inline() {
         return InlineFunctions.getInstance().inline(this);
+    }
+
+    @Override
+    public Set<String> getVariableNames() {
+        HashSet<String> names = new HashSet<>();
+        for (Expression arg : args) {
+            names.addAll(arg.getVariableNames());
+        }
+        return names;
     }
 
     public static Expression log(Expression arg) {

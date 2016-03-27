@@ -3,6 +3,9 @@ package ksp.kos.ideaplugin.expressions;
 import com.intellij.lang.ASTNode;
 import ksp.kos.ideaplugin.psi.*;
 
+import java.util.Collections;
+import java.util.Set;
+
 /**
  * Created on 28/01/16.
  *
@@ -41,5 +44,10 @@ public abstract class Atom extends Expression {
 
     public boolean isAddition() {
         return false;
+    }
+
+    @Override
+    public Set<String> getVariableNames() {
+        return Collections.emptySet();
     }
 }

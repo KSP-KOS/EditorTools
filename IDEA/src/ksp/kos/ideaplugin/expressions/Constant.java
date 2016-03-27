@@ -3,8 +3,8 @@ package ksp.kos.ideaplugin.expressions;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
-import com.intellij.util.containers.HashMap;
 
+import java.util.HashMap;
 import java.util.Objects;
 
 /**

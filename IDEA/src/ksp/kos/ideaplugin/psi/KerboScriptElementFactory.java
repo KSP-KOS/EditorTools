@@ -3,6 +3,7 @@ package ksp.kos.ideaplugin.psi;
 import com.intellij.lang.ASTFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.impl.source.codeStyle.CodeEditUtil;
 import com.intellij.psi.impl.source.tree.LeafElement;
@@ -46,6 +47,16 @@ public class KerboScriptElementFactory {
     public static KerboScriptExpr expression(Project project, String expr) {
         KerboScriptFile file = file(project, "return " + expr+".");
         return ((KerboScriptReturnStmt)file.getFirstChild()).getExpr();
+    }
+
+    public static KerboScriptInstruction instruction(Project project, String text) {
+        KerboScriptFile file = file(project, text);
+        PsiElement child = file.getFirstChild();
+        if (child instanceof KerboScriptInstruction) {
+            return ((KerboScriptInstruction) child);
+        } else {
+            throw new RuntimeException(text+" is not instruction");
+        }
     }
 
     @NotNull

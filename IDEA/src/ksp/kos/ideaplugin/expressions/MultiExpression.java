@@ -3,7 +3,6 @@ package ksp.kos.ideaplugin.expressions;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
-import com.intellij.util.containers.HashMap;
 import ksp.kos.ideaplugin.psi.KerboScriptExpr;
 import org.jetbrains.annotations.NotNull;
 
@@ -307,5 +306,14 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
             builder.addExpression(item.getOperation(), item.getExpression().inline(args));
         }
         return builder.createExpression();
+    }
+
+    @Override
+    public Set<String> getVariableNames() {
+        HashSet<String> names = new HashSet<>();
+        for (Item<O, E> item : items) {
+            names.addAll(item.getExpression().getVariableNames());
+        }
+        return names;
     }
 }

@@ -1,6 +1,8 @@
 package ksp.kos.ideaplugin.expressions;
 
-import com.intellij.util.containers.HashMap;
+
+import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Created on 29/01/16.
@@ -16,7 +18,7 @@ public class Escaped extends Atom {
 
     @Override
     public String getText() {
-        return "("+expression.getText()+")";
+        return "(" + expression.getText() + ")";
     }
 
     @Override
@@ -54,5 +56,10 @@ public class Escaped extends Atom {
             return true;
         }
         return super.isAddition();
+    }
+
+    @Override
+    public Set<String> getVariableNames() {
+        return expression.getVariableNames();
     }
 }

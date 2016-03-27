@@ -66,7 +66,7 @@ kOS version supported: 0.19.0
 
     <actions>
         <!-- Add your actions here -->
-        <action id="ksp.kos.ideaplugin.actions.Differentiate" class="ksp.kos.ideaplugin.actions.Differentiate"
+        <action id="ksp.kos.ideaplugin.actions.differentiate.Differentiate" class="ksp.kos.ideaplugin.actions.differentiate.Differentiate"
                 text="Differentiate..." description="Compute a derivative">
             <add-to-group group-id="RefactoringMenu4" anchor="last"/>
             <keyboard-shortcut first-keystroke="control alt D" keymap="$default"/>

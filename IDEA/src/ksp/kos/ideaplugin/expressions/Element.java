@@ -1,14 +1,16 @@
 package ksp.kos.ideaplugin.expressions;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.util.containers.HashMap;
 import ksp.kos.ideaplugin.psi.KerboScriptExpr;
 import ksp.kos.ideaplugin.psi.KerboScriptFactor;
 import ksp.kos.ideaplugin.psi.KerboScriptTypes;
 import ksp.kos.ideaplugin.psi.KerboScriptUnaryExpr;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created on 30/01/16.
@@ -222,6 +224,14 @@ public class Element extends Expression {
 
     public boolean isAddition() {
         return atom.isAddition() && power.equals(Number.ONE);
+    }
+
+    @Override
+    public Set<String> getVariableNames() {
+        HashSet<String> names = new HashSet<>();
+        names.addAll(atom.getVariableNames());
+        names.addAll(power.getVariableNames());
+        return names;
     }
 
     @Override

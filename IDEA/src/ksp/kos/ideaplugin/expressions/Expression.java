@@ -1,8 +1,10 @@
 package ksp.kos.ideaplugin.expressions;
 
 import com.intellij.lang.ASTNode;
-import com.intellij.util.containers.HashMap;
 import ksp.kos.ideaplugin.psi.*;
+
+import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Created on 28/01/16.
@@ -101,4 +103,6 @@ public abstract class Expression {
     }
 
     public abstract Expression inline(HashMap<String, Expression> args);
+
+    public abstract Set<String> getVariableNames();
 }
