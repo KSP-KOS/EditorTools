@@ -25,7 +25,7 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
     }
 
     public static FunctionFlow parse(KerboScriptDeclareFunctionClause function) throws SyntaxException {
-        String name = function.getRawName();
+        String name = function.getName();
         List<ParameterFlow> parameters = new ArrayList<>();
         List<VariableFlow> variables = new ArrayList<>();
         List<KerboScriptInstruction> instructions = function.getInstructionBlock().getInstructionList();

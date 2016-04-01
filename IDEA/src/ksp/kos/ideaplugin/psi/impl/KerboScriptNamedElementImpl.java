@@ -3,7 +3,7 @@ package ksp.kos.ideaplugin.psi.impl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.IncorrectOperationException;
+import com.intellij.psi.PsiNamedElement;
 import ksp.kos.ideaplugin.psi.KerboScriptElementFactory;
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
 import ksp.kos.ideaplugin.psi.KerboScriptTypes;
@@ -27,32 +27,26 @@ public class KerboScriptNamedElementImpl extends ASTWrapperPsiElement implements
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        if (isFile() || isFunction() || isVariable()) {
-            PsiElement identifier = getRawNameIdentifier();
-            if (identifier != null) return identifier;
-        }
-        return null;
-    }
-
-    @Nullable
-    public PsiElement getRawNameIdentifier() {
-        ASTNode identifier = this.getNode().findChildByType(KerboScriptTypes.IDENTIFIER);
-        if (identifier != null) {
-            return identifier.getPsi();
-        }
-        identifier = this.getNode().findChildByType(KerboScriptTypes.FILEIDENT);
-        if (identifier != null) {
-            return identifier.getPsi();
+        if (getType().getType().isReferable()) {
+            ASTNode identifier = this.getNode().findChildByType(KerboScriptTypes.IDENTIFIER);
+            if (identifier != null) {
+                return identifier.getPsi();
+            }
+            identifier = this.getNode().findChildByType(KerboScriptTypes.FILEIDENT);
+            if (identifier != null) {
+                return identifier.getPsi();
+            }
         }
         return null;
     }
 
     @Override
-    public void rawRename(String name) {
-        PsiElement nameIdentifier = getRawNameIdentifier();
+    public PsiNamedElement setName(@NonNls @NotNull String name) {
+        PsiElement nameIdentifier = getNameIdentifier();
         if (nameIdentifier!=null) {
             this.getNode().replaceChild(nameIdentifier.getNode(), KerboScriptElementFactory.leaf(KerboScriptTypes.IDENTIFIER, name));
         }
+        return this;
     }
 
     @Override
@@ -62,25 +56,6 @@ public class KerboScriptNamedElementImpl extends ASTWrapperPsiElement implements
             return nameIdentifier.getText();
         }
         return null;
-    }
-
-    @Override
-    public String getRawName() {
-        PsiElement nameIdentifier = getRawNameIdentifier();
-        if (nameIdentifier != null) {
-            return nameIdentifier.getText();
-        }
-        return null;
-    }
-
-    @Override
-    public PsiElement setName(@NonNls @NotNull String name) throws IncorrectOperationException {
-        PsiElement nameIdentifier = getNameIdentifier();
-        if (nameIdentifier == null) {
-            throw new IncorrectOperationException("Renaming of " + this + " is not possible: it's not true named element");
-        }
-        this.getNode().replaceChild(nameIdentifier.getNode(),  KerboScriptElementFactory.leaf(KerboScriptTypes.IDENTIFIER, name));
-        return this;
     }
 
     @Override
@@ -107,6 +82,7 @@ public class KerboScriptNamedElementImpl extends ASTWrapperPsiElement implements
     private KerboScriptReference createReference(NamedType type) {
         switch (type.getType()) {
             case FILE:
+                return new KerboScriptFileReference(this);
             case FUNCTION:
             case VARIABLE:
                 return new KerboScriptReference(this);

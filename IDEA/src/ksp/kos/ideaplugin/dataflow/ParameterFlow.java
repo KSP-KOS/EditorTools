@@ -37,6 +37,6 @@ public class ParameterFlow extends BaseFlow<ParameterFlow> implements NamedFlow<
     }
 
     public static ParameterFlow parse(KerboScriptDeclareParameterClause parameterClause) {
-        return new ParameterFlow(parameterClause.getRawName());
+        return new ParameterFlow(parameterClause.getName());
     }
 }

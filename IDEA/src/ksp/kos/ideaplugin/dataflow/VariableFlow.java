@@ -51,7 +51,7 @@ public class VariableFlow extends ExpressionFlow<VariableFlow> implements NamedF
     }
 
     public static VariableFlow parse(KerboScriptDeclareIdentifierClause declareIdentifierClause) throws SyntaxException {
-        return new VariableFlow(true, declareIdentifierClause.getRawName(), Expression.parse(declareIdentifierClause.getExpr()));
+        return new VariableFlow(true, declareIdentifierClause.getName(), Expression.parse(declareIdentifierClause.getExpr()));
     }
 
     public static VariableFlow parse(KerboScriptSetStmt setStmt) throws SyntaxException {
