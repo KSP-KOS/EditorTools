@@ -43,7 +43,7 @@ public class Simplify extends BaseAction {
     }
 
     private KerboScriptExpr getSimplifiable(AnActionEvent event) {
-        ExpressionHolder holder = KerboScriptBaseElement.walkUpTill(getPsiElement(event), ExpressionHolder.class);
+        ExpressionHolder holder = KerboScriptElement.walkUpTill(getPsiElement(event), ExpressionHolder.class);
         if (holder == null) {
             return null;
         }

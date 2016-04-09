@@ -26,7 +26,9 @@ public abstract class BaseFlow<F extends BaseFlow<F>> implements Flow<F> {
         return !dependees.isEmpty();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void addContext(HashMap<String, NamedFlow<?>> context) {
+    public F addContext(HashMap<String, NamedFlow<?>> context) {
+        return (F) this;
     }
 }

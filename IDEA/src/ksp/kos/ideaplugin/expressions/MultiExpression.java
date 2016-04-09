@@ -309,11 +309,10 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
     }
 
     @Override
-    public Set<String> getVariableNames() {
-        HashSet<String> names = new HashSet<>();
+    public void visit(ExpressionVisitor visitor) {
+        super.visit(visitor);
         for (Item<O, E> item : items) {
-            names.addAll(item.getExpression().getVariableNames());
+            item.getExpression().visit(visitor);
         }
-        return names;
     }
 }

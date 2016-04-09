@@ -227,11 +227,10 @@ public class Element extends Expression {
     }
 
     @Override
-    public Set<String> getVariableNames() {
-        HashSet<String> names = new HashSet<>();
-        names.addAll(atom.getVariableNames());
-        names.addAll(power.getVariableNames());
-        return names;
+    public void visit(ExpressionVisitor visitor) {
+        super.visit(visitor);
+        atom.visit(visitor);
+        power.visit(visitor);
     }
 
     @Override

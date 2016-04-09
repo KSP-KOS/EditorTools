@@ -17,7 +17,7 @@ public class ReturnFlow extends ExpressionFlow<ReturnFlow> {
 
     @NotNull
     @Override
-    protected ReturnFlow differentiate(Expression diff) {
+    protected ReturnFlow create(Expression diff) {
         return new ReturnFlow(diff);
     }
 

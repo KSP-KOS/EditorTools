@@ -2,7 +2,7 @@
     parserClass="ksp.kos.ideaplugin.parser.KerboScriptParser"
     parserUtilClass="ksp.kos.ideaplugin.parser.KerboScriptParserUtil"
 
-    implements="ksp.kos.ideaplugin.psi.KerboScriptBaseElement"
+    implements="ksp.kos.ideaplugin.psi.KerboScriptElement"
 
     implements("declare_identifier_clause") = ["ksp.kos.ideaplugin.psi.ExpressionHolder" "ksp.kos.ideaplugin.psi.KerboScriptNamedElement"]
 

@@ -59,7 +59,8 @@ public class Escaped extends Atom {
     }
 
     @Override
-    public Set<String> getVariableNames() {
-        return expression.getVariableNames();
+    public void visit(ExpressionVisitor visitor) {
+        super.visit(visitor);
+        expression.visit(visitor);
     }
 }

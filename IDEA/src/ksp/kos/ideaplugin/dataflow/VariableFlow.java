@@ -25,14 +25,15 @@ public class VariableFlow extends ExpressionFlow<VariableFlow> implements NamedF
     }
 
     @Override
-    public void addContext(HashMap<String, NamedFlow<?>> context) {
-        super.addContext(context);
-        context.put(getName(), this);
+    public VariableFlow addContext(HashMap<String, NamedFlow<?>> context) {
+        VariableFlow flow = super.addContext(context);
+        context.put(getName(), flow);
+        return flow;
     }
 
     @NotNull
     @Override
-    protected VariableFlow differentiate(Expression diff) {
+    protected VariableFlow create(Expression diff) {
         return new VariableFlow(declare, name+"_", diff);
     }
 

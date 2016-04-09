@@ -45,9 +45,4 @@ public abstract class Atom extends Expression {
     public boolean isAddition() {
         return false;
     }
-
-    @Override
-    public Set<String> getVariableNames() {
-        return Collections.emptySet();
-    }
 }

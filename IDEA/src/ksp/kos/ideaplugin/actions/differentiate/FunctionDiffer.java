@@ -1,8 +1,13 @@
 package ksp.kos.ideaplugin.actions.differentiate;
 
-import com.intellij.psi.PsiElement;
-import ksp.kos.ideaplugin.dataflow.Flow;
+import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiDirectory;
+import com.intellij.psi.PsiFileFactory;
+import ksp.kos.ideaplugin.KerboScriptFile;
+import ksp.kos.ideaplugin.KerboScriptLanguage;
+import ksp.kos.ideaplugin.actions.ActionFailedException;
 import ksp.kos.ideaplugin.dataflow.FunctionFlow;
+import ksp.kos.ideaplugin.dataflow.FunctionFlowImporter;
 import ksp.kos.ideaplugin.expressions.SyntaxException;
 import ksp.kos.ideaplugin.psi.KerboScriptDeclareStmt;
 import ksp.kos.ideaplugin.psi.KerboScriptInstruction;
@@ -12,23 +17,41 @@ import ksp.kos.ideaplugin.psi.KerboScriptInstruction;
  *
  * @author ptasha
  */
-public class FunctionDiffer extends DuplicateDiffer<KerboScriptDeclareStmt> {
-    public FunctionDiffer() {
-        super(KerboScriptDeclareStmt.class);
-    }
+public class FunctionDiffer implements Differ {
+
     @Override
     public boolean canDo(KerboScriptInstruction instruction) {
-        return super.canDo(instruction) && ((KerboScriptDeclareStmt)instruction).getDeclareFunctionClause()!=null;
+        return instruction instanceof KerboScriptDeclareStmt && ((KerboScriptDeclareStmt) instruction).getDeclareFunctionClause() != null;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    protected void separator(PsiElement copy) {
-        newLine(copy);
-        newLine(copy);
+    public void doIt(Project project, KerboScriptInstruction instruction) throws ActionFailedException {
+        KerboScriptDeclareStmt declare = (KerboScriptDeclareStmt) instruction;
+        try {
+            FunctionFlow function = FunctionFlow.parse(declare.getDeclareFunctionClause()).differentiate();
+            KerboScriptFile file = instruction.getKerboScriptFile();
+            KerboScriptFile diffFile = ensureDiffDependency(file);
+            FunctionFlowImporter.INSTANCE.importFlow(diffFile, function);
+        } catch (SyntaxException e) {
+            throw new ActionFailedException(e);
+        }
     }
 
-    @Override
-    protected Flow parse(KerboScriptDeclareStmt variable) throws SyntaxException {
-        return FunctionFlow.parse(variable.getDeclareFunctionClause());
+    private KerboScriptFile ensureDiffDependency(KerboScriptFile file) {
+        Project project = file.getProject();
+        PsiDirectory directory = file.getContainingDirectory();
+        String name = file.getPureName();
+        if (name.endsWith("_")) {
+            return file;
+        }
+        name += "_";
+        file = file.findFile(name);
+        if (file == null) {
+            file = (KerboScriptFile) PsiFileFactory.getInstance(project).createFileFromText(
+                    name + ".ks", KerboScriptLanguage.INSTANCE, "@lazyglobal off.");
+            file = (KerboScriptFile)directory.add(file);
+        }
+        return file;
     }
 }

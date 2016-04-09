@@ -1,9 +1,7 @@
 package ksp.kos.ideaplugin.expressions;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * Created on 29/01/16.
@@ -15,6 +13,10 @@ public class Variable extends Atom {
 
     public Variable(String name) {
         this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -37,10 +39,8 @@ public class Variable extends Atom {
     }
 
     @Override
-    public Set<String> getVariableNames() {
-        HashSet<String> name = new HashSet<>();
-        name.add(this.name);
-        return name;
+    public void visit(ExpressionVisitor visitor) {
+        visitor.visitVariable(this);
     }
 
     @Override

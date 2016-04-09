@@ -4,6 +4,7 @@ import com.intellij.lang.ASTNode;
 import ksp.kos.ideaplugin.psi.*;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -104,5 +105,18 @@ public abstract class Expression {
 
     public abstract Expression inline(HashMap<String, Expression> args);
 
-    public abstract Set<String> getVariableNames();
+    public final Set<String> getVariableNames() {
+        HashSet<String> variables = new HashSet<>();
+        visit(new ExpressionVisitor() {
+            @Override
+            public void visitVariable(Variable variable) {
+                variables.add(variable.getName());
+            }
+        });
+        return variables;
+    }
+
+    public void visit(ExpressionVisitor visitor) {
+        visitor.visit(this);
+    }
 }

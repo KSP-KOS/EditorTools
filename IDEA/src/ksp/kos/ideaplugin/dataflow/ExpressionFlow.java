@@ -13,7 +13,7 @@ import java.util.Set;
  * @author ptasha
  */
 public abstract class ExpressionFlow<F extends ExpressionFlow<F>> extends BaseFlow<F> {
-    private Expression expression;
+    private final Expression expression;
 
     public ExpressionFlow(Expression expression) {
         this.expression = expression;
@@ -23,8 +23,9 @@ public abstract class ExpressionFlow<F extends ExpressionFlow<F>> extends BaseFl
         return expression;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void addContext(HashMap<String, NamedFlow<?>> context) {
+    public F addContext(HashMap<String, NamedFlow<?>> context) {
         HashMap<String, Expression> inline = new HashMap<>();
         Set<String> names = expression.getVariableNames();
         for (String name : names) {
@@ -38,8 +39,9 @@ public abstract class ExpressionFlow<F extends ExpressionFlow<F>> extends BaseFl
             }
         }
         if (!inline.isEmpty()) {
-            expression = expression.inline(inline);
+            return create(expression.inline(inline));
         }
+        return (F) this;
     }
 
     public boolean isSimple() {
@@ -48,9 +50,9 @@ public abstract class ExpressionFlow<F extends ExpressionFlow<F>> extends BaseFl
 
     @Override
     public F differentiate() {
-        return differentiate(expression.differentiate());
+        return create(expression.differentiate());
     }
 
     @NotNull
-    protected abstract F differentiate(Expression diff);
+    protected abstract F create(Expression diff);
 }

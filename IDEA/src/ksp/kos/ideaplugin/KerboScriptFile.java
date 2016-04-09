@@ -8,18 +8,15 @@ import com.intellij.problems.WolfTheProblemSolver;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiManager;
-import com.intellij.psi.search.FileTypeIndex;
-import com.intellij.psi.search.GlobalSearchScopesCore;
-import com.intellij.util.indexing.FileBasedIndex;
+import com.intellij.psi.PsiFile;
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
 import ksp.kos.ideaplugin.psi.KerboScriptPsiWalker;
 import ksp.kos.ideaplugin.psi.KerboScriptScope;
 import ksp.kos.ideaplugin.reference.Cache;
 import ksp.kos.ideaplugin.reference.FileScope;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -57,9 +54,17 @@ public class KerboScriptFile extends PsiFileBase implements KerboScriptScope {
         return FileScope.Resolver.FUNCTION.resolve(this, element);
     }
 
+    public KerboScriptNamedElement resolveFunction(String name) {
+        return FileScope.resolve(this, FileScope::getFunction, name);
+    }
+
     @Override
     public PsiElement resolveVariable(KerboScriptNamedElement element) {
         return FileScope.Resolver.VARIABLE.resolve(this, element);
+    }
+
+    public KerboScriptNamedElement resolveVariable(String name) {
+        return FileScope.resolve(this, FileScope::getVariable, name);
     }
 
     public void registerFile(KerboScriptNamedElement element) {
@@ -67,14 +72,18 @@ public class KerboScriptFile extends PsiFileBase implements KerboScriptScope {
     }
 
     public KerboScriptFile resolveFile(KerboScriptNamedElement element) {
+        return findFile(stripExtension(element.getName()));
+    }
+
+    @Nullable
+    public KerboScriptFile findFile(String name) {
         PsiDirectory directory = getContainingDirectory();
         if (directory == null) return null;
-        Collection<VirtualFile> virtualFiles = FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, KerboScriptFileType.INSTANCE,
-                GlobalSearchScopesCore.directoryScope(directory, false));
-        for (VirtualFile virtualFile : virtualFiles) {
-            String name = stripExtension(virtualFile.getName());
-            if (name.equalsIgnoreCase(stripExtension(element.getName()))) {
-                return (KerboScriptFile) PsiManager.getInstance(getProject()).findFile(virtualFile);
+        for (PsiFile file : directory.getFiles()) {
+            if (file instanceof KerboScriptFile) {
+                if (((KerboScriptFile) file).getPureName().equals(name)) {
+                    return (KerboScriptFile) file;
+                }
             }
         }
         return null;
@@ -135,6 +144,11 @@ public class KerboScriptFile extends PsiFileBase implements KerboScriptScope {
 
     public static String stripExtension(String name) {
         String extension = getExtension(name);
-        return name.substring(0, name.length()-extension.length());
+        return name.substring(0, name.length() - extension.length());
+    }
+
+    @NotNull
+    public String getPureName() {
+        return stripExtension(getName());
     }
 }

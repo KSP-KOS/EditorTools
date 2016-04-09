@@ -2,8 +2,9 @@ package ksp.kos.ideaplugin.reference;
 
 
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 /**
  * Created on 03/01/16.
@@ -15,15 +16,28 @@ public class LocalScope {
     private final ScopeMap functions = new ScopeMap();
 
     public KerboScriptNamedElement resolveVariable(KerboScriptNamedElement element) {
-        KerboScriptNamedElement resolved = variables.get(element.getName());
+        KerboScriptNamedElement resolved = getVariable(element.getName());
         if (resolved!=null && resolved.getTextOffset()>element.getTextOffset()) {
             return null;
         }
         return resolved;
     }
 
+    public KerboScriptNamedElement getVariable(String name) {
+        return variables.get(name);
+    }
+
     public KerboScriptNamedElement resolveFunction(KerboScriptNamedElement element) {
-        return functions.get(element.getName());
+        return getFunction(element.getName());
+    }
+
+    public KerboScriptNamedElement getFunction(String name) {
+        return functions.get(name);
+    }
+
+    @NotNull
+    public ScopeMap getFunctions() {
+        return functions;
     }
 
     public void clear() {
@@ -45,7 +59,7 @@ public class LocalScope {
         }
     }
 
-    public static class ScopeMap extends HashMap<String, KerboScriptNamedElement> {
+    public static class ScopeMap extends LinkedHashMap<String, KerboScriptNamedElement> {
         @Override
         public KerboScriptNamedElement put(String key, KerboScriptNamedElement value) {
             if (!containsKey(key)) {

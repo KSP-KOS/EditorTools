@@ -1,12 +1,12 @@
 package ksp.kos.ideaplugin.actions.differentiate;
 
-import com.intellij.lang.ASTFactory;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.codeStyle.CodeStyleManager;
 import ksp.kos.ideaplugin.actions.ActionFailedException;
 import ksp.kos.ideaplugin.dataflow.Flow;
 import ksp.kos.ideaplugin.expressions.SyntaxException;
+import ksp.kos.ideaplugin.psi.KerboScriptElement;
 import ksp.kos.ideaplugin.psi.KerboScriptElementFactory;
 import ksp.kos.ideaplugin.psi.KerboScriptInstruction;
 
@@ -31,19 +31,15 @@ public abstract class DuplicateDiffer<P extends PsiElement> implements Differ {
     @Override
     public void doIt(Project project, KerboScriptInstruction instruction) throws ActionFailedException {
         P variable = (P) instruction;
-        PsiElement copy = instruction.copy();
+        KerboScriptInstruction copy = (KerboScriptInstruction) instruction.copy();
         separator(copy);
         instruction.getParent().addBefore(copy, instruction);
         PsiElement diff = variable.replace(KerboScriptElementFactory.instruction(project, diff(variable)));
         CodeStyleManager.getInstance(project).reformatNewlyAddedElement(diff.getParent().getNode(), diff.getNode());
     }
 
-    protected void separator(PsiElement copy) {
-        newLine(copy);
-    }
-
-    protected void newLine(PsiElement copy) {
-        copy.getNode().addChild(ASTFactory.whitespace("\n"));
+    protected void separator(KerboScriptElement copy) {
+        copy.newLine();
     }
 
     protected String diff(P variable) throws ActionFailedException {

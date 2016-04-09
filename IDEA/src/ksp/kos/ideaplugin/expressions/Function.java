@@ -93,12 +93,11 @@ public class Function extends Atom {
     }
 
     @Override
-    public Set<String> getVariableNames() {
-        HashSet<String> names = new HashSet<>();
+    public void visit(ExpressionVisitor visitor) {
+        visitor.visitFunction(this);
         for (Expression arg : args) {
-            names.addAll(arg.getVariableNames());
+            arg.visit(visitor);
         }
-        return names;
     }
 
     public static Expression log(Expression arg) {

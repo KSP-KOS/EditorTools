@@ -1,11 +1,11 @@
 package ksp.kos.ideaplugin.reference;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
 import ksp.kos.ideaplugin.KerboScriptFile;
-import ksp.kos.ideaplugin.psi.*;
+import ksp.kos.ideaplugin.psi.KerboScriptDeclareFunctionClause;
+import ksp.kos.ideaplugin.psi.KerboScriptElementFactory;
+import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
 
-import java.util.ArrayList;
 import java.util.function.BiFunction;
 
 /**
@@ -15,7 +15,7 @@ import java.util.function.BiFunction;
  */
 public class FileScope extends LocalScope {
     private KerboScriptFile kerboScriptFile;
-    private final ArrayList<KerboScriptFile> dependencies = new ArrayList<>();
+    private final ScopeMap imports = new ScopeMap();
     private final ScopeMap virtualFunctions = new ScopeMap();
     private final ScopeMap virtualVariables = new ScopeMap();
 
@@ -24,19 +24,17 @@ public class FileScope extends LocalScope {
     }
 
     public void addDependency(KerboScriptNamedElement element) {
-        KerboScriptFile dependency = kerboScriptFile.resolveFile(element);
-        if (dependency != null && !dependencies.contains(dependency)) {
-            dependencies.add(dependency);
-        }
+        String name = KerboScriptFile.stripExtension(element.getName());
+        imports.put(name, element);
     }
 
-    public ArrayList<KerboScriptFile> getDependencies() {
-        return dependencies;
+    public ScopeMap getImports() {
+        return imports;
     }
 
     @Override
     public void clear() {
-        dependencies.clear();
+        imports.clear();
         virtualFunctions.clear();
         virtualVariables.clear();
         super.clear();
@@ -71,6 +69,23 @@ public class FileScope extends LocalScope {
         return KerboScriptElementFactory.variable(project, name);
     }
 
+    public static <T> KerboScriptNamedElement resolve(KerboScriptFile file, BiFunction<FileScope, T, KerboScriptNamedElement> getElement, T item) {
+        KerboScriptNamedElement resolved = getElement.apply(file.getFileScope(), item);
+        if (resolved == null) {
+            for (KerboScriptNamedElement run : file.getFileScope().getImports().values()) {
+                KerboScriptFile dependency = file.resolveFile(run);
+                if (dependency != null) {
+                    resolved = getElement.apply(dependency.getFileScope(), item);
+                    if (resolved != null) {
+                        return resolved;
+                    }
+                }
+            }
+            return null;
+        }
+        return resolved;
+    }
+
     public enum Resolver {
         FUNCTION(FileScope::resolveFunction, FileScope::getVirtualFunction),
         VARIABLE(FileScope::resolveVariable, FileScope::getVirtualVariable);
@@ -84,16 +99,10 @@ public class FileScope extends LocalScope {
             this.createVirtual = createVirtual;
         }
 
-        public PsiElement resolve(KerboScriptFile file,
+        public KerboScriptNamedElement resolve(KerboScriptFile file,
                                   KerboScriptNamedElement element) {
-            PsiElement resolved = findRegistered.apply(file.getFileScope(), element);
+            KerboScriptNamedElement resolved = FileScope.resolve(file, findRegistered, element);
             if (resolved == null) {
-                for (KerboScriptFile dependency : file.getFileScope().getDependencies()) {
-                    resolved = findRegistered.apply(dependency.getFileScope(), element);
-                    if (resolved != null) {
-                        return resolved;
-                    }
-                }
                 return createVirtual.apply(file.getFileScope(), element);
             }
             return resolved;

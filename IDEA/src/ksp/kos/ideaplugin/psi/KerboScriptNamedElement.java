@@ -8,7 +8,7 @@ import ksp.kos.ideaplugin.reference.NamedType;
  *
  * @author ptasha
  */
-public interface KerboScriptNamedElement extends PsiNameIdentifierOwner, KerboScriptBaseElement {
+public interface KerboScriptNamedElement extends PsiNameIdentifierOwner, KerboScriptElement {
     NamedType getType();
     void setType(NamedType type);
 }
