@@ -1,6 +1,5 @@
 package ksp.kos.ideaplugin.dataflow;
 
-import com.intellij.psi.util.PsiTreeUtil;
 import ksp.kos.ideaplugin.KerboScriptFile;
 import ksp.kos.ideaplugin.psi.KerboScriptDirective;
 import ksp.kos.ideaplugin.psi.KerboScriptInstruction;
@@ -19,12 +18,12 @@ public class ImportFlowImporter extends FlowImporter<ImportFlow> {
     @NotNull
     @Override
     protected LocalScope.ScopeMap getMap(KerboScriptFile file) {
-        return file.getFileScope().getImports();
+        return file.getCachedScope().getImports();
     }
 
     @Override
     protected KerboScriptInstruction addNewInstruction(KerboScriptFile file, KerboScriptInstruction instruction) {
-        for (KerboScriptInstruction before : PsiTreeUtil.findChildrenOfType(file, KerboScriptInstruction.class)) {
+        for (KerboScriptInstruction before : file.getChildren(KerboScriptInstruction.class)) {
             if (!(before instanceof KerboScriptDirective)) {
                 instruction = (KerboScriptInstruction) file.addBefore(instruction, before);
                 separator(instruction);

@@ -6,7 +6,6 @@ import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiWhiteSpace;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -24,16 +23,5 @@ public abstract class BaseAction extends AnAction {
             return file.findElementAt(offset);
         }
         return null;
-    }
-
-    protected PsiElement prevNonSpaceSibling(PsiElement element) {
-        PsiElement sibling = element.getPrevSibling();
-        if (sibling==null) {
-            return null;
-        }
-        if (sibling instanceof PsiWhiteSpace) {
-            return prevNonSpaceSibling(sibling);
-        }
-        return sibling;
     }
 }

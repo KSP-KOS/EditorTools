@@ -1,9 +1,8 @@
 package ksp.kos.ideaplugin.dataflow;
 
 import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.util.PsiTreeUtil;
 import ksp.kos.ideaplugin.KerboScriptFile;
-import ksp.kos.ideaplugin.psi.KerboScriptElement;
+import ksp.kos.ideaplugin.psi.KerboScriptBase;
 import ksp.kos.ideaplugin.psi.KerboScriptElementFactory;
 import ksp.kos.ideaplugin.psi.KerboScriptInstruction;
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
@@ -41,7 +40,7 @@ public abstract class FlowImporter<F extends NamedFlow<F>> {
         if (element==null) {
             return null;
         }
-        return PsiTreeUtil.getParentOfType(element, KerboScriptInstruction.class, false);
+        return element.upTill(KerboScriptInstruction.class);
     }
 
     protected KerboScriptInstruction replaceExisting(KerboScriptInstruction instruction, KerboScriptInstruction existing) {
@@ -52,7 +51,7 @@ public abstract class FlowImporter<F extends NamedFlow<F>> {
         KerboScriptInstruction before = null;
         for (KerboScriptNamedElement element : map.values()) {
             if (element.getName().compareToIgnoreCase(name)>0) {
-                before = PsiTreeUtil.getParentOfType(element, KerboScriptInstruction.class, false);
+                before = element.upTill(KerboScriptInstruction.class);
                 break;
             }
         }
@@ -70,7 +69,7 @@ public abstract class FlowImporter<F extends NamedFlow<F>> {
         return (KerboScriptInstruction) file.add(instruction);
     }
 
-    protected void separator(KerboScriptElement element) {
+    protected void separator(KerboScriptBase element) {
         element.newLine();
     }
 }

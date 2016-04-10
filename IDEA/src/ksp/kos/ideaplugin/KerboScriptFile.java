@@ -7,13 +7,11 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.problems.WolfTheProblemSolver;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
 import ksp.kos.ideaplugin.psi.KerboScriptPsiWalker;
 import ksp.kos.ideaplugin.psi.KerboScriptScope;
-import ksp.kos.ideaplugin.reference.Cache;
-import ksp.kos.ideaplugin.reference.FileScope;
+import ksp.kos.ideaplugin.reference.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,7 +22,8 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author ptasha
  */
-public class KerboScriptFile extends PsiFileBase implements KerboScriptScope {
+public class KerboScriptFile extends PsiFileBase implements KerboScriptScope, KerboScriptNamedElement {
+    private static final ReferenceType TYPE = new ReferenceType(ReferableType.FILE, OccurrenceType.GLOBAL);
     private final Cache<FileScope> cache = new Cache<>(this, new FileScope(this));
 
     public KerboScriptFile(@NotNull FileViewProvider viewProvider) {
@@ -44,35 +43,16 @@ public class KerboScriptFile extends PsiFileBase implements KerboScriptScope {
         return KerboScriptFileType.INSTANCE;
     }
 
-    @Override
-    public void register(KerboScriptNamedElement element) {
-        getFileScope().register(element);
+    public KerboScriptNamedElement findFunction(String name) {
+        return getCachedScope().findDeclaration(Reference.function(name));
     }
 
-    @Override
-    public PsiElement resolveFunction(KerboScriptNamedElement element) {
-        return FileScope.Resolver.FUNCTION.resolve(this, element);
+    public KerboScriptNamedElement findVariable(String name) {
+        return getCachedScope().findDeclaration(Reference.variable(name));
     }
 
-    public KerboScriptNamedElement resolveFunction(String name) {
-        return FileScope.resolve(this, FileScope::getFunction, name);
-    }
-
-    @Override
-    public PsiElement resolveVariable(KerboScriptNamedElement element) {
-        return FileScope.Resolver.VARIABLE.resolve(this, element);
-    }
-
-    public KerboScriptNamedElement resolveVariable(String name) {
-        return FileScope.resolve(this, FileScope::getVariable, name);
-    }
-
-    public void registerFile(KerboScriptNamedElement element) {
-        getFileScope().addDependency(element);
-    }
-
-    public KerboScriptFile resolveFile(KerboScriptNamedElement element) {
-        return findFile(stripExtension(element.getName()));
+    public KerboScriptFile resolveFile(String name) {
+        return findFile(stripExtension(name));
     }
 
     @Nullable
@@ -87,11 +67,6 @@ public class KerboScriptFile extends PsiFileBase implements KerboScriptScope {
             }
         }
         return null;
-    }
-
-    @Override
-    public void clearCache() {
-        getFileScope().clear();
     }
 
     private long version = -1;
@@ -118,13 +93,14 @@ public class KerboScriptFile extends PsiFileBase implements KerboScriptScope {
 
     private void checkVersionInternal() {
         if (version != getModificationStamp()) {
-            clearCache();
+            getCachedScope().clear();
             this.accept(new KerboScriptPsiWalker());
             version = getModificationStamp();
         }
     }
 
-    public FileScope getFileScope() {
+    @Override
+    public FileScope getCachedScope() {
         return cache.getScope();
     }
 
@@ -150,5 +126,14 @@ public class KerboScriptFile extends PsiFileBase implements KerboScriptScope {
     @NotNull
     public String getPureName() {
         return stripExtension(getName());
+    }
+
+    @Override
+    public ReferenceType getType() {
+        return TYPE;
+    }
+
+    @Override
+    public void setType(ReferenceType type) {
     }
 }

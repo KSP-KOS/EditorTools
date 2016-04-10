@@ -1,7 +1,7 @@
 package ksp.kos.ideaplugin.dataflow;
 
 import ksp.kos.ideaplugin.KerboScriptFile;
-import ksp.kos.ideaplugin.psi.KerboScriptElement;
+import ksp.kos.ideaplugin.psi.KerboScriptBase;
 import ksp.kos.ideaplugin.reference.LocalScope;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,11 +25,11 @@ public class FunctionFlowImporter extends FlowImporter<FunctionFlow> {
     @Override
     @NotNull
     protected LocalScope.ScopeMap getMap(KerboScriptFile file) {
-        return file.getFileScope().getFunctions();
+        return file.getCachedScope().getFunctions();
     }
 
     @Override
-    protected void separator(KerboScriptElement element) {
+    protected void separator(KerboScriptBase element) {
         super.separator(element);
         super.separator(element);
     }

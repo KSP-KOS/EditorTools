@@ -3,6 +3,7 @@ package ksp.kos.ideaplugin.psi.impl;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiNameIdentifierOwner;
 import com.intellij.psi.PsiNamedElement;
 import ksp.kos.ideaplugin.psi.KerboScriptElementFactory;
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
@@ -17,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author ptasha
  */
-public class KerboScriptNamedElementImpl extends ASTWrapperPsiElement implements KerboScriptNamedElement {
+public class KerboScriptNamedElementImpl extends ASTWrapperPsiElement implements KerboScriptNamedElement, PsiNameIdentifierOwner {
     private final Cache<NamedScope> cache = new Cache<>(this, new NamedScope());
 
     public KerboScriptNamedElementImpl(@NotNull ASTNode node) {
@@ -27,7 +28,7 @@ public class KerboScriptNamedElementImpl extends ASTWrapperPsiElement implements
     @Nullable
     @Override
     public PsiElement getNameIdentifier() {
-        if (getType().getType().isReferable()) {
+        if (getReferableType().isReferable()) {
             ASTNode identifier = this.getNode().findChildByType(KerboScriptTypes.IDENTIFIER);
             if (identifier != null) {
                 return identifier.getPsi();
@@ -59,27 +60,27 @@ public class KerboScriptNamedElementImpl extends ASTWrapperPsiElement implements
     }
 
     @Override
-    public void setType(NamedType type) {
+    public void setType(ReferenceType type) {
         cache.getScope().type = type;
         cache.getScope().reference = createReference(type);
         register();
     }
 
     private void register() {
-        NamedType type = cache.getScope().type;
-        if (type.getReferenceType().isDecaration()) {
-            getScope().register(this);
-        } else if (type.getType() == SuffixtermType.FILE) {
-            getKerboScriptFile().registerFile(this);
+        ReferenceType type = cache.getScope().type;
+        if (type.getOccurrenceType().isDeclaration()) {
+            getScope().getCachedScope().register(this);
+        } else if (type.getType() == ReferableType.FILE) {
+            getScope().getCachedScope().register(this);
         }
     }
 
     @Override
-    public NamedType getType() {
+    public ReferenceType getType() {
         return cache.getScope().type;
     }
 
-    private KerboScriptReference createReference(NamedType type) {
+    private KerboScriptReference createReference(ReferenceType type) {
         switch (type.getType()) {
             case FILE:
                 return new KerboScriptFileReference(this);
@@ -95,34 +96,6 @@ public class KerboScriptNamedElementImpl extends ASTWrapperPsiElement implements
         return cache.getScope().reference;
     }
 
-    public PsiElement resolve(KerboScriptNamedElementImpl element) {
-        if (element.getType().getReferenceType().isDecaration()) {
-            return element;
-        }
-        if (element.isFunction()) {
-            return getScope().resolveFunction(element);
-        }
-        if (element.isVariable()) {
-            return getScope().resolveVariable(element);
-        }
-        if (element.isFile()) {
-            return getKerboScriptFile().resolveFile(element);
-        }
-        return null;
-    }
-
-    public boolean isFunction() {
-        return getType().getType() == SuffixtermType.FUNCTION;
-    }
-
-    public boolean isVariable() {
-        return getType().getType() == SuffixtermType.VARIABLE;
-    }
-
-    public boolean isFile() {
-        return getType().getType() == SuffixtermType.FILE;
-    }
-
     @NotNull
     @Override
     public PsiElement getNavigationElement() {
@@ -132,7 +105,7 @@ public class KerboScriptNamedElementImpl extends ASTWrapperPsiElement implements
     }
 
     private class NamedScope {
-        private NamedType type = new NamedType(SuffixtermType.OTHER, ReferenceType.NONE);
+        private ReferenceType type = new ReferenceType(ReferableType.OTHER, OccurrenceType.NONE);
         private KerboScriptReference reference;
     }
 }

@@ -1,12 +1,13 @@
 package ksp.kos.ideaplugin.reference;
 
-import com.intellij.openapi.project.Project;
 import ksp.kos.ideaplugin.KerboScriptFile;
-import ksp.kos.ideaplugin.psi.KerboScriptDeclareFunctionClause;
 import ksp.kos.ideaplugin.psi.KerboScriptElementFactory;
+import ksp.kos.ideaplugin.psi.KerboScriptInstruction;
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
+import ksp.kos.utils.MapBuilder;
 
-import java.util.function.BiFunction;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created on 08/01/16.
@@ -15,67 +16,27 @@ import java.util.function.BiFunction;
  */
 public class FileScope extends LocalScope {
     private KerboScriptFile kerboScriptFile;
-    private final ScopeMap imports = new ScopeMap();
-    private final ScopeMap virtualFunctions = new ScopeMap();
-    private final ScopeMap virtualVariables = new ScopeMap();
 
     public FileScope(KerboScriptFile kerboScriptFile) {
+        this(kerboScriptFile, new LocalScope(null));
+    }
+
+    private FileScope(KerboScriptFile kerboScriptFile, LocalScope virtual) {
+        super(virtual);
         this.kerboScriptFile = kerboScriptFile;
     }
 
-    public void addDependency(KerboScriptNamedElement element) {
-        String name = KerboScriptFile.stripExtension(element.getName());
-        imports.put(name, element);
-    }
-
-    public ScopeMap getImports() {
-        return imports;
-    }
-
     @Override
-    public void clear() {
-        imports.clear();
-        virtualFunctions.clear();
-        virtualVariables.clear();
-        super.clear();
-    }
-
-    public KerboScriptNamedElement getVirtualFunction(KerboScriptNamedElement element) {
-        KerboScriptNamedElement function = virtualFunctions.get(element.getName());
-        if (function == null) {
-            function = createVirtualFunction(element.getName());
-            virtualFunctions.put(element.getName(), function);
+    public KerboScriptNamedElement findDeclaration(Reference reference) {
+        if (reference.getReferableType()==ReferableType.FILE) {
+            return resolveFile(reference.getName());
         }
-        return function;
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    private KerboScriptDeclareFunctionClause createVirtualFunction(String name) {
-        return KerboScriptElementFactory.function(kerboScriptFile.getProject(), name);
-    }
-
-    public KerboScriptNamedElement getVirtualVariable(KerboScriptNamedElement element) {
-        KerboScriptNamedElement variable = virtualVariables.get(element.getName());
-        if (variable == null) {
-            variable = createVirtualVariable(element.getName());
-            virtualVariables.put(element.getName(), variable);
-        }
-        return variable;
-    }
-
-    @SuppressWarnings("ConstantConditions")
-    private KerboScriptNamedElement createVirtualVariable(String name) {
-        Project project = kerboScriptFile.getProject();
-        return KerboScriptElementFactory.variable(project, name);
-    }
-
-    public static <T> KerboScriptNamedElement resolve(KerboScriptFile file, BiFunction<FileScope, T, KerboScriptNamedElement> getElement, T item) {
-        KerboScriptNamedElement resolved = getElement.apply(file.getFileScope(), item);
+        KerboScriptNamedElement resolved = super.findDeclaration(reference);
         if (resolved == null) {
-            for (KerboScriptNamedElement run : file.getFileScope().getImports().values()) {
-                KerboScriptFile dependency = file.resolveFile(run);
+            for (KerboScriptNamedElement run : getImports().values()) {
+                KerboScriptFile dependency = resolveFile(run.getName());
                 if (dependency != null) {
-                    resolved = getElement.apply(dependency.getFileScope(), item);
+                    resolved = dependency.getCachedScope().findLocalDeclaration(reference);
                     if (resolved != null) {
                         return resolved;
                     }
@@ -86,26 +47,51 @@ public class FileScope extends LocalScope {
         return resolved;
     }
 
-    public enum Resolver {
-        FUNCTION(FileScope::resolveFunction, FileScope::getVirtualFunction),
-        VARIABLE(FileScope::resolveVariable, FileScope::getVirtualVariable);
-
-        private final BiFunction<FileScope, KerboScriptNamedElement, KerboScriptNamedElement> findRegistered;
-        private final BiFunction<FileScope, KerboScriptNamedElement, KerboScriptNamedElement> createVirtual;
-
-        Resolver(BiFunction<FileScope, KerboScriptNamedElement, KerboScriptNamedElement> findRegistered,
-                 BiFunction<FileScope, KerboScriptNamedElement, KerboScriptNamedElement> createVirtual) {
-            this.findRegistered = findRegistered;
-            this.createVirtual = createVirtual;
+    @Override
+    public KerboScriptNamedElement resolve(Reference reference) {
+        KerboScriptNamedElement resolved = super.resolve(reference);
+        if (resolved == null) {
+            return createVirtual(reference);
         }
+        return resolved;
+    }
 
-        public KerboScriptNamedElement resolve(KerboScriptFile file,
-                                  KerboScriptNamedElement element) {
-            KerboScriptNamedElement resolved = FileScope.resolve(file, findRegistered, element);
-            if (resolved == null) {
-                return createVirtual.apply(file.getFileScope(), element);
-            }
-            return resolved;
+    @Override
+    protected void registerUnknown(ReferableType type, String name, KerboScriptNamedElement element) {
+        if (type==ReferableType.FILE) {
+            addDefinition(type, KerboScriptFile.stripExtension(name), element);
+        } else {
+            super.registerUnknown(type, name, element);
         }
     }
+
+    public ScopeMap getImports() {
+        return getDeclarations(ReferableType.FILE);
+    }
+
+    @Override
+    public void clear() {
+        getParent().clear();
+        super.clear();
+    }
+
+    private static final Map<ReferableType, String> MOCKS = new MapBuilder<ReferableType, String>(new HashMap<>())
+            .put(ReferableType.VARIABLE, "local %s to 0.")
+            .put(ReferableType.FUNCTION, "function %s {}").getMap();
+
+    public KerboScriptNamedElement createVirtual(Reference reference) {
+        String text = MOCKS.get(reference.getReferableType());
+        if (text == null) {
+            return null;
+        }
+        KerboScriptInstruction instruction = KerboScriptElementFactory.instruction(kerboScriptFile.getProject(), String.format(text, reference.getName()));
+        KerboScriptNamedElement declaration = instruction.downTill(KerboScriptNamedElement.class);
+        getParent().register(declaration);
+        return declaration;
+    }
+
+    private KerboScriptFile resolveFile(String name) {
+        return kerboScriptFile.resolveFile(name);
+    }
+
 }

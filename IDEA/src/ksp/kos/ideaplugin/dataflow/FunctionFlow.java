@@ -130,14 +130,14 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
             variable.getExpression().visit(new ExpressionVisitor() {
                 @Override
                 public void visitFunction(Function function) {
-                    addImport(file.resolveFunction(function.getName()));
+                    addImport(file.findFunction(function.getName()));
                 }
 
                 @Override
                 public void visitVariable(Variable variable) {
                     String name = variable.getName();
                     if (!context.contains(name)) {
-                        addImport(file.resolveVariable(name));
+                        addImport(file.findVariable(name));
                     }
                     context.add(name);
                 }

@@ -6,7 +6,7 @@ import com.intellij.psi.codeStyle.CodeStyleManager;
 import ksp.kos.ideaplugin.actions.ActionFailedException;
 import ksp.kos.ideaplugin.dataflow.Flow;
 import ksp.kos.ideaplugin.expressions.SyntaxException;
-import ksp.kos.ideaplugin.psi.KerboScriptElement;
+import ksp.kos.ideaplugin.psi.KerboScriptBase;
 import ksp.kos.ideaplugin.psi.KerboScriptElementFactory;
 import ksp.kos.ideaplugin.psi.KerboScriptInstruction;
 
@@ -38,7 +38,7 @@ public abstract class DuplicateDiffer<P extends PsiElement> implements Differ {
         CodeStyleManager.getInstance(project).reformatNewlyAddedElement(diff.getParent().getNode(), diff.getNode());
     }
 
-    protected void separator(KerboScriptElement copy) {
+    protected void separator(KerboScriptBase copy) {
         copy.newLine();
     }
 

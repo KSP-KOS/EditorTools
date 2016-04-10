@@ -3,6 +3,7 @@ package ksp.kos.ideaplugin.actions;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.psi.util.PsiTreeUtil;
 import ksp.kos.ideaplugin.expressions.Expression;
 import ksp.kos.ideaplugin.expressions.SyntaxException;
 import ksp.kos.ideaplugin.psi.*;
@@ -43,7 +44,7 @@ public class Simplify extends BaseAction {
     }
 
     private KerboScriptExpr getSimplifiable(AnActionEvent event) {
-        ExpressionHolder holder = KerboScriptElement.walkUpTill(getPsiElement(event), ExpressionHolder.class);
+        ExpressionHolder holder = PsiTreeUtil.getParentOfType(getPsiElement(event), ExpressionHolder.class, false);
         if (holder == null) {
             return null;
         }

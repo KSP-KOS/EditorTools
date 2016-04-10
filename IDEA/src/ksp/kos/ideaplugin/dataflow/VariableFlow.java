@@ -1,10 +1,9 @@
 package ksp.kos.ideaplugin.dataflow;
 
-import com.intellij.psi.util.PsiTreeUtil;
 import ksp.kos.ideaplugin.expressions.Expression;
 import ksp.kos.ideaplugin.expressions.SyntaxException;
 import ksp.kos.ideaplugin.psi.*;
-import ksp.kos.ideaplugin.reference.SuffixtermType;
+import ksp.kos.ideaplugin.reference.ReferableType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -56,10 +55,10 @@ public class VariableFlow extends ExpressionFlow<VariableFlow> implements NamedF
     }
 
     public static VariableFlow parse(KerboScriptSetStmt setStmt) throws SyntaxException {
-        KerboScriptExpr nameExpr = PsiTreeUtil.findChildOfType(setStmt.getVaridentifier(), KerboScriptExpr.class);
+        KerboScriptExpr nameExpr = setStmt.getVaridentifier().downTill(KerboScriptExpr.class);
         if (nameExpr instanceof KerboScriptSuffixterm) {
             KerboScriptAtom atom = ((KerboScriptSuffixterm) nameExpr).getAtom();
-            if (atom.getType().getType()== SuffixtermType.VARIABLE) {
+            if (atom.getReferableType() == ReferableType.VARIABLE) {
                 String name = atom.getName();
                 return new VariableFlow(false, name, Expression.parse(setStmt.getExpr()));
             }

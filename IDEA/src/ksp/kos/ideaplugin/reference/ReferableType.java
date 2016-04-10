@@ -8,7 +8,7 @@ import java.util.Set;
  *
  * @author ptasha
  */
-public enum SuffixtermType {
+public enum ReferableType {
     VARIABLE,
     FUNCTION,
     FIELD,
@@ -16,7 +16,7 @@ public enum SuffixtermType {
     FILE,
     OTHER;
 
-    private static final Set<SuffixtermType> REFERABLE = EnumSet.of(VARIABLE, FILE, FUNCTION);
+    private static final Set<ReferableType> REFERABLE = EnumSet.of(VARIABLE, FILE, FUNCTION);
 
     public boolean isReferable() {
         return REFERABLE.contains(this);

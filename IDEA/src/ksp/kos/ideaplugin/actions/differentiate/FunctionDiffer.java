@@ -30,6 +30,7 @@ public class FunctionDiffer implements Differ {
         KerboScriptDeclareStmt declare = (KerboScriptDeclareStmt) instruction;
         try {
             FunctionFlow function = FunctionFlow.parse(declare.getDeclareFunctionClause()).differentiate();
+            // TODO check for dependencies and diff them as well: just refuse recursion for a while
             KerboScriptFile file = instruction.getKerboScriptFile();
             KerboScriptFile diffFile = ensureDiffDependency(file);
             FunctionFlowImporter.INSTANCE.importFlow(diffFile, function);

@@ -5,9 +5,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
+import com.intellij.psi.util.PsiTreeUtil;
 import ksp.kos.ideaplugin.KerboScriptFile;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.function.Supplier;
 
 /**
@@ -15,7 +17,7 @@ import java.util.function.Supplier;
  *
  * @author ptasha
  */
-public interface KerboScriptElement extends PsiElement {
+public interface KerboScriptBase extends PsiElement {
     default KerboScriptFile getKerboScriptFile() {
         return (KerboScriptFile) getContainingFile();
     }
@@ -28,19 +30,17 @@ public interface KerboScriptElement extends PsiElement {
         return (KerboScriptScope) parent;
     }
 
-    @SuppressWarnings("unchecked")
-    static <P> P walkUpTill(PsiElement element, Class<P> clazz) {
-        while (element!=null) {
-            if (clazz.isInstance(element)) {
-                return (P) element;
-            }
-            element = element.getParent();
-        }
-        return null;
+    default <P extends PsiElement> P upTill(Class<P> clazz) {
+        return PsiTreeUtil.getParentOfType(this, clazz, false);
     }
 
-    default <P> P walkUpTill(Class<P> clazz) {
-        return walkUpTill(this, clazz);
+    default <P extends PsiElement> P downTill(Class<P> clazz) {
+        return PsiTreeUtil.findChildOfType(this, clazz, false);
+    }
+
+    @NotNull
+    default <P extends PsiElement> Collection<P> getChildren(Class<P> clazz) {
+        return PsiTreeUtil.findChildrenOfType(this, clazz);
     }
 
     @NotNull

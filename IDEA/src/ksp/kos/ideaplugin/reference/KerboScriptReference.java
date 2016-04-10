@@ -34,7 +34,10 @@ public class KerboScriptReference extends PsiReferenceBase<KerboScriptNamedEleme
     @Nullable
     @Override
     public PsiElement resolve() {
-        return myElement.resolve(myElement);
+        if (myElement.isDeclaration()) {
+            return myElement;
+        }
+        return myElement.getScope().resolve(myElement);
     }
 
     @NotNull
