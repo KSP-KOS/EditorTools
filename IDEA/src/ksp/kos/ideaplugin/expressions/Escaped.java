@@ -2,7 +2,6 @@ package ksp.kos.ideaplugin.expressions;
 
 
 import java.util.HashMap;
-import java.util.Set;
 
 /**
  * Created on 29/01/16.
@@ -59,8 +58,7 @@ public class Escaped extends Atom {
     }
 
     @Override
-    public void visit(ExpressionVisitor visitor) {
-        super.visit(visitor);
-        expression.visit(visitor);
+    public void acceptChildren(ExpressionVisitor visitor) {
+        expression.accept(visitor);
     }
 }

@@ -309,10 +309,9 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
     }
 
     @Override
-    public void visit(ExpressionVisitor visitor) {
-        super.visit(visitor);
+    public void acceptChildren(ExpressionVisitor visitor) {
         for (Item<O, E> item : items) {
-            item.getExpression().visit(visitor);
+            item.getExpression().accept(visitor);
         }
     }
 }

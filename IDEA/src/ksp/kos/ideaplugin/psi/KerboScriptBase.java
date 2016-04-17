@@ -2,6 +2,7 @@ package ksp.kos.ideaplugin.psi;
 
 import com.intellij.lang.ASTFactory;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.CachedValue;
 import com.intellij.psi.util.CachedValueProvider;
 import com.intellij.psi.util.CachedValuesManager;
@@ -58,5 +59,10 @@ public interface KerboScriptBase extends PsiElement {
 
     default void newLine() {
         getNode().addChild(ASTFactory.whitespace("\n"));
+    }
+
+    default boolean isReal() {
+        PsiFile file = getContainingFile();
+        return file.isPhysical() && file instanceof KerboScriptFile;
     }
 }

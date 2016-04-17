@@ -107,16 +107,20 @@ public abstract class Expression {
 
     public final Set<String> getVariableNames() {
         HashSet<String> variables = new HashSet<>();
-        visit(new ExpressionVisitor() {
+        accept(new ExpressionVisitor() {
             @Override
             public void visitVariable(Variable variable) {
                 variables.add(variable.getName());
+                super.visitVariable(variable);
             }
         });
         return variables;
     }
 
-    public void visit(ExpressionVisitor visitor) {
+    public void accept(ExpressionVisitor visitor) {
         visitor.visit(this);
+    }
+
+    public void acceptChildren(ExpressionVisitor visitor) {
     }
 }

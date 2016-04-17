@@ -39,7 +39,7 @@ public class Variable extends Atom {
     }
 
     @Override
-    public void visit(ExpressionVisitor visitor) {
+    public void accept(ExpressionVisitor visitor) {
         visitor.visitVariable(this);
     }
 

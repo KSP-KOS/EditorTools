@@ -44,11 +44,11 @@ public class KerboScriptFile extends PsiFileBase implements KerboScriptScope, Ke
     }
 
     public KerboScriptNamedElement findFunction(String name) {
-        return getCachedScope().findDeclaration(Reference.function(name));
+        return getCachedScope().findDeclaration(Reference.function(this, name));
     }
 
     public KerboScriptNamedElement findVariable(String name) {
-        return getCachedScope().findDeclaration(Reference.variable(name));
+        return getCachedScope().findDeclaration(Reference.variable(this, name));
     }
 
     public KerboScriptFile resolveFile(String name) {

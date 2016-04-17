@@ -91,10 +91,14 @@ public class Function extends Atom {
     }
 
     @Override
-    public void visit(ExpressionVisitor visitor) {
+    public void accept(ExpressionVisitor visitor) {
         visitor.visitFunction(this);
+    }
+
+    @Override
+    public void acceptChildren(ExpressionVisitor visitor) {
         for (Expression arg : args) {
-            arg.visit(visitor);
+            arg.accept(visitor);
         }
     }
 

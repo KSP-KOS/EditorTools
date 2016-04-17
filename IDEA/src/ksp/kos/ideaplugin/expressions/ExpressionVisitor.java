@@ -10,5 +10,7 @@ public class ExpressionVisitor {
 
     public void visitVariable(Variable variable) {visit(variable);}
 
-    public void visit(Expression expression) {}
+    public void visit(Expression expression) {
+        expression.acceptChildren(this);
+    }
 }

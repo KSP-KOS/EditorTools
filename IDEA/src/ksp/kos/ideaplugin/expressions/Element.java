@@ -8,9 +8,7 @@ import ksp.kos.ideaplugin.psi.KerboScriptUnaryExpr;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created on 30/01/16.
@@ -227,10 +225,9 @@ public class Element extends Expression {
     }
 
     @Override
-    public void visit(ExpressionVisitor visitor) {
-        super.visit(visitor);
-        atom.visit(visitor);
-        power.visit(visitor);
+    public void acceptChildren(ExpressionVisitor visitor) {
+        atom.accept(visitor);
+        power.accept(visitor);
     }
 
     @Override

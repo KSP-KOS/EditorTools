@@ -14,11 +14,24 @@ public interface KerboScriptNamedElement extends KerboScriptBase, Reference {
     void setType(ReferenceType type);
 
     @Override
+    default KerboScriptScope getKingdom() {
+        return getScope();
+    }
+
+    @Override
     default ReferableType getReferableType() {
         return getType().getType();
     }
 
     default boolean isDeclaration() {
         return getType().getOccurrenceType().isDeclaration();
+    }
+
+    @Override
+    default KerboScriptNamedElement resolve() {
+        if (isDeclaration()) {
+            return this;
+        }
+        return Reference.super.resolve();
     }
 }

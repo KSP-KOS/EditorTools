@@ -1,14 +1,13 @@
 package ksp.kos.ideaplugin.dataflow;
 
-import com.intellij.psi.PsiFile;
 import ksp.kos.ideaplugin.KerboScriptFile;
-import ksp.kos.ideaplugin.expressions.ExpressionVisitor;
-import ksp.kos.ideaplugin.expressions.Function;
-import ksp.kos.ideaplugin.expressions.SyntaxException;
-import ksp.kos.ideaplugin.expressions.Variable;
+import ksp.kos.ideaplugin.expressions.*;
 import ksp.kos.ideaplugin.psi.*;
+import ksp.kos.ideaplugin.reference.Reference;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Created on 12/03/16.
@@ -126,32 +125,85 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
         for (ParameterFlow parameter : parameters) {
             context.add(parameter.getName());
         }
-        for (VariableFlow variable : variables) {
-            variable.getExpression().visit(new ExpressionVisitor() {
-                @Override
-                public void visitFunction(Function function) {
-                    addImport(file.findFunction(function.getName()));
-                }
+        visitExpresssions(new ExpressionVisitor() {
+            @Override
+            public void visitFunction(Function function) {
+                addImport(file.findFunction(function.getName()));
+                super.visitFunction(function);
+            }
 
-                @Override
-                public void visitVariable(Variable variable) {
-                    String name = variable.getName();
-                    if (!context.contains(name)) {
-                        addImport(file.findVariable(name));
-                    }
-                    context.add(name);
+            @Override
+            public void visitVariable(Variable variable) {
+                String name = variable.getName();
+                if (!context.contains(name)) {
+                    addImport(file.findVariable(name));
                 }
+                context.add(name);
+                super.visitVariable(variable);
+            }
 
-                private void addImport(KerboScriptNamedElement resolved) {
-                    if (resolved != null) {
-                        PsiFile dependency = resolved.getContainingFile();
-                        if (dependency != newFile && dependency.isPhysical() && dependency instanceof KerboScriptFile) {
-                            imports.add(new ImportFlow((KerboScriptFile) dependency));
-                        }
+            private void addImport(KerboScriptNamedElement resolved) {
+                if (resolved != null && resolved.isReal()) {
+                    KerboScriptFile dependency = resolved.getKerboScriptFile();
+                    if (dependency != newFile) {
+                        imports.add(new ImportFlow(dependency));
                     }
                 }
-            });
-        }
+            }
+        });
         return imports;
+    }
+
+    public void visitExpresssions(ExpressionVisitor visitor) {
+        for (VariableFlow variable : variables) {
+            variable.getExpression().accept(visitor);
+        }
+        returnFlow.getExpression().accept(visitor);
+    }
+
+    public Reference getNextToDiff(Map<Reference, FunctionFlow> context) {
+        AtomicReference<Reference> reference = new AtomicReference<>();
+        visitExpresssions(new ExpressionVisitor() {
+            @Override
+            public void visitFunction(Function function) {
+                if (reference.get() == null) {
+                    String name = function.getName();
+                    Reference ref = Reference.function(file, name);
+                    KerboScriptNamedElement declaration = ref.findDeclaration();
+                    if (declaration == null || !declaration.isReal()) {
+                        reference.set(undiff(ref));
+                    } else {
+                        super.visitFunction(function);
+                    }
+                }
+            }
+
+            @Nullable
+            private Reference undiff(Reference reference) {
+                String name = reference.getName();
+                Reference undiff = null;
+                if (!context.containsKey(reference) && name.endsWith("_")) {
+                    name = name.substring(0, name.length() - 1);
+                    undiff = Reference.function(reference.getKingdom(), name);
+                    KerboScriptNamedElement resolved = undiff.findDeclaration();
+                    if (resolved != null) {
+                        if (resolved.isReal()) {
+                            return resolved;
+                        }
+                    } else {
+                        return undiff(undiff);
+                    }
+                }
+                return undiff;
+            }
+
+            @Override
+            public void visit(Expression expression) {
+                if (reference.get() == null) {
+                    super.visit(expression);
+                }
+            }
+        });
+        return reference.get();
     }
 }

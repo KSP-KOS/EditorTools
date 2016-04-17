@@ -49,7 +49,7 @@ public class FileScope extends LocalScope {
 
     @Override
     public KerboScriptNamedElement resolve(Reference reference) {
-        KerboScriptNamedElement resolved = super.resolve(reference);
+        KerboScriptNamedElement resolved = findDeclaration(reference);
         if (resolved == null) {
             return createVirtual(reference);
         }
