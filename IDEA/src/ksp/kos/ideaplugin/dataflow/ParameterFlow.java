@@ -22,9 +22,8 @@ public class ParameterFlow extends BaseFlow<ParameterFlow> implements NamedFlow<
     }
 
     @Override
-    public ParameterFlow addContext(HashMap<String, NamedFlow<?>> context) {
+    public void addContext(HashMap<String, NamedFlow<?>> context) {
         context.put(getName(), this);
-        return this;
     }
 
     @Override

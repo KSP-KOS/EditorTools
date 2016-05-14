@@ -24,10 +24,9 @@ public class VariableFlow extends ExpressionFlow<VariableFlow> implements NamedF
     }
 
     @Override
-    public VariableFlow addContext(HashMap<String, NamedFlow<?>> context) {
-        VariableFlow flow = super.addContext(context);
-        context.put(getName(), flow);
-        return flow;
+    public void addContext(HashMap<String, NamedFlow<?>> context) {
+        super.addContext(context);
+        context.put(getName(), this);
     }
 
     @NotNull

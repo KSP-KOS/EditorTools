@@ -28,7 +28,6 @@ public abstract class BaseFlow<F extends BaseFlow<F>> implements Flow<F> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public F addContext(HashMap<String, NamedFlow<?>> context) {
-        return (F) this;
+    public void addContext(HashMap<String, NamedFlow<?>> context) {
     }
 }
