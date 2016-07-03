@@ -8,11 +8,9 @@ import ksp.kos.ideaplugin.expressions.Expression;
 import ksp.kos.ideaplugin.expressions.Function;
 import ksp.kos.ideaplugin.expressions.SyntaxException;
 import ksp.kos.ideaplugin.psi.*;
+import org.apache.sanselan.util.IOUtils;
 
-import java.net.URI;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,10 +35,9 @@ public class InlineFunctions {
 
     private InlineFunctions() {
         try {
-            URL url = this.getClass().getClassLoader().getResource("inline.ks");
-            if (url != null) {
-                URI uri = url.toURI();
-                String inline = new String(Files.readAllBytes(Paths.get(uri)));
+            InputStream stream = this.getClass().getResourceAsStream("/inline.ks");
+            if (stream != null) {
+                String inline = new String(IOUtils.getInputStreamBytes(stream));
                 KerboScriptFile file = KerboScriptElementFactory.file(inline);
                 for (PsiElement child : file.getChildren()) {
                     if (child instanceof KerboScriptDeclareStmt) {

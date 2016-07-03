@@ -44,7 +44,7 @@ public abstract class ExpressionFlow<F extends ExpressionFlow<F>> extends BaseFl
     }
 
     public boolean isSimple() {
-        return expression.equals(Number.ZERO);
+        return expression.equals(Number.ZERO) || expression.equals(Number.ONE);
     }
 
     @Override

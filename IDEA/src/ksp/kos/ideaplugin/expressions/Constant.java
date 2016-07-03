@@ -3,7 +3,9 @@ package ksp.kos.ideaplugin.expressions;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -23,13 +25,10 @@ public class Constant extends Atom {
 
     private static String getKey(PsiElement psi) {
         String key = "";
-        if (psi instanceof LeafPsiElement) {
-            if (!(psi instanceof PsiWhiteSpace)) {
-                key = psi.getText();
-            }
-        } else {
-            for (PsiElement child : psi.getChildren()) {
-                key += getKey(child);
+        Collection<LeafPsiElement> children = PsiTreeUtil.findChildrenOfType(psi, LeafPsiElement.class);
+        for (LeafPsiElement child : children) {
+            if (!(child instanceof PsiWhiteSpace)) {
+                key += child.getText();
             }
         }
         return key;

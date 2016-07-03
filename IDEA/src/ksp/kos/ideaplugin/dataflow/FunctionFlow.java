@@ -2,6 +2,7 @@ package ksp.kos.ideaplugin.dataflow;
 
 import ksp.kos.ideaplugin.KerboScriptFile;
 import ksp.kos.ideaplugin.expressions.*;
+import ksp.kos.ideaplugin.expressions.Number;
 import ksp.kos.ideaplugin.psi.*;
 import ksp.kos.ideaplugin.reference.Reference;
 import org.jetbrains.annotations.Nullable;
@@ -60,9 +61,13 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
         HashMap<String, NamedFlow<?>> context = new HashMap<>();
         List<ParameterFlow> diffParameters = new LinkedList<>();
         for (ParameterFlow parameter : parameters) {
-            ParameterFlow diff = parameter.differentiate();
             add(diffParameters, parameter, context);
-            add(diffParameters, diff, context);
+            ParameterFlow diff = parameter.differentiate();
+            if (parameters.size()==1) {
+                new VariableFlow(true, diff.getName(), Number.ONE).addContext(context);
+            } else {
+                add(diffParameters, diff, context);
+            }
         }
         List<VariableFlow> diffVariables = new LinkedList<>();
         for (VariableFlow variable : variables) {
@@ -79,6 +84,7 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
                 iterator.remove();
             }
         }
+        /* TODO Uncomment me when functions can deal with it
         int i = 0;
         for (Iterator<ParameterFlow> iterator = diffParameters.iterator(); iterator.hasNext(); ) {
             ParameterFlow diffParameter = iterator.next();
@@ -89,6 +95,7 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
             }
             i++;
         }
+        */
 
         return new FunctionFlow(file, name + "_", diffParameters, diffVariables, diffRet);
     }
@@ -128,7 +135,8 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
         visitExpresssions(new ExpressionVisitor() {
             @Override
             public void visitFunction(Function function) {
-                addImport(file.findFunction(function.getName()));
+                Reference ref = Reference.function(file, function.getName());
+                addImport(findFunction(ref));
                 super.visitFunction(function);
             }
 
@@ -161,6 +169,10 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
         returnFlow.getExpression().accept(visitor);
     }
 
+    private KerboScriptNamedElement findFunction(Reference ref) {
+        return ref.findDeclaration();
+    }
+
     public Reference getNextToDiff(Map<Reference, FunctionFlow> context) {
         AtomicReference<Reference> reference = new AtomicReference<>();
         visitExpresssions(new ExpressionVisitor() {
@@ -169,7 +181,7 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
                 if (reference.get() == null) {
                     String name = function.getName();
                     Reference ref = Reference.function(file, name);
-                    KerboScriptNamedElement declaration = ref.findDeclaration();
+                    KerboScriptNamedElement declaration = findFunction(ref);
                     if (declaration == null || !declaration.isReal()) {
                         reference.set(undiff(ref));
                     } else {
@@ -182,16 +194,20 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
             private Reference undiff(Reference reference) {
                 String name = reference.getName();
                 Reference undiff = null;
-                if (!context.containsKey(reference) && name.endsWith("_")) {
+                if (name.endsWith("_")) {
                     name = name.substring(0, name.length() - 1);
                     undiff = Reference.function(reference.getKingdom(), name);
-                    KerboScriptNamedElement resolved = undiff.findDeclaration();
-                    if (resolved != null) {
-                        if (resolved.isReal()) {
-                            return resolved;
+                    if (!context.containsKey(undiff)) {
+                        KerboScriptNamedElement resolved = findFunction(undiff);
+                        if (resolved != null) {
+                            if (resolved.isReal()) {
+                                return resolved;
+                            }
+                        } else {
+                            return undiff(undiff);
                         }
                     } else {
-                        return undiff(undiff);
+                        return null;
                     }
                 }
                 return undiff;

@@ -2,6 +2,8 @@ package ksp.kos.ideaplugin.reference;
 
 import ksp.kos.ideaplugin.psi.KerboScriptScope;
 
+import java.util.Objects;
+
 /**
  * Created on 10/04/16.
  *
@@ -31,5 +33,19 @@ public class ReferenceImpl implements Reference {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ReferenceImpl reference = (ReferenceImpl) o;
+        return referableType == reference.referableType &&
+                Objects.equals(name, reference.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(referableType, name);
     }
 }

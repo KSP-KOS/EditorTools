@@ -47,11 +47,11 @@ public class FunctionDiffer implements Differ {
                 while (function != null) {
                     Reference next = function.getNextToDiff(context);
                     if (next != null) {
-                        processing.put(ref, function);
+                        processing.put(Reference.copy(ref), function);
                         stack.push(ref);
                         function = null;
                     } else {
-                        processed.put(ref, function);
+                        processed.put(Reference.copy(ref), function);
                         next = stack.poll();
                         function = processing.remove(next);
                     }

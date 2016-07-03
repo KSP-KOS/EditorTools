@@ -32,6 +32,10 @@ public interface Reference {
         return reference(kingdom, ReferableType.FUNCTION, name);
     }
 
+    static Reference copy(Reference reference) {
+        return reference(reference.getKingdom(), reference.getReferableType(), reference.getName());
+    }
+
     @NotNull
     static Reference reference(KerboScriptScope kingdom, ReferableType type, String name) {
         return new ReferenceImpl(kingdom, type, name);

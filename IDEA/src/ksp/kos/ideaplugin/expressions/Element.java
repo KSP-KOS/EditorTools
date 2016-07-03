@@ -25,7 +25,7 @@ public class Element extends Expression {
     }
 
     public static Expression create(int sign, Expression atom, Expression power) {
-        if (atom.equals(Number.ZERO)){
+        if (atom.equals(Number.ZERO)) {
             power = Number.ONE;
             sign = 1;
         } else if (atom.equals(Number.ONE)) {
@@ -37,8 +37,6 @@ public class Element extends Expression {
             }
         } else if (power.equals(Number.ZERO)) {
             return Number.ONE;
-        } else if (power.isNegative()) {
-            return Number.ONE.divide(create(sign, atom, power.minus()));
         }
         return new Element(sign, atom, power);
     }
@@ -88,7 +86,8 @@ public class Element extends Expression {
     }
 
     private static int parseSign(KerboScriptUnaryExpr element) throws SyntaxException {
-        int sign;ASTNode plusMinus = element.getNode().findChildByType(KerboScriptTypes.PLUSMINUS);
+        int sign;
+        ASTNode plusMinus = element.getNode().findChildByType(KerboScriptTypes.PLUSMINUS);
         if (plusMinus == null) {
             sign = 1;
         } else {
@@ -120,10 +119,10 @@ public class Element extends Expression {
     @Override
     public String getText() {
         String text = "";
-        if (sign==-1) {
-            text+="-";
+        if (sign == -1) {
+            text += "-";
         }
-        text+=atom.getText();
+        text += atom.getText();
         if (!power.equals(Number.ONE)) {
             text += "^" + power.getText();
         }
@@ -134,7 +133,7 @@ public class Element extends Expression {
     public Expression differentiate() {
         if (power.equals(Number.ONE)) {
             Expression diff = atom.differentiate();
-            if (sign==-1) {
+            if (sign == -1) {
                 diff = diff.minus();
             }
             return diff;
@@ -151,11 +150,14 @@ public class Element extends Expression {
     }
 
     public boolean isSimple() {
-        return sign==1 && power.equals(Number.ONE);
+        return sign == 1 && power.equals(Number.ONE);
     }
 
     @Override
     public Expression simplify() {
+        if (power.isNegative()) {
+            return Number.ONE.divide(create(sign, atom, power.minus()));
+        }
         return create(sign, atom.simplify(), power.simplify());
     }
 
@@ -175,14 +177,14 @@ public class Element extends Expression {
         if (canMultiply(expression)) {
             Element element = (Element) expression;
             if (this.isNumber() && element.isNumber()) {
-                return create(sign*element.sign, atom.multiply(element.getAtom()));
+                return create(sign * element.sign, atom.multiply(element.getAtom()));
             }
-            return create(sign*element.sign, atom, power.plus(element.power));
+            return create(sign * element.sign, atom, power.plus(element.power));
         } else if (isNumber()) {
             if (expression instanceof Element) {
                 Element element = (Element) expression;
                 if (element.isNumber()) {
-                    return create(sign*element.sign, atom.multiply(element.getAtom()));
+                    return create(sign * element.sign, atom.multiply(element.getAtom()));
                 }
             }
         }
@@ -193,7 +195,7 @@ public class Element extends Expression {
     public Expression divide(Expression expression) {
         if (canMultiply(expression)) {
             Element element = (Element) expression;
-            return create(sign*element.sign, atom, power.minus(element.power));
+            return create(sign * element.sign, atom, power.minus(element.power));
         }
         return super.divide(expression);
     }

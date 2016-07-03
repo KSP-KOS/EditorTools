@@ -13,14 +13,17 @@ import org.jetbrains.annotations.NotNull;
  * @author ptasha
  */
 public class KerboScriptScopeImpl extends ASTWrapperPsiElement implements KerboScriptScope {
-    private final Cache<LocalScope> cache = new Cache<>(this, new LocalScope(this.getScope().getCachedScope()));
+    private Cache<LocalScope> cache;
 
     public KerboScriptScopeImpl(@NotNull ASTNode node) {
         super(node);
     }
 
     @Override
-    public LocalScope getCachedScope() {
+    public synchronized LocalScope getCachedScope() {
+        if (cache==null) {
+            cache = new Cache<>(this, new LocalScope(this.getScope().getCachedScope()));
+        }
         return cache.getScope();
     }
 }
