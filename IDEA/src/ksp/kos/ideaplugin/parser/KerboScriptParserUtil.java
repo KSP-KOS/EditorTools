@@ -2,7 +2,6 @@ package ksp.kos.ideaplugin.parser;
 
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiParser;
-import com.intellij.lang.impl.PsiBuilderAdapter;
 import com.intellij.lang.parser.GeneratedParserUtilBase;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.tree.TokenSet;
@@ -21,8 +20,9 @@ import java.util.regex.Pattern;
  */
 public class KerboScriptParserUtil extends GeneratedParserUtilBase {
     public static PsiBuilder adapt_builder_(IElementType root, PsiBuilder builder, PsiParser parser, TokenSet[] extendsSets) {
-        builder = new RemapperPsiBuilder(builder);
-        return GeneratedParserUtilBase.adapt_builder_(root, builder, parser, extendsSets);
+        ErrorState state = new ErrorState();
+        ErrorState.initState(state, builder, root, extendsSets);
+        return new RemapperPsiBuilder(builder, state, parser);
     }
 
     public static boolean nextTokenIs(PsiBuilder builder, IElementType token) {
@@ -46,21 +46,18 @@ public class KerboScriptParserUtil extends GeneratedParserUtilBase {
     }
 
     private static void advise(PsiBuilder builder, IElementType... tokens) {
-        if (builder instanceof GeneratedParserUtilBase.Builder) {
-            builder = ((Builder) builder).getDelegate();
-            if (builder instanceof RemapperPsiBuilder) {
-                ((RemapperPsiBuilder) builder).expect(tokens);
-            }
+        if (builder instanceof RemapperPsiBuilder) {
+            ((RemapperPsiBuilder) builder).expect(tokens);
         }
     }
 
-    private static class RemapperPsiBuilder extends PsiBuilderAdapter {
+    private static class RemapperPsiBuilder extends GeneratedParserUtilBase.Builder {
         private final Pattern identifier = Pattern.compile("[a-zA-Z_][a-zA-Z0-9_]*");
         private final Pattern file = Pattern.compile("[a-zA-Z_][a-zA-Z0-9_]*(\\.[a-zA-Z0-9_][a-zA-Z0-9_]*)*");
-        private Queue<IElementType> expected = new LinkedList<>();
+        private final Queue<IElementType> expected = new LinkedList<>();
 
-        public RemapperPsiBuilder(PsiBuilder builder) {
-            super(builder);
+        public RemapperPsiBuilder(PsiBuilder builder, ErrorState state_, PsiParser parser_) {
+            super(builder, state_, parser_);
         }
 
         @Nullable
@@ -85,7 +82,8 @@ public class KerboScriptParserUtil extends GeneratedParserUtilBase {
         }
 
         public void expect(IElementType... expected) {
-            this.expected = new LinkedList<>(Arrays.asList(expected));
+            this.expected.clear();
+            this.expected.addAll(Arrays.asList(expected));
         }
 
     }
