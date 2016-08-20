@@ -22,6 +22,7 @@ public abstract class BaseFlow<F extends BaseFlow<F>> implements Flow<F> {
         dependees.remove(flow);
     }
 
+    @Override
     public boolean hasDependees() {
         return !dependees.isEmpty();
     }

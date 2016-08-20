@@ -51,6 +51,8 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
                 }
             } else if (instruction instanceof KerboScriptReturnStmt) {
                 return new FunctionFlow(function.getKerboScriptFile(), name, parameters, variables, ReturnFlow.parse((KerboScriptReturnStmt) instruction));
+            } else if (instruction instanceof KerboScriptIfStmt) {
+                KerboScriptIfStmt ifStmt = (KerboScriptIfStmt) instruction;
             }
         }
         throw new SyntaxException("Return statement is not found for function " + name);
