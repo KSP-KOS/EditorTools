@@ -7,62 +7,64 @@ PLUSMINUS    -> @"(\+|-)";
 MULT         -> @"\*";
 DIV          -> @"/";
 POWER        -> @"\^";
-E            -> @"(?i)\be\b";
+E            -> @"\be\b";
 //Logic
-NOT          -> @"(?i)\bnot\b";
-AND          -> @"(?i)\band\b";
-OR           -> @"(?i)\bor\b";
-TRUEFALSE    -> @"(?i)\btrue\b|\bfalse\b";
+NOT          -> @"\bnot\b";
+AND          -> @"\band\b";
+OR           -> @"\bor\b";
+TRUEFALSE    -> @"\btrue\b|\bfalse\b";
 COMPARATOR   -> @"<>|>=|<=|=|>|<";
 //Instructions tokens
-SET          -> @"(?i)\bset\b";
-TO           -> @"(?i)\bto\b";
-IS           -> @"(?i)\bis\b";
-IF           -> @"(?i)\bif\b";
-ELSE         -> @"(?i)\belse\b";
-UNTIL        -> @"(?i)\buntil\b";
-STEP         -> @"(?i)\bstep\b";
-DO           -> @"(?i)\bdo\b";
-LOCK         -> @"(?i)\block\b";
-UNLOCK       -> @"(?i)\bunlock\b";
-PRINT        -> @"(?i)\bprint\b";
-AT           -> @"(?i)\bat\b";
-ON           -> @"(?i)\bon\b";
-TOGGLE       -> @"(?i)\btoggle\b";
-WAIT         -> @"(?i)\bwait\b";
-WHEN         -> @"(?i)\bwhen\b";
-THEN         -> @"(?i)\bthen\b";
-OFF          -> @"(?i)\boff\b";
-STAGE        -> @"(?i)\bstage\b";
-CLEARSCREEN  -> @"(?i)\bclearscreen\b";
-ADD          -> @"(?i)\badd\b";
-REMOVE       -> @"(?i)\bremove\b";
-LOG          -> @"(?i)\blog\b";
-BREAK        -> @"(?i)\bbreak\b";
-PRESERVE     -> @"(?i)\bpreserve\b";
-DECLARE      -> @"(?i)\bdeclare\b";
-DEFINED      -> @"(?i)\bdefined\b";
-LOCAL        -> @"(?i)\blocal\b";
-GLOBAL       -> @"(?i)\bglobal\b";
-PARAMETER    -> @"(?i)\bparameter\b";
-FUNCTION     -> @"(?i)\bfunction\b";
-RETURN       -> @"(?i)\breturn\b";
-SWITCH       -> @"(?i)\bswitch\b";
-COPY         -> @"(?i)\bcopy\b";
-FROM         -> @"(?i)\bfrom\b";
-RENAME       -> @"(?i)\brename\b";
-VOLUME       -> @"(?i)\bvolume\b";
-FILE         -> @"(?i)\bfile\b";
-DELETE       -> @"(?i)\bdelete\b";
-EDIT         -> @"(?i)\bedit\b";
-RUN          -> @"(?i)\brun\b";
-ONCE         -> @"(?i)\bonce\b";
-COMPILE      -> @"(?i)\bcompile\b";
-LIST         -> @"(?i)\blist\b";
-REBOOT       -> @"(?i)\breboot\b";
-SHUTDOWN     -> @"(?i)\bshutdown\b";
-FOR          -> @"(?i)\bfor\b";
-UNSET        -> @"(?i)\bunset\b";
+SET          -> @"\bset\b";
+TO           -> @"\bto\b";
+IS           -> @"\bis\b";
+IF           -> @"\bif\b";
+ELSE         -> @"\belse\b";
+UNTIL        -> @"\buntil\b";
+STEP         -> @"\bstep\b";
+DO           -> @"\bdo\b";
+LOCK         -> @"\block\b";
+UNLOCK       -> @"\bunlock\b";
+PRINT        -> @"\bprint\b";
+AT           -> @"\bat\b";
+ON           -> @"\bon\b";
+TOGGLE       -> @"\btoggle\b";
+WAIT         -> @"\bwait\b";
+WHEN         -> @"\bwhen\b";
+THEN         -> @"\bthen\b";
+OFF          -> @"\boff\b";
+STAGE        -> @"\bstage\b";
+CLEARSCREEN  -> @"\bclearscreen\b";
+ADD          -> @"\badd\b";
+REMOVE       -> @"\bremove\b";
+LOG          -> @"\blog\b";
+BREAK        -> @"\bbreak\b";
+PRESERVE     -> @"\bpreserve\b";
+DECLARE      -> @"\bdeclare\b";
+DEFINED      -> @"\bdefined\b";
+LOCAL        -> @"\blocal\b";
+GLOBAL       -> @"\bglobal\b";
+PARAMETER    -> @"\bparameter\b";
+FUNCTION     -> @"\bfunction\b";
+RETURN       -> @"\breturn\b";
+SWITCH       -> @"\bswitch\b";
+COPY         -> @"\bcopy\b";
+FROM         -> @"\bfrom\b";
+RENAME       -> @"\brename\b";
+VOLUME       -> @"\bvolume\b";
+FILE         -> @"\bfile\b";
+DELETE       -> @"\bdelete\b";
+EDIT         -> @"\bedit\b";
+RUN          -> @"\brun\b";
+RUNPATH      -> @"\brunpath\b";
+RUNONCEPATH  -> @"\brunoncepath\b";
+ONCE         -> @"\bonce\b";
+COMPILE      -> @"\bcompile\b";
+LIST         -> @"\blist\b";
+REBOOT       -> @"\breboot\b";
+SHUTDOWN     -> @"\bshutdown\b";
+FOR          -> @"\bfor\b";
+UNSET        -> @"\bunset\b";
 
 //Generic
 BRACKETOPEN  -> @"\(";
@@ -73,18 +75,18 @@ SQUAREOPEN   -> @"\[";
 SQUARECLOSE  -> @"\]";
 COMMA        -> @",";
 COLON        -> @":";
-IN           -> @"(?i)\bin\b";
+IN           -> @"\bin\b";
 ARRAYINDEX   -> @"#";
-ALL          -> @"(?i)\ball\b";
-IDENTIFIER   -> @"(?i)[a-z_][a-z0-9_]*";
-FILEIDENT    -> @"(?i)[a-z_][a-z0-9_]*(\.[a-z0-9_][a-z0-9_]*)*";
+ALL          -> @"\ball\b";
+IDENTIFIER   -> @"[a-z_][a-z0-9_]*";
+FILEIDENT    -> @"[a-z_][a-z0-9_]*(\.[a-z0-9_][a-z0-9_]*)*";
 INTEGER      -> @"[0-9]+";
 DOUBLE       -> @"[0-9]*\.[0-9]+";
 STRING       -> @"@?\""(\""\""|[^\""])*\""";
 EOI          -> @"\.";
 //Compiler Directives
 ATSIGN       -> @"@";
-LAZYGLOBAL   -> @"(?i)\blazyglobal\b";
+LAZYGLOBAL   -> @"\blazyglobal\b";
 //Special
 EOF          -> @"^$";
 [Skip]
@@ -95,8 +97,9 @@ COMMENTLINE  -> @"//[^\n]*\n?";
 // Rules
 // ===================================================
 Start -> (instruction)* EOF;
-instruction_block -> CURLYOPEN instruction* CURLYCLOSE EOI?;
-instruction -> set_stmt |
+instruction_block -> CURLYOPEN instruction* CURLYCLOSE;
+instruction -> empty_stmt |
+               set_stmt |
                if_stmt |
                until_stmt |
                fromloop_stmt |
@@ -121,6 +124,8 @@ instruction -> set_stmt |
                delete_stmt |
                edit_stmt |
                run_stmt |
+               runpath_stmt |
+               runoncepath_stmt |
                compile_stmt |
                list_stmt |
                reboot_stmt |
@@ -137,8 +142,9 @@ directive            -> lazyglobal_directive; // Add to this list later if we ma
 
 // ------------ statements --------------------
 
+empty_stmt     -> EOI;
 set_stmt       -> SET varidentifier TO expr EOI;
-if_stmt        -> IF expr instruction (ELSE instruction)? EOI?;
+if_stmt        -> IF expr instruction EOI? (ELSE instruction EOI?)?;
 until_stmt     -> UNTIL expr instruction EOI?;
 fromloop_stmt  -> FROM instruction_block UNTIL expr STEP instruction_block DO instruction EOI?;
 unlock_stmt    -> UNLOCK (IDENTIFIER | ALL) EOI;
@@ -187,7 +193,9 @@ copy_stmt      -> COPY expr (FROM | TO) expr EOI;
 rename_stmt    -> RENAME (VOLUME | FILE)? expr TO expr EOI;
 delete_stmt    -> DELETE expr (FROM expr)? EOI;
 edit_stmt      -> EDIT expr EOI;
-run_stmt       -> RUN (ONCE)? FILEIDENT (BRACKETOPEN arglist BRACKETCLOSE)? (ON expr)? EOI;
+run_stmt       -> RUN (ONCE)? (FILEIDENT|STRING) (BRACKETOPEN arglist BRACKETCLOSE)? (ON expr)? EOI;
+runpath_stmt   -> RUNPATH BRACKETOPEN expr (COMMA arglist)? BRACKETCLOSE EOI;
+runoncepath_stmt -> RUNONCEPATH BRACKETOPEN expr (COMMA arglist)? BRACKETCLOSE EOI;
 compile_stmt   -> COMPILE expr (TO expr)? EOI;
 list_stmt      -> LIST (IDENTIFIER (IN IDENTIFIER)?)? EOI;
 reboot_stmt    -> REBOOT EOI;
@@ -199,7 +207,8 @@ unset_stmt     -> UNSET (IDENTIFIER | ALL) EOI;
 // ---------- expressions ---------------------------
 
 arglist            -> expr (COMMA expr)*;
-expr               -> and_expr (OR and_expr)*;
+expr               -> (or_expr|instruction_block);
+or_expr            -> and_expr (OR and_expr)*;
 and_expr           -> compare_expr (AND compare_expr)*;
 compare_expr       -> arith_expr (COMPARATOR arith_expr)*;
 arith_expr         -> multdiv_expr (PLUSMINUS multdiv_expr)*;

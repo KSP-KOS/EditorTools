@@ -73,6 +73,8 @@ FILE         = file
 DELETE       = delete
 EDIT         = edit
 RUN          = run
+RUNPATH      = runpath
+RUNONCEPATH  = runoncepath
 ONCE         = once
 COMPILE      = compile
 LIST         = list
@@ -168,6 +170,8 @@ COMMENTLINE  = \/\/[^\n]*
 {DELETE}    {return KerboScriptTypes.DELETE;}
 {EDIT}    {return KerboScriptTypes.EDIT;}
 {RUN}    {return KerboScriptTypes.RUN;}
+{RUNPATH}    {return KerboScriptTypes.RUNPATH;}
+{RUNONCEPATH}    {return KerboScriptTypes.RUNONCEPATH;}
 {ONCE}    {return KerboScriptTypes.ONCE;}
 {COMPILE}    {return KerboScriptTypes.COMPILE;}
 {LIST}    {return KerboScriptTypes.LIST;}
