@@ -63,6 +63,7 @@ public class FunctionDiffer implements Differ {
                 KerboScriptFile file = entry.getKey().getKingdom().getKerboScriptFile();
                 KerboScriptFile diffFile = ensureDiffDependency(file);
                 FunctionFlowImporter.INSTANCE.importFlow(diffFile, entry.getValue());
+                // TODO import flows without \n
             }
         } catch (SyntaxException e) {
             throw new ActionFailedException(e);

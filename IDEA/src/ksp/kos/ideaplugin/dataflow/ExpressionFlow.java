@@ -1,11 +1,11 @@
 package ksp.kos.ideaplugin.dataflow;
 
 import ksp.kos.ideaplugin.expressions.Expression;
+import ksp.kos.ideaplugin.expressions.ExpressionVisitor;
 import ksp.kos.ideaplugin.expressions.Number;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
-import java.util.Set;
 
 /**
  * Created on 12/03/16.
@@ -25,22 +25,29 @@ public abstract class ExpressionFlow<F extends ExpressionFlow<F>> extends BaseFl
 
     @SuppressWarnings("unchecked")
     @Override
-    public void addContext(HashMap<String, NamedFlow<?>> context) {
+    public boolean addContext(Context context) {
         HashMap<String, Expression> inline = new HashMap<>();
-        Set<String> names = expression.getVariableNames();
-        for (String name : names) {
-            NamedFlow<?> flow = context.get(name);
+        for (String name : expression.getVariableNames()) {
+            Dependency flow = context.getFlow(name);
             if (flow != null) {
+                // TODO inline simple functions
                 if (flow instanceof VariableFlow && ((VariableFlow) flow).isSimple()) {
                     inline.put(name, ((VariableFlow) flow).getExpression());
-                } else {
-                    flow.addDependee(this);
                 }
+            } else if (name.endsWith("_")) {
+                inline.put(name, Number.ZERO);
             }
         }
         if (!inline.isEmpty()) {
             expression = expression.inline(inline);
         }
+        for (String name : expression.getVariableNames()) {
+            Dependency flow = context.getFlow(name);
+            if (flow != null) {
+                flow.addDependee(this);
+            }
+        }
+        return true;
     }
 
     public boolean isSimple() {
@@ -54,4 +61,9 @@ public abstract class ExpressionFlow<F extends ExpressionFlow<F>> extends BaseFl
 
     @NotNull
     protected abstract F create(Expression diff);
+
+    @Override
+    public void accept(ExpressionVisitor visitor) {
+        getExpression().accept(visitor);
+    }
 }

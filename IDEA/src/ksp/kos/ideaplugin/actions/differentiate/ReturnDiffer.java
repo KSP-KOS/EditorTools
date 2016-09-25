@@ -1,7 +1,6 @@
 package ksp.kos.ideaplugin.actions.differentiate;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
 import ksp.kos.ideaplugin.actions.ActionFailedException;
 import ksp.kos.ideaplugin.expressions.Expression;
 import ksp.kos.ideaplugin.expressions.SyntaxException;

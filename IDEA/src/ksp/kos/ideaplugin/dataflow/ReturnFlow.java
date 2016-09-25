@@ -22,6 +22,20 @@ public class ReturnFlow extends ExpressionFlow<ReturnFlow> {
     }
 
     @Override
+    public ReturnFlow differentiate(Context context) {
+        ReturnFlow diff = differentiate();
+        context.add(diff);
+        return diff;
+    }
+
+    @Override
+    public boolean addContext(Context context) {
+        super.addContext(context);
+        context.addReturnFlow(this);
+        return false;
+    }
+
+    @Override
     public String getText() {
         return "return "+getExpression().getText()+".";
     }

@@ -22,12 +22,14 @@ public abstract class Expression {
             return new Addition((KerboScriptArithExpr) psiExpression);
         } else if (psiExpression instanceof KerboScriptMultdivExpr) {
             return new Multiplication((KerboScriptMultdivExpr) psiExpression);
+        } else if (psiExpression instanceof KerboScriptCompareExpr) {
+            return new Compare((KerboScriptCompareExpr) psiExpression);
         } else if (psiExpression instanceof KerboScriptNumber) {
             return new Number((KerboScriptNumber) psiExpression);
         } else if (psiExpression instanceof KerboScriptSciNumber) {
             return new Number((KerboScriptSciNumber) psiExpression);
         } else if (psiExpression instanceof KerboScriptSuffix) {
-            return new Constant(psiExpression);
+            return new Constant((KerboScriptSuffix) psiExpression);
         } else if (psiExpression instanceof KerboScriptSuffixterm) {
             KerboScriptSuffixterm suffixterm = (KerboScriptSuffixterm) psiExpression;
             int tailSize = suffixterm.getSuffixtermTrailerList().size();
@@ -66,10 +68,16 @@ public abstract class Expression {
     }
 
     public Expression plus(Expression expression) {
+        if (this.equals(expression)) {
+            return this.multiply(Number.create(2));
+        }
         return new Addition(this).plus(expression);
     }
 
     public Expression minus(Expression expression) {
+        if (this.equals(expression)) {
+            return Number.ZERO;
+        }
         return new Addition(this).minus(expression);
     }
 
@@ -95,7 +103,7 @@ public abstract class Expression {
         return new Multiplication(this).divide(expression);
     }
 
-    public boolean canMultiply(Expression expression) {
+    public boolean canMultiply(Expression expression) { // TODO symmetry for this and multiply and plus
         return this.equals(expression);
     }
 
@@ -122,5 +130,9 @@ public abstract class Expression {
     }
 
     public void acceptChildren(ExpressionVisitor visitor) {
+    }
+
+    public boolean canAdd(Expression expression) {
+        return this.equals(expression);
     }
 }

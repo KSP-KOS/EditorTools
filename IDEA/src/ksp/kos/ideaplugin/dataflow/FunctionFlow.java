@@ -1,13 +1,15 @@
 package ksp.kos.ideaplugin.dataflow;
 
+import com.intellij.psi.PsiFile;
 import ksp.kos.ideaplugin.KerboScriptFile;
 import ksp.kos.ideaplugin.expressions.*;
-import ksp.kos.ideaplugin.expressions.Number;
 import ksp.kos.ideaplugin.psi.*;
 import ksp.kos.ideaplugin.reference.Reference;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -19,106 +21,46 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
     private final KerboScriptFile file;
     private final String name;
 
-    private final List<ParameterFlow> parameters;
-    private final List<VariableFlow> variables;
-    private final ReturnFlow returnFlow;
+    private final Context parameters;
+    private final Context instructions;
 
-    public FunctionFlow(KerboScriptFile file, String name, List<ParameterFlow> parameters, List<VariableFlow> variables, ReturnFlow returnFlow) {
+    public FunctionFlow(KerboScriptFile file, String name, Context parameters, Context instructions) {
         this.file = file;
         this.name = name;
         this.parameters = parameters;
-        this.variables = variables;
-        this.returnFlow = returnFlow;
+        this.instructions = instructions;
     }
 
     public static FunctionFlow parse(KerboScriptDeclareFunctionClause function) throws SyntaxException {
+        FunctionParser parser = new FunctionParser();
         String name = function.getName();
-        List<ParameterFlow> parameters = new ArrayList<>();
-        List<VariableFlow> variables = new ArrayList<>();
-        List<KerboScriptInstruction> instructions = function.getInstructionBlock().getInstructionList();
-        for (KerboScriptInstruction instruction : instructions) {
-            if (instruction instanceof KerboScriptSetStmt) {
-                VariableFlow flow = VariableFlow.parse((KerboScriptSetStmt) instruction);
-                if (flow != null) {
-                    variables.add(flow);
-                }
-            } else if (instruction instanceof KerboScriptDeclareStmt) {
-                KerboScriptDeclareStmt declareStmt = (KerboScriptDeclareStmt) instruction;
-                if (declareStmt.getDeclareParameterClause() != null) {
-                    parameters.add(ParameterFlow.parse(declareStmt.getDeclareParameterClause()));
-                } else if (declareStmt.getDeclareIdentifierClause() != null) {
-                    variables.add(VariableFlow.parse(declareStmt.getDeclareIdentifierClause()));
-                }
-            } else if (instruction instanceof KerboScriptReturnStmt) {
-                return new FunctionFlow(function.getKerboScriptFile(), name, parameters, variables, ReturnFlow.parse((KerboScriptReturnStmt) instruction));
-            } else if (instruction instanceof KerboScriptIfStmt) {
-                KerboScriptIfStmt ifStmt = (KerboScriptIfStmt) instruction;
-            }
-        }
-        throw new SyntaxException("Return statement is not found for function " + name);
+        parser.parseInstructions(function.getInstructionBlock().getInstructionList());
+        return new FunctionFlow(function.getKerboScriptFile(), name, parser.getContext(), parser.getFlowContext());
+        // throw new SyntaxException("Return statement is not found for function " + name); // TODO check for return statement
     }
 
     @Override
     public FunctionFlow differentiate() {
-        HashMap<String, NamedFlow<?>> context = new HashMap<>();
-        List<ParameterFlow> diffParameters = new LinkedList<>();
-        for (ParameterFlow parameter : parameters) {
-            add(diffParameters, parameter, context);
-            ParameterFlow diff = parameter.differentiate();
-            if (parameters.size()==1) {
-                new VariableFlow(true, diff.getName(), Number.ONE).addContext(context);
-            } else {
-                add(diffParameters, diff, context);
-            }
-        }
-        List<VariableFlow> diffVariables = new LinkedList<>();
-        for (VariableFlow variable : variables) {
-            VariableFlow diff = variable.differentiate();
-            add(diffVariables, variable, context);
-            add(diffVariables, diff, context);
-        }
-        ReturnFlow diffRet = returnFlow.differentiate();
-        diffRet.addContext(context);
+        Context parameters = new Context();
+        this.parameters.differentiate(parameters); // TODO single parameter
+        Context flows = new Context(parameters);
+        this.instructions.differentiate(flows);
+        parameters.buildMap();
+        flows.buildMap();
+        flows.getReturnFlow().addDependee(this);
+        flows.simplify();
+        parameters.simplify(); // TODO teach Function to deal with it
 
-        for (ListIterator<VariableFlow> iterator = diffVariables.listIterator(diffVariables.size()); iterator.hasPrevious(); ) {
-            VariableFlow variable = iterator.previous();
-            if (!variable.hasDependees()) {
-                iterator.remove();
-            }
-        }
-        /* TODO Uncomment me when functions can deal with it
-        int i = 0;
-        for (Iterator<ParameterFlow> iterator = diffParameters.iterator(); iterator.hasNext(); ) {
-            ParameterFlow diffParameter = iterator.next();
-            if (i >= parameters.size()) {
-                if (!diffParameter.hasDependees()) {
-                    iterator.remove();
-                }
-            }
-            i++;
-        }
-        */
-
-        return new FunctionFlow(file, name + "_", diffParameters, diffVariables, diffRet);
-    }
-
-    private <F extends NamedFlow<F>> void add(List<F> list, F flow, HashMap<String, NamedFlow<?>> context) {
-        list.add(flow);
-        flow.addContext(context);
+        return new FunctionFlow(file, name + "_", parameters, flows);
     }
 
     @Override
     public String getText() {
         String text = "";
         text += "function " + name + " {\n";
-        for (ParameterFlow parameter : parameters) {
-            text += parameter.getText() + "\n";
-        }
-        text += "\n";
-        for (VariableFlow variable : variables) {
-            text += variable.getText() + "\n";
-        }
-        text += returnFlow.getText() + "\n";
+        text += parameters.getText() + "\n";
+        if (!parameters.getList().isEmpty()) text += "\n";
+        text += instructions.getText() + "\n";
         text += "}";
         return text;
     }
@@ -131,9 +73,6 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
     public Set<ImportFlow> getImports(KerboScriptFile newFile) {
         HashSet<ImportFlow> imports = new HashSet<>();
         HashSet<String> context = new HashSet<>();
-        for (ParameterFlow parameter : parameters) {
-            context.add(parameter.getName());
-        }
         visitExpresssions(new ExpressionVisitor() {
             @Override
             public void visitFunction(Function function) {
@@ -165,14 +104,35 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
     }
 
     public void visitExpresssions(ExpressionVisitor visitor) {
-        for (VariableFlow variable : variables) {
-            variable.getExpression().accept(visitor);
-        }
-        returnFlow.getExpression().accept(visitor);
+        parameters.visit(visitor);
+        instructions.visit(visitor);
     }
 
     private KerboScriptNamedElement findFunction(Reference ref) {
-        return ref.findDeclaration();
+        KerboScriptNamedElement resolved = ref.findDeclaration();
+        if (resolved!=null) {
+            return resolved;
+        }
+        String name = ref.getName();
+        if (name.endsWith("_")) {
+            while (name.endsWith("_")) {
+                name = name.substring(0, name.length() - 1);
+            }
+            KerboScriptNamedElement orig = Reference.function(ref.getKingdom(), name).findDeclaration();
+            if (orig != null) {
+                PsiFile psiFile = orig.getContainingFile();
+                if (psiFile instanceof KerboScriptFile) {
+                    String fileName = ((KerboScriptFile) psiFile).getPureName();
+                    if (!fileName.endsWith("_")) {
+                        KerboScriptFile diffFile = this.file.findFile(fileName + "_");
+                        if (diffFile!=null) {
+                            return Reference.function(diffFile, ref.getName()).findDeclaration();
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     public Reference getNextToDiff(Map<Reference, FunctionFlow> context) {
@@ -195,16 +155,13 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
             @Nullable
             private Reference undiff(Reference reference) {
                 String name = reference.getName();
-                Reference undiff = null;
                 if (name.endsWith("_")) {
                     name = name.substring(0, name.length() - 1);
-                    undiff = Reference.function(reference.getKingdom(), name);
+                    Reference undiff = Reference.function(reference.getKingdom(), name);
                     if (!context.containsKey(undiff)) {
                         KerboScriptNamedElement resolved = findFunction(undiff);
-                        if (resolved != null) {
-                            if (resolved.isReal()) {
-                                return resolved;
-                            }
+                        if (resolved != null && resolved.isReal()) {
+                            return resolved;
                         } else {
                             return undiff(undiff);
                         }
@@ -212,7 +169,7 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
                         return null;
                     }
                 }
-                return undiff;
+                return null;
             }
 
             @Override
@@ -223,5 +180,34 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
             }
         });
         return reference.get();
+    }
+
+    private static class FunctionParser extends FlowParser {
+        private final FlowParser parser = new FlowParser(getContext());
+        private boolean parametersParsed = false;
+
+        @Override
+        public boolean parseInstruction(KerboScriptInstruction instruction) throws SyntaxException {
+            if (parametersParsed) {
+                return parser.parseInstruction(instruction);
+            } else if (instruction instanceof KerboScriptDeclareStmt) {
+                KerboScriptDeclareStmt declareStmt = (KerboScriptDeclareStmt) instruction;
+                KerboScriptDeclareParameterClause declareParameterClause = declareStmt.getDeclareParameterClause();
+                if (declareParameterClause != null) {
+                    addFlow(ParameterFlow.parse(declareParameterClause));
+                } else if (declareStmt.getDeclareIdentifierClause() != null) {
+                    parametersParsed = true;
+                    return parser.parseInstruction(instruction);
+                }
+            } else {
+                parametersParsed = true;
+                return parser.parseInstruction(instruction);
+            }
+            return true;
+        }
+
+        public Context getFlowContext() {
+            return parser.getContext();
+        }
     }
 }

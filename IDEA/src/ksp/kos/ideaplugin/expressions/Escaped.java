@@ -61,4 +61,11 @@ public class Escaped extends Atom {
     public void acceptChildren(ExpressionVisitor visitor) {
         expression.accept(visitor);
     }
+
+    public static Expression unescape(Expression expression) {
+        if (expression instanceof Escaped) {
+            return unescape(((Escaped) expression).getExpression());
+        }
+        return expression;
+    }
 }

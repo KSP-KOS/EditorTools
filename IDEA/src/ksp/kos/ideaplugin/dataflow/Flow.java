@@ -1,35 +1,24 @@
 package ksp.kos.ideaplugin.dataflow;
 
-import java.util.HashMap;
-import java.util.List;
+import ksp.kos.ideaplugin.expressions.ExpressionVisitor;
 
 /**
  * Created on 12/03/16.
  *
  * @author ptasha
  */
-public interface Flow<F extends Flow<F>> {
-    default void differentiate(HashMap<String, NamedFlow<?>> context, List<Flow> diffVariables) {
-        Flow diff = differentiate();
-        add(diffVariables, this, context);
-        add(diffVariables, diff, context);
-    }
-
-
-    static void add(List<Flow> list, Flow<?> flow, HashMap<String, NamedFlow<?>> context) {
-        list.add(flow);
-        flow.addContext(context);
-    }
+public interface Flow<F extends Flow<F>> extends Dependency {
+    F differentiate(Context context);
 
     F differentiate();
 
     String getText();
 
-    void addDependee(Flow<?> flow);
+    boolean addContext(Context context);
+
+    void accept(ExpressionVisitor visitor);
 
     void removeDependee(Flow<?> flow);
 
     boolean hasDependees();
-
-    void addContext(HashMap<String, NamedFlow<?>> context);
 }

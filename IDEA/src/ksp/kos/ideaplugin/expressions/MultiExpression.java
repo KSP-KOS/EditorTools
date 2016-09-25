@@ -98,6 +98,7 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
         }
 
         protected MultiExpressionBuilder<O, E> addExpression(O operator, Expression expression) {
+            expression = expression.simplify();
             MultiExpression<O, E> associate = associate(expression);
             if (associate == null) {
                 addItem(createItem(operator, toElement(expression)));
@@ -146,7 +147,9 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
             return null;
         }
 
-        protected abstract Expression one();
+        protected Expression one() {
+            return null;
+        }
 
         protected boolean nullifyEverything(Item<O, E> item) {
             return item.operation == defaultOperator() && item.expression.equals(zero);
@@ -170,7 +173,11 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
 
         @SuppressWarnings("unchecked")
         protected Item<O, E> consumeItem(Item<O, E> item, Item<O, E> newItem) {
-            return ((ConsumeSupported<O, E>) this).consume(item, newItem);
+            Item<O, E> consumed = ((ConsumeSupported<O, E>) this).consume(item, newItem);
+            if (consumed==null) {
+                return ((ConsumeSupported<O, E>) this).consume(newItem, item); // TODO get rid of me once symmetry is supported
+            }
+            return consumed;
         }
 
         @SuppressWarnings("unchecked")
@@ -185,7 +192,9 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
             return null;
         }
 
-        protected abstract Expression singleItemExpression(Item<O, E> item);
+        protected Expression singleItemExpression(Item<O, E> item) {
+            return item.getExpression();
+        }
 
         @NotNull
         protected abstract O[] operators();

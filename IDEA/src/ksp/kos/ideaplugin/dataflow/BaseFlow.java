@@ -1,6 +1,7 @@
 package ksp.kos.ideaplugin.dataflow;
 
-import java.util.HashMap;
+import ksp.kos.ideaplugin.expressions.ExpressionVisitor;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,6 +30,16 @@ public abstract class BaseFlow<F extends BaseFlow<F>> implements Flow<F> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void addContext(HashMap<String, NamedFlow<?>> context) {
+    public boolean addContext(Context context) {
+        return true;
+    }
+
+    @Override
+    public F differentiate(Context context) {
+        return differentiate();
+    }
+
+    @Override
+    public void accept(ExpressionVisitor visitor) {
     }
 }

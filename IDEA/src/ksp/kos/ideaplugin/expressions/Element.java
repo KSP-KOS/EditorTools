@@ -142,6 +142,7 @@ public class Element extends Expression {
     }
 
     public static Element toElement(Expression expression) {
+        expression = Escaped.unescape(expression);
         if (expression instanceof Element) {
             return (Element) expression;
         } else {

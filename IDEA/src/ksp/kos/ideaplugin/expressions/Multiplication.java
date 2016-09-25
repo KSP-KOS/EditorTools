@@ -42,13 +42,13 @@ public class Multiplication extends MultiExpression<Multiplication.Op, Element> 
             Expression id = Number.ONE;
             for (Item<Op, Element> ditem : items) {
                 if (item!=ditem) {
-                    if (item.getOperation()==Op.MUL) {
+                    if (ditem.getOperation()==Op.MUL) {
                         id = id.multiply(ditem.getExpression());
                     } else {
                         id = id.divide(ditem.getExpression());
                     }
                 } else {
-                    if (item.getOperation()==Op.MUL) {
+                    if (ditem.getOperation()==Op.MUL) {
                         id = id.multiply(ditem.getExpression().differentiate());
                     } else {
                         id = id.multiply(ditem.getExpression().power(Number.create(-1)).differentiate());
@@ -141,7 +141,7 @@ public class Multiplication extends MultiExpression<Multiplication.Op, Element> 
             if (item.getOperation()== Op.MUL) {
                 Element expression = item.getExpression();
                 if (expression.isSimple()) {
-                    return expression.getAtom();
+                    return expression.getAtom().simplify();
                 }
                 return expression;
             } else {
@@ -177,11 +177,11 @@ public class Multiplication extends MultiExpression<Multiplication.Op, Element> 
                     div.add(item);
                 }
             }
-            normalize(mult);
+            normalize(mult, Op.MUL);
             if (mult.isEmpty()) {
                 mult.add(createItem(Op.MUL, toElement(Number.ONE)));
             }
-            normalize(div);
+            normalize(div, Op.DIV);
             if (sign<0) {
                 mult.set(0, createItem(Op.MUL, mult.get(0).getExpression().minus()));
             }
@@ -190,7 +190,7 @@ public class Multiplication extends MultiExpression<Multiplication.Op, Element> 
             this.items.addAll(div);
         }
 
-        private void normalize(LinkedList<Item<Op, Element>> items) {
+        private void normalize(LinkedList<Item<Op, Element>> items, Op operation) {
             Expression number = Number.ONE;
             int index = -1;
             float score = 0;
@@ -210,13 +210,13 @@ public class Multiplication extends MultiExpression<Multiplication.Op, Element> 
                     }
                 }
             }
-            if (!number.equals(Number.ONE)) {
+            if (!number.simplify().equals(Number.ONE)) {
                 if (score>0) {
                     Item<Op, Element> addition = items.get(index);
                     Expression expression = getAddition(addition.getExpression()).multiplyItems(number);
                     items.set(index, createItem(addition.getOperation(), toElement(expression)));
                 } else {
-                    items.addFirst(createItem(Op.MUL, toElement(number)));
+                    items.addFirst(createItem(operation, toElement(number)));
                 }
             }
         }

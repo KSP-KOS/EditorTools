@@ -62,8 +62,8 @@ public class Function extends Atom {
         }
         Expression[] diffArgs = new Expression[args.length*2];
         for (int i = 0; i < args.length; i++) {
-            diffArgs[i] = args[i];
-            diffArgs[i + args.length] = args[i].differentiate();
+            diffArgs[2*i] = args[i];
+            diffArgs[2*i + 1] = args[i].differentiate();
         }
         return new Function(name+"_", diffArgs).inline();
     }

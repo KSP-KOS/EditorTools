@@ -6,8 +6,6 @@ import ksp.kos.ideaplugin.psi.*;
 import ksp.kos.ideaplugin.reference.ReferableType;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-
 /**
  * Created on 12/03/16.
  *
@@ -24,9 +22,18 @@ public class VariableFlow extends ExpressionFlow<VariableFlow> implements NamedF
     }
 
     @Override
-    public void addContext(HashMap<String, NamedFlow<?>> context) {
+    public VariableFlow differentiate(Context context) {
+        context.add(this);
+        VariableFlow diff = differentiate();
+        context.add(diff);
+        return diff;
+    }
+
+    @Override
+    public boolean addContext(Context context) {
         super.addContext(context);
-        context.put(getName(), this);
+        context.getMap().put(getName(), this);
+        return true;
     }
 
     @NotNull

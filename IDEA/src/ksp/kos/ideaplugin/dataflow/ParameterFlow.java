@@ -2,8 +2,6 @@ package ksp.kos.ideaplugin.dataflow;
 
 import ksp.kos.ideaplugin.psi.KerboScriptDeclareParameterClause;
 
-import java.util.HashMap;
-
 /**
  * Created on 17/03/16.
  *
@@ -22,8 +20,17 @@ public class ParameterFlow extends BaseFlow<ParameterFlow> implements NamedFlow<
     }
 
     @Override
-    public void addContext(HashMap<String, NamedFlow<?>> context) {
-        context.put(getName(), this);
+    public boolean addContext(Context context) {
+        context.getMap().put(getName(), this);
+        return true;
+    }
+
+    @Override
+    public ParameterFlow differentiate(Context context) {
+        context.add(this);
+        ParameterFlow diff = differentiate();
+        context.add(diff);
+        return diff;
     }
 
     @Override
