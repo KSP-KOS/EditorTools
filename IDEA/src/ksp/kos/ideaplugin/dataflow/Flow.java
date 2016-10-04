@@ -8,13 +8,13 @@ import ksp.kos.ideaplugin.expressions.ExpressionVisitor;
  * @author ptasha
  */
 public interface Flow<F extends Flow<F>> extends Dependency {
-    F differentiate(Context context);
+    F differentiate(ContextBuilder context);
 
     F differentiate();
 
     String getText();
 
-    boolean addContext(Context context);
+    boolean addContext(ContextBuilder context);
 
     void accept(ExpressionVisitor visitor);
 

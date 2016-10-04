@@ -14,30 +14,30 @@ import java.util.Set;
  */
 public class IfFlow extends BaseFlow<IfFlow> {
     private final KerboScriptExpr expr;
-    private final Context trueList;
-    private final Context falseList;
+    private final ContextBuilder trueList;
+    private final ContextBuilder falseList;
 
-    public IfFlow(KerboScriptExpr expr, Context trueList, Context falseList) {
+    public IfFlow(KerboScriptExpr expr, ContextBuilder trueList, ContextBuilder falseList) {
         this.expr = expr;
         this.trueList = trueList;
         this.falseList = falseList;
     }
 
-    public static IfFlow parse(KerboScriptIfStmt ifStmt, Context parent) throws SyntaxException {
+    public static IfFlow parse(KerboScriptIfStmt ifStmt, ContextBuilder parent) throws SyntaxException {
         KerboScriptExpr expr = ifStmt.getExpr();
         List<KerboScriptInstruction> list = ifStmt.getInstructionList();
-        Context trueList = parseBlock(list.get(0), parent);
-        Context falseList;
+        ContextBuilder trueList = parseBlock(list.get(0), parent);
+        ContextBuilder falseList;
         if (list.size()>1) {
             falseList = parseBlock(list.get(1), parent);
         } else {
-            falseList = new Context();
+            falseList = new ContextBuilder();
         }
         return new IfFlow(expr, trueList, falseList);
     }
 
     @Override
-    public boolean addContext(Context context) {
+    public boolean addContext(ContextBuilder context) {
         addExpressionContext(expr, context);
 
         trueList.setParent(context);
@@ -55,7 +55,7 @@ public class IfFlow extends BaseFlow<IfFlow> {
         return trueCont || falseCont;
     }
 
-    private void addExpressionContext(KerboScriptExpr expr, Context context) {
+    private void addExpressionContext(KerboScriptExpr expr, ContextBuilder context) {
         // TODO add them to Expression
         if (expr instanceof KerboScriptOrExpr) {
             addExpressionsContext(((KerboScriptOrExpr) expr).getExprList(), context);
@@ -76,20 +76,20 @@ public class IfFlow extends BaseFlow<IfFlow> {
         }
     }
 
-    private void addExpressionsContext(List<KerboScriptExpr> list, Context context) {
+    private void addExpressionsContext(List<KerboScriptExpr> list, ContextBuilder context) {
         for (KerboScriptExpr kerboScriptExpr : list) {
             addExpressionContext(kerboScriptExpr, context);
         }
     }
 
-    private static Context parseBlock(KerboScriptInstruction kerboScriptInstruction, Context parent) throws SyntaxException {
+    private static ContextBuilder parseBlock(KerboScriptInstruction kerboScriptInstruction, ContextBuilder parent) throws SyntaxException {
         FlowParser parser = new FlowParser(parent);
         parser.parseInstruction(kerboScriptInstruction);
         return parser.getContext();
     }
 
     @Override
-    public IfFlow differentiate(Context context) {
+    public IfFlow differentiate(ContextBuilder context) {
         IfFlow diff = differentiate();
         context.add(diff);
         return diff;
@@ -97,9 +97,9 @@ public class IfFlow extends BaseFlow<IfFlow> {
 
     @Override
     public IfFlow differentiate() {
-        Context trueContext = new Context();
+        ContextBuilder trueContext = new ContextBuilder();
         trueList.differentiate(trueContext);
-        Context falseContext = new Context();
+        ContextBuilder falseContext = new ContextBuilder();
         falseList.differentiate(falseContext);
         // TODO simplify
         return new IfFlow(expr, trueContext, falseContext);
@@ -115,7 +115,7 @@ public class IfFlow extends BaseFlow<IfFlow> {
         return text;
     }
 
-    private String print(Context context) {
+    private String print(ContextBuilder context) {
         //if (context.getList().size()==1) return context.getText();
         return "{\n" + context.getText() + "\n}";
     }

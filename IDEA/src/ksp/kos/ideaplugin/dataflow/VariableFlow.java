@@ -22,7 +22,7 @@ public class VariableFlow extends ExpressionFlow<VariableFlow> implements NamedF
     }
 
     @Override
-    public VariableFlow differentiate(Context context) {
+    public VariableFlow differentiate(ContextBuilder context) {
         context.add(this);
         VariableFlow diff = differentiate();
         context.add(diff);
@@ -30,7 +30,7 @@ public class VariableFlow extends ExpressionFlow<VariableFlow> implements NamedF
     }
 
     @Override
-    public boolean addContext(Context context) {
+    public boolean addContext(ContextBuilder context) {
         super.addContext(context);
         context.getMap().put(getName(), this);
         return true;

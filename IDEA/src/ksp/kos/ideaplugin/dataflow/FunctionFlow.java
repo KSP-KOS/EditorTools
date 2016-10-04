@@ -21,10 +21,10 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
     private final KerboScriptFile file;
     private final String name;
 
-    private final Context parameters;
-    private final Context instructions;
+    private final ContextBuilder parameters;
+    private final ContextBuilder instructions;
 
-    public FunctionFlow(KerboScriptFile file, String name, Context parameters, Context instructions) {
+    public FunctionFlow(KerboScriptFile file, String name, ContextBuilder parameters, ContextBuilder instructions) {
         this.file = file;
         this.name = name;
         this.parameters = parameters;
@@ -41,9 +41,9 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
 
     @Override
     public FunctionFlow differentiate() {
-        Context parameters = new Context();
+        ContextBuilder parameters = new ContextBuilder();
         this.parameters.differentiate(parameters); // TODO single parameter
-        Context flows = new Context(parameters);
+        ContextBuilder flows = new ContextBuilder(parameters);
         this.instructions.differentiate(flows);
         parameters.buildMap();
         flows.buildMap();
@@ -206,7 +206,7 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
             return true;
         }
 
-        public Context getFlowContext() {
+        public ContextBuilder getFlowContext() {
             return parser.getContext();
         }
     }

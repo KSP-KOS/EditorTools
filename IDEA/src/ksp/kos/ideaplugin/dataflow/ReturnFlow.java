@@ -22,14 +22,14 @@ public class ReturnFlow extends ExpressionFlow<ReturnFlow> {
     }
 
     @Override
-    public ReturnFlow differentiate(Context context) {
+    public ReturnFlow differentiate(ContextBuilder context) {
         ReturnFlow diff = differentiate();
         context.add(diff);
         return diff;
     }
 
     @Override
-    public boolean addContext(Context context) {
+    public boolean addContext(ContextBuilder context) {
         super.addContext(context);
         context.addReturnFlow(this);
         return false;

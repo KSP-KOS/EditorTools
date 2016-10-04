@@ -20,13 +20,13 @@ public class ParameterFlow extends BaseFlow<ParameterFlow> implements NamedFlow<
     }
 
     @Override
-    public boolean addContext(Context context) {
+    public boolean addContext(ContextBuilder context) {
         context.getMap().put(getName(), this);
         return true;
     }
 
     @Override
-    public ParameterFlow differentiate(Context context) {
+    public ParameterFlow differentiate(ContextBuilder context) {
         context.add(this);
         ParameterFlow diff = differentiate();
         context.add(diff);

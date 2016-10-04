@@ -30,12 +30,12 @@ public abstract class BaseFlow<F extends BaseFlow<F>> implements Flow<F> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean addContext(Context context) {
+    public boolean addContext(ContextBuilder context) {
         return true;
     }
 
     @Override
-    public F differentiate(Context context) {
+    public F differentiate(ContextBuilder context) {
         return differentiate();
     }
 

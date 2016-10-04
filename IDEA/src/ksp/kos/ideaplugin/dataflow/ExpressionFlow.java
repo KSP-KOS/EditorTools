@@ -25,12 +25,14 @@ public abstract class ExpressionFlow<F extends ExpressionFlow<F>> extends BaseFl
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean addContext(Context context) {
+    public boolean addContext(ContextBuilder context) {
         HashMap<String, Expression> inline = new HashMap<>();
         for (String name : expression.getVariableNames()) {
             Dependency flow = context.getFlow(name);
             if (flow != null) {
                 // TODO inline simple functions
+                // TODO add ability to add user function to inline (InlineFunctions)
+                // TODO add function to inline automatically
                 if (flow instanceof VariableFlow && ((VariableFlow) flow).isSimple()) {
                     inline.put(name, ((VariableFlow) flow).getExpression());
                 }

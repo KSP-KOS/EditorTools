@@ -11,14 +11,14 @@ import java.util.List;
  * @author ptasha
  */
 public class FlowParser {
-    private Context context;
+    private ContextBuilder context;
 
     public FlowParser() {
         this(null);
     }
 
-    public FlowParser(Context parent) {
-        context = new Context(parent);
+    public FlowParser(ContextBuilder parent) {
+        context = new ContextBuilder(parent);
     }
 
     public boolean parseInstructions(List<KerboScriptInstruction> instructions) throws SyntaxException {
@@ -60,7 +60,7 @@ public class FlowParser {
         context.add(flow);
     }
 
-    public Context getContext() {
+    public ContextBuilder getContext() {
         return context;
     }
 }

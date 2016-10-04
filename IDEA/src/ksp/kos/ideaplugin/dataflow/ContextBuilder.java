@@ -12,17 +12,17 @@ import java.util.ListIterator;
  *
  * @author ptasha
  */
-public class Context {
-    private Context parent;
+public class ContextBuilder {
+    private ContextBuilder parent;
     private final List<Flow> list = new LinkedList<>();
     private final HashMap<String, Dependency> map = new HashMap<>();
     private final MixedDependency returnFlow = new MixedDependency();
 
-    public Context() {
+    public ContextBuilder() {
         this(null);
     }
 
-    public Context(Context parent) {
+    public ContextBuilder(ContextBuilder parent) {
         this.parent = parent;
     }
 
@@ -41,7 +41,7 @@ public class Context {
         return text;
     }
 
-    public void differentiate(Context context) {
+    public void differentiate(ContextBuilder context) {
         for (Flow<?> flow : list) {
             flow.differentiate(context);
         }
@@ -94,11 +94,11 @@ public class Context {
         return list;
     }
 
-    public Context getParent() {
+    public ContextBuilder getParent() {
         return parent;
     }
 
-    public void setParent(Context parent) {
+    public void setParent(ContextBuilder parent) {
         this.parent = parent;
     }
 }
