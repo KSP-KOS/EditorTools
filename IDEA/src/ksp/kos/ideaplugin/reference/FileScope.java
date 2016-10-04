@@ -65,7 +65,7 @@ public class FileScope extends LocalScope {
         }
     }
 
-    public ScopeMap getImports() {
+    public ScopeMap<KerboScriptNamedElement> getImports() {
         return getDeclarations(ReferableType.FILE);
     }
 
