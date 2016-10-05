@@ -14,14 +14,14 @@ import java.util.Map;
  *
  * @author ptasha
  */
-public class FileScope extends LocalScope {
+public class FileContext extends LocalContext {
     private KerboScriptFile kerboScriptFile;
 
-    public FileScope(KerboScriptFile kerboScriptFile) {
-        this(kerboScriptFile, new LocalScope(null));
+    public FileContext(KerboScriptFile kerboScriptFile) {
+        this(kerboScriptFile, new LocalContext(null));
     }
 
-    private FileScope(KerboScriptFile kerboScriptFile, LocalScope virtual) {
+    private FileContext(KerboScriptFile kerboScriptFile, LocalContext virtual) {
         super(virtual);
         this.kerboScriptFile = kerboScriptFile;
     }

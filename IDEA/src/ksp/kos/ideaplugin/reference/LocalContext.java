@@ -10,9 +10,9 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author ptasha
  */
-public class LocalScope extends AbstractScope<KerboScriptNamedElement> {
+public class LocalContext extends Context<KerboScriptNamedElement> {
 
-    public LocalScope(LocalScope parent) {
+    public LocalContext(LocalContext parent) {
         super(parent);
     }
 

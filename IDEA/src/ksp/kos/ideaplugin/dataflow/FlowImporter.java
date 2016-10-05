@@ -6,7 +6,7 @@ import ksp.kos.ideaplugin.psi.KerboScriptBase;
 import ksp.kos.ideaplugin.psi.KerboScriptElementFactory;
 import ksp.kos.ideaplugin.psi.KerboScriptInstruction;
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
-import ksp.kos.ideaplugin.reference.LocalScope;
+import ksp.kos.ideaplugin.reference.LocalContext;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -16,15 +16,15 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class FlowImporter<F extends NamedFlow<F>> {
     @NotNull
-    protected abstract LocalScope.ScopeMap<KerboScriptNamedElement> getMap(KerboScriptFile file);
+    protected abstract LocalContext.ScopeMap<KerboScriptNamedElement> getMap(KerboScriptFile file);
 
     public void importFlow(KerboScriptFile file, F flow) {
-        LocalScope.ScopeMap<KerboScriptNamedElement> map = getMap(file);
+        LocalContext.ScopeMap<KerboScriptNamedElement> map = getMap(file);
         KerboScriptInstruction instruction = importFlow(file, flow, map);
         CodeStyleManager.getInstance(file.getProject()).reformatNewlyAddedElement(instruction.getParent().getNode(), instruction.getNode());
     }
 
-    protected KerboScriptInstruction importFlow(KerboScriptFile file, F flow, LocalScope.ScopeMap<KerboScriptNamedElement> map) {
+    protected KerboScriptInstruction importFlow(KerboScriptFile file, F flow, LocalContext.ScopeMap<KerboScriptNamedElement> map) {
         KerboScriptInstruction instruction = KerboScriptElementFactory.instruction(file.getProject(), flow.getText());
         KerboScriptInstruction existing = getInstruction(map, flow);
         if (existing != null) {
@@ -35,7 +35,7 @@ public abstract class FlowImporter<F extends NamedFlow<F>> {
         return instruction;
     }
 
-    private KerboScriptInstruction getInstruction(LocalScope.ScopeMap<KerboScriptNamedElement> map, F flow) {
+    private KerboScriptInstruction getInstruction(LocalContext.ScopeMap<KerboScriptNamedElement> map, F flow) {
         KerboScriptNamedElement element = map.get(flow.getName());
         if (element==null) {
             return null;
@@ -47,7 +47,7 @@ public abstract class FlowImporter<F extends NamedFlow<F>> {
         return (KerboScriptInstruction) existing.replace(instruction);
     }
 
-    private KerboScriptInstruction insertInstruction(KerboScriptFile file, KerboScriptInstruction instruction, String name, LocalScope.ScopeMap<KerboScriptNamedElement> map) {
+    private KerboScriptInstruction insertInstruction(KerboScriptFile file, KerboScriptInstruction instruction, String name, LocalContext.ScopeMap<KerboScriptNamedElement> map) {
         KerboScriptInstruction before = null;
         for (KerboScriptNamedElement element : map.values()) {
             if (element.getName().compareToIgnoreCase(name)>0) {

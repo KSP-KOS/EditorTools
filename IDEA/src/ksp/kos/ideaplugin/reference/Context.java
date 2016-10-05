@@ -13,15 +13,15 @@ import java.util.function.BiFunction;
  *
  * @author ptasha
  */
-public class AbstractScope<B extends Reference> { // TODO rename it to context?
-    protected final AbstractScope<B> parent;
+public class Context<B extends Reference> {
+    protected final Context<B> parent;
     private final Map<ReferableType, ScopeMap> declarations = new HashMap<>();
 
-    public AbstractScope(AbstractScope<B> parent) {
+    public Context(Context<B> parent) {
         this.parent = parent;
     }
 
-    public AbstractScope<B> getParent() {
+    public Context<B> getParent() {
         return parent;
     }
 
@@ -32,7 +32,7 @@ public class AbstractScope<B extends Reference> { // TODO rename it to context?
     }
 
     public B findDeclaration(Reference reference) {
-        return resolve(reference, AbstractScope<B>::findDeclaration);
+        return resolve(reference, Context<B>::findDeclaration);
     }
 
     @Nullable
@@ -41,10 +41,10 @@ public class AbstractScope<B extends Reference> { // TODO rename it to context?
     }
 
     public B resolve(Reference reference) {
-        return resolve(reference, AbstractScope<B>::resolve);
+        return resolve(reference, Context<B>::resolve);
     }
 
-    protected B resolve(Reference reference, BiFunction<AbstractScope<B>, Reference, B> function) {
+    protected B resolve(Reference reference, BiFunction<Context<B>, Reference, B> function) {
         B declaration = findLocalDeclaration(reference);
         if (declaration==null && parent!=null) {
             return function.apply(parent, reference);
