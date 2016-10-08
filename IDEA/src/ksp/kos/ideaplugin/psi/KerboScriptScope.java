@@ -8,7 +8,7 @@ import ksp.kos.ideaplugin.reference.Reference;
  *
  * @author ptasha
  */
-public interface KerboScriptScope extends KerboScriptBase {
+public interface KerboScriptScope extends KerboScriptBase { // TODO remove me
     LocalContext getCachedScope();
 
     default KerboScriptNamedElement resolve(Reference reference) {

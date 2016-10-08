@@ -1,5 +1,6 @@
 package ksp.kos.ideaplugin.psi;
 
+import ksp.kos.ideaplugin.reference.LocalContext;
 import ksp.kos.ideaplugin.reference.ReferableType;
 import ksp.kos.ideaplugin.reference.Reference;
 import ksp.kos.ideaplugin.reference.ReferenceType;
@@ -9,13 +10,13 @@ import ksp.kos.ideaplugin.reference.ReferenceType;
  *
  * @author ptasha
  */
-public interface KerboScriptNamedElement extends KerboScriptBase, Reference {
+public interface KerboScriptNamedElement extends KerboScriptBase, Reference<KerboScriptNamedElement> {
     ReferenceType getType();
     void setType(ReferenceType type);
 
     @Override
-    default KerboScriptScope getKingdom() {
-        return getScope();
+    default LocalContext getKingdom() {
+        return getScope().getCachedScope();
     }
 
     @Override

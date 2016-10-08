@@ -1,7 +1,9 @@
 package ksp.kos.ideaplugin.expressions;
 
 import com.intellij.lang.ASTNode;
+import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
 import ksp.kos.ideaplugin.psi.*;
+import ksp.kos.ideaplugin.reference.Context;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -61,7 +63,7 @@ public abstract class Expression {
 
     public abstract String getText();
 
-    public abstract Expression differentiate();
+    public abstract Expression differentiate(Context<ReferenceFlow> context);
 
     public Expression minus() {
         return Element.create(-1, Atom.toAtom(this));

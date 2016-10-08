@@ -3,6 +3,7 @@ package ksp.kos.ideaplugin.dataflow;
 import ksp.kos.ideaplugin.expressions.Expression;
 import ksp.kos.ideaplugin.expressions.SyntaxException;
 import ksp.kos.ideaplugin.psi.*;
+import ksp.kos.ideaplugin.reference.Context;
 import ksp.kos.ideaplugin.reference.ReferableType;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,10 +23,10 @@ public class VariableFlow extends ExpressionFlow<VariableFlow> implements NamedF
     }
 
     @Override
-    public VariableFlow differentiate(ContextBuilder context) {
-        context.add(this);
-        VariableFlow diff = differentiate();
-        context.add(diff);
+    public VariableFlow differentiate(Context<ReferenceFlow> context, ContextBuilder contextBuilder) {
+        contextBuilder.add(new VariableFlow(declare, name, getExpression()));
+        VariableFlow diff = differentiate(context);
+        contextBuilder.add(diff);
         return diff;
     }
 

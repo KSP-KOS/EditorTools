@@ -3,6 +3,7 @@ package ksp.kos.ideaplugin.dataflow;
 import ksp.kos.ideaplugin.expressions.Expression;
 import ksp.kos.ideaplugin.expressions.SyntaxException;
 import ksp.kos.ideaplugin.psi.*;
+import ksp.kos.ideaplugin.reference.Context;
 
 import java.util.List;
 import java.util.Set;
@@ -46,9 +47,9 @@ public class IfFlow extends BaseFlow<IfFlow> {
         boolean falseCont = falseList.buildMap();
 
         // TODO merge contexts
-        context.addReturnFlow(trueList.getReturnFlow());
-        context.addReturnFlow(falseList.getReturnFlow());
-        if (!trueList.getReturnFlow().isEmpty() || !falseList.getReturnFlow().isEmpty()) {
+        context.addReturnFlow(trueList.getReturn());
+        context.addReturnFlow(falseList.getReturn());
+        if (!trueList.getReturn().isEmpty() || !falseList.getReturn().isEmpty()) {
             context.addReturnFlow(this);
         }
 
@@ -89,18 +90,18 @@ public class IfFlow extends BaseFlow<IfFlow> {
     }
 
     @Override
-    public IfFlow differentiate(ContextBuilder context) {
-        IfFlow diff = differentiate();
-        context.add(diff);
+    public IfFlow differentiate(Context<ReferenceFlow> context, ContextBuilder contextBuilder) {
+        IfFlow diff = differentiate(context);
+        contextBuilder.add(diff);
         return diff;
     }
 
     @Override
-    public IfFlow differentiate() {
+    public IfFlow differentiate(Context<ReferenceFlow> context) {
         ContextBuilder trueContext = new ContextBuilder();
-        trueList.differentiate(trueContext);
+        trueList.differentiate(context, trueContext);
         ContextBuilder falseContext = new ContextBuilder();
-        falseList.differentiate(falseContext);
+        falseList.differentiate(context, falseContext);
         // TODO simplify
         return new IfFlow(expr, trueContext, falseContext);
     }

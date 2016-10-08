@@ -1,7 +1,11 @@
 package ksp.kos.ideaplugin.expressions;
 
+import ksp.kos.ideaplugin.dataflow.FunctionFlow;
+import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
 import ksp.kos.ideaplugin.expressions.inline.InlineFunctions;
 import ksp.kos.ideaplugin.psi.KerboScriptExpr;
+import ksp.kos.ideaplugin.reference.Context;
+import ksp.kos.ideaplugin.reference.Reference;
 
 import java.util.HashMap;
 import java.util.List;
@@ -53,19 +57,28 @@ public class Function extends Atom {
     }
 
     @Override
-    public Expression differentiate() {
+    public Expression differentiate(Context<ReferenceFlow> context) {
         if (args.length==0) {
             return Number.ZERO;
         }
+        String name = this.name + "_";
+        Reference<ReferenceFlow> ref = Reference.function(context, name);
+        FunctionFlow flow = (FunctionFlow) ref.resolve();
+        if (flow!=null) {
+            Expression ret = flow.getSimpleReturn();
+            if (ret!=null) {
+                return ret;
+            }
+        }
         if (args.length==1) {
-            return new Function(name+"_", args).inline().multiply(args[0].differentiate());
+            return new Function(name, args).inline().multiply(args[0].differentiate(context));
         }
         Expression[] diffArgs = new Expression[args.length*2];
         for (int i = 0; i < args.length; i++) {
             diffArgs[2*i] = args[i];
-            diffArgs[2*i + 1] = args[i].differentiate();
+            diffArgs[2*i + 1] = args[i].differentiate(context);
         }
-        return new Function(name+"_", diffArgs).inline();
+        return new Function(name + "_", diffArgs).inline();
     }
 
     @Override

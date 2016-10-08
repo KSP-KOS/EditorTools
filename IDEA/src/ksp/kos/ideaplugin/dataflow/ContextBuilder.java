@@ -1,6 +1,7 @@
 package ksp.kos.ideaplugin.dataflow;
 
 import ksp.kos.ideaplugin.expressions.ExpressionVisitor;
+import ksp.kos.ideaplugin.reference.Context;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -12,7 +13,7 @@ import java.util.ListIterator;
  *
  * @author ptasha
  */
-public class ContextBuilder {
+public class ContextBuilder { // TODO combine into diff context?
     private ContextBuilder parent;
     private final List<Flow> list = new LinkedList<>();
     private final HashMap<String, Dependency> map = new HashMap<>();
@@ -41,9 +42,9 @@ public class ContextBuilder {
         return text;
     }
 
-    public void differentiate(ContextBuilder context) {
+    public void differentiate(Context<ReferenceFlow> context, ContextBuilder contextBuilder) {
         for (Flow<?> flow : list) {
-            flow.differentiate(context);
+            flow.differentiate(context, contextBuilder);
         }
     }
 
@@ -82,7 +83,7 @@ public class ContextBuilder {
         return map;
     }
 
-    public MixedDependency getReturnFlow() {
+    public MixedDependency getReturn() {
         return returnFlow;
     }
 

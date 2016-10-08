@@ -1,7 +1,5 @@
 package ksp.kos.ideaplugin.reference;
 
-import ksp.kos.ideaplugin.psi.KerboScriptScope;
-
 import java.util.Objects;
 
 /**
@@ -9,19 +7,19 @@ import java.util.Objects;
  *
  * @author ptasha
  */
-public class ReferenceImpl implements Reference {
-    private final KerboScriptScope kingdom;
+public class ReferenceImpl<T extends Reference> implements Reference<T> {
+    private final Context<T> kingdom;
     private final ReferableType referableType;
     private final String name;
 
-    public ReferenceImpl(KerboScriptScope kingdom,  ReferableType referableType, String name) {
+    public ReferenceImpl(Context<T> kingdom,  ReferableType referableType, String name) {
         this.kingdom = kingdom;
         this.referableType = referableType;
         this.name = name;
     }
 
     @Override
-    public KerboScriptScope getKingdom() {
+    public Context<T> getKingdom() {
         return kingdom;
     }
 

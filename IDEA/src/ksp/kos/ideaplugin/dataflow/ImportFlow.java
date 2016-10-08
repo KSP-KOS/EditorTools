@@ -1,6 +1,7 @@
 package ksp.kos.ideaplugin.dataflow;
 
 import ksp.kos.ideaplugin.KerboScriptFile;
+import ksp.kos.ideaplugin.reference.Context;
 
 import java.util.Objects;
 
@@ -26,7 +27,7 @@ public class ImportFlow extends BaseFlow<ImportFlow> implements NamedFlow<Import
     }
 
     @Override
-    public ImportFlow differentiate() {
+    public ImportFlow differentiate(Context<ReferenceFlow> context) {
         if (name.endsWith("_")) {
             return this;
         }

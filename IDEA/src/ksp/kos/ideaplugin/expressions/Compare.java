@@ -1,6 +1,8 @@
 package ksp.kos.ideaplugin.expressions;
 
+import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
 import ksp.kos.ideaplugin.psi.KerboScriptCompareExpr;
+import ksp.kos.ideaplugin.reference.Context;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -20,7 +22,7 @@ public class Compare extends MultiExpression<Compare.Op,Expression> {
     }
 
     @Override
-    public Expression differentiate() {
+    public Expression differentiate(Context<ReferenceFlow> context) {
         return null;
     }
 

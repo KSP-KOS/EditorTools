@@ -1,6 +1,8 @@
 package ksp.kos.ideaplugin.expressions;
 
+import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
 import ksp.kos.ideaplugin.psi.KerboScriptMultdivExpr;
+import ksp.kos.ideaplugin.reference.Context;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -36,7 +38,7 @@ public class Multiplication extends MultiExpression<Multiplication.Op, Element> 
     }
 
     @Override
-    public Expression differentiate() {
+    public Expression differentiate(Context<ReferenceFlow> context) {
         Expression diff = Number.ZERO;
         for (Item<Op, Element> item : items) {
             Expression id = Number.ONE;
@@ -49,9 +51,9 @@ public class Multiplication extends MultiExpression<Multiplication.Op, Element> 
                     }
                 } else {
                     if (ditem.getOperation()==Op.MUL) {
-                        id = id.multiply(ditem.getExpression().differentiate());
+                        id = id.multiply(ditem.getExpression().differentiate(context));
                     } else {
-                        id = id.multiply(ditem.getExpression().power(Number.create(-1)).differentiate());
+                        id = id.multiply(ditem.getExpression().power(Number.create(-1)).differentiate(context));
                     }
                 }
             }

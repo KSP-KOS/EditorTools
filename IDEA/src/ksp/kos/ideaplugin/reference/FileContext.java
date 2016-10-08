@@ -27,6 +27,11 @@ public class FileContext extends LocalContext {
     }
 
     @Override
+    public KerboScriptFile getKerboScriptFile() {
+        return kerboScriptFile;
+    }
+
+    @Override
     public KerboScriptNamedElement findDeclaration(Reference reference) {
         if (reference.getReferableType()==ReferableType.FILE) {
             return resolveFile(reference.getName());

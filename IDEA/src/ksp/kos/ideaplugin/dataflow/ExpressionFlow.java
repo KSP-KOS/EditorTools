@@ -1,8 +1,10 @@
 package ksp.kos.ideaplugin.dataflow;
 
+import ksp.kos.ideaplugin.expressions.Constant;
 import ksp.kos.ideaplugin.expressions.Expression;
 import ksp.kos.ideaplugin.expressions.ExpressionVisitor;
 import ksp.kos.ideaplugin.expressions.Number;
+import ksp.kos.ideaplugin.reference.Context;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -53,12 +55,14 @@ public abstract class ExpressionFlow<F extends ExpressionFlow<F>> extends BaseFl
     }
 
     public boolean isSimple() {
-        return expression.equals(Number.ZERO) || expression.equals(Number.ONE);
+        return expression.equals(Number.ZERO) ||
+                expression.equals(Number.ONE) ||
+                expression instanceof Constant;
     }
 
     @Override
-    public F differentiate() {
-        return create(expression.differentiate());
+    public F differentiate(Context<ReferenceFlow> context) {
+        return create(expression.differentiate(context));
     }
 
     @NotNull

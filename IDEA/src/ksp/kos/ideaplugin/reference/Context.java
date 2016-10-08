@@ -1,5 +1,6 @@
 package ksp.kos.ideaplugin.reference;
 
+import ksp.kos.ideaplugin.KerboScriptFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,13 +14,15 @@ import java.util.function.BiFunction;
  *
  * @author ptasha
  */
-public class Context<B extends Reference> {
+public abstract class Context<B extends Reference> {
     protected final Context<B> parent;
     private final Map<ReferableType, ScopeMap> declarations = new HashMap<>();
 
     public Context(Context<B> parent) {
         this.parent = parent;
     }
+
+    public abstract KerboScriptFile getKerboScriptFile();
 
     public Context<B> getParent() {
         return parent;
@@ -83,10 +86,15 @@ public class Context<B extends Reference> {
     public ScopeMap<B> getDeclarations(ReferableType type) {
         ScopeMap map = declarations.get(type);
         if (map==null) {
-            map = new ScopeMap();
+            map = createMap();
             declarations.put(type, map);
         }
         return map;
+    }
+
+    @NotNull
+    protected ScopeMap<B> createMap() {
+        return new ScopeMap<>();
     }
 
     public static class ScopeMap<T> extends LinkedHashMap<String, T> {
@@ -100,7 +108,11 @@ public class Context<B extends Reference> {
 
         @Override
         public T get(Object key) {
-            return super.get(key.toString().toLowerCase());
+            return get((String)key);
+        }
+
+        public T get(String key) {
+            return super.get(key.toLowerCase());
         }
     }
 }

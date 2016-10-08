@@ -12,6 +12,7 @@ import ksp.kos.ideaplugin.expressions.SyntaxException;
 import ksp.kos.ideaplugin.psi.KerboScriptDeclareFunctionClause;
 import ksp.kos.ideaplugin.psi.KerboScriptDeclareStmt;
 import ksp.kos.ideaplugin.psi.KerboScriptInstruction;
+import ksp.kos.ideaplugin.reference.PsiFlowContextAdapter;
 import ksp.kos.ideaplugin.reference.Reference;
 import ksp.kos.utils.MapUnion;
 
@@ -34,6 +35,7 @@ public class FunctionDiffer implements Differ {
     @SuppressWarnings("unchecked")
     @Override
     public void doIt(Project project, KerboScriptInstruction instruction) throws ActionFailedException {
+        // TODO create DiffContext on it's base
         KerboScriptDeclareStmt declare = (KerboScriptDeclareStmt) instruction;
         try {
             LinkedList<Reference> stack = new LinkedList<>();
@@ -43,7 +45,8 @@ public class FunctionDiffer implements Differ {
 
             Reference ref = declare.getDeclareFunctionClause();
             while (ref != null) {
-                FunctionFlow function = FunctionFlow.parse((KerboScriptDeclareFunctionClause) ref.findDeclaration()).differentiate();
+                PsiFlowContextAdapter contextAdapter = new PsiFlowContextAdapter(ref.getKingdom());
+                FunctionFlow function = FunctionFlow.parse((KerboScriptDeclareFunctionClause) ref.findDeclaration()).differentiate(contextAdapter);
                 while (function != null) {
                     Reference next = function.getNextToDiff(context);
                     if (next != null) {

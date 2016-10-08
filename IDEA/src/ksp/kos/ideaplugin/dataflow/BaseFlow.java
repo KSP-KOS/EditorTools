@@ -1,6 +1,7 @@
 package ksp.kos.ideaplugin.dataflow;
 
 import ksp.kos.ideaplugin.expressions.ExpressionVisitor;
+import ksp.kos.ideaplugin.reference.Context;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -35,8 +36,8 @@ public abstract class BaseFlow<F extends BaseFlow<F>> implements Flow<F> {
     }
 
     @Override
-    public F differentiate(ContextBuilder context) {
-        return differentiate();
+    public F differentiate(Context<ReferenceFlow> context, ContextBuilder contextBuilder) {
+        return differentiate(context);
     }
 
     @Override

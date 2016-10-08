@@ -4,7 +4,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
 import ksp.kos.ideaplugin.psi.*;
+import ksp.kos.ideaplugin.reference.Context;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -69,7 +71,7 @@ public class Constant extends Atom {
     }
 
     @Override
-    public Expression differentiate() {
+    public Expression differentiate(Context<ReferenceFlow> context) {
         return Number.ZERO;
     }
 

@@ -1,6 +1,7 @@
 package ksp.kos.ideaplugin.reference;
 
 
+import ksp.kos.ideaplugin.KerboScriptFile;
 import ksp.kos.ideaplugin.psi.KerboScriptBase;
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
 import org.jetbrains.annotations.Nullable;
@@ -14,6 +15,11 @@ public class LocalContext extends Context<KerboScriptNamedElement> {
 
     public LocalContext(LocalContext parent) {
         super(parent);
+    }
+
+    @Override
+    public KerboScriptFile getKerboScriptFile() {
+        return parent.getKerboScriptFile();
     }
 
     @Override

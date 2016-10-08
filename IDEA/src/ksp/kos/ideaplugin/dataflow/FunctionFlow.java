@@ -4,6 +4,8 @@ import com.intellij.psi.PsiFile;
 import ksp.kos.ideaplugin.KerboScriptFile;
 import ksp.kos.ideaplugin.expressions.*;
 import ksp.kos.ideaplugin.psi.*;
+import ksp.kos.ideaplugin.reference.Context;
+import ksp.kos.ideaplugin.reference.ReferableType;
 import ksp.kos.ideaplugin.reference.Reference;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +19,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @author ptasha
  */
-public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<FunctionFlow> {
+public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<FunctionFlow>, ReferenceFlow {
     private final KerboScriptFile file;
     private final String name;
 
@@ -29,6 +31,9 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
         this.name = name;
         this.parameters = parameters;
         this.instructions = instructions;
+        parameters.buildMap();
+        instructions.buildMap();
+        instructions.getReturn().addDependee(this);
     }
 
     public static FunctionFlow parse(KerboScriptDeclareFunctionClause function) throws SyntaxException {
@@ -40,18 +45,20 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
     }
 
     @Override
-    public FunctionFlow differentiate() {
+    public FunctionFlow differentiate(Context<ReferenceFlow> context) {
         ContextBuilder parameters = new ContextBuilder();
-        this.parameters.differentiate(parameters); // TODO single parameter
+        this.parameters.differentiate(context, parameters); // TODO single parameter
         ContextBuilder flows = new ContextBuilder(parameters);
-        this.instructions.differentiate(flows);
-        parameters.buildMap();
-        flows.buildMap();
-        flows.getReturnFlow().addDependee(this);
-        flows.simplify();
+        this.instructions.differentiate(context, flows);
+
+        return new FunctionFlow(file, name + "_", parameters, flows).simplify();
+    }
+
+    private FunctionFlow simplify() {
+        instructions.simplify();
         parameters.simplify(); // TODO teach Function to deal with it
 
-        return new FunctionFlow(file, name + "_", parameters, flows);
+        return this;
     }
 
     @Override
@@ -66,6 +73,16 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
     }
 
     @Override
+    public Context<ReferenceFlow> getKingdom() {
+        return null; // TODO implement me
+    }
+
+    @Override
+    public ReferableType getReferableType() {
+        return ReferableType.FUNCTION;
+    }
+
+    @Override
     public String getName() {
         return name;
     }
@@ -76,7 +93,7 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
         visitExpresssions(new ExpressionVisitor() {
             @Override
             public void visitFunction(Function function) {
-                Reference ref = Reference.function(file, function.getName());
+                Reference<KerboScriptNamedElement> ref = Reference.function(file, function.getName());
                 addImport(findFunction(ref));
                 super.visitFunction(function);
             }
@@ -108,7 +125,7 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
         instructions.visit(visitor);
     }
 
-    private KerboScriptNamedElement findFunction(Reference ref) {
+    private KerboScriptNamedElement findFunction(Reference<KerboScriptNamedElement> ref) {
         KerboScriptNamedElement resolved = ref.findDeclaration();
         if (resolved!=null) {
             return resolved;
@@ -142,7 +159,7 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
             public void visitFunction(Function function) {
                 if (reference.get() == null) {
                     String name = function.getName();
-                    Reference ref = Reference.function(file, name);
+                    Reference<KerboScriptNamedElement> ref = Reference.function(file, name);
                     KerboScriptNamedElement declaration = findFunction(ref);
                     if (declaration == null || !declaration.isReal()) {
                         reference.set(undiff(ref));
@@ -153,11 +170,11 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
             }
 
             @Nullable
-            private Reference undiff(Reference reference) {
+            private Reference undiff(Reference<KerboScriptNamedElement> reference) {
                 String name = reference.getName();
                 if (name.endsWith("_")) {
                     name = name.substring(0, name.length() - 1);
-                    Reference undiff = Reference.function(reference.getKingdom(), name);
+                    Reference<KerboScriptNamedElement> undiff = Reference.function(reference.getKingdom(), name);
                     if (!context.containsKey(undiff)) {
                         KerboScriptNamedElement resolved = findFunction(undiff);
                         if (resolved != null && resolved.isReal()) {
@@ -180,6 +197,15 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
             }
         });
         return reference.get();
+    }
+
+    public Expression getSimpleReturn() {
+        MixedDependency dependency = instructions.getReturn();
+        ReturnFlow flow = dependency.getReturnFlow();
+        if (flow!=null && flow.isSimple()) {
+            return flow.getExpression();
+        }
+        return null;
     }
 
     private static class FunctionParser extends FlowParser {
