@@ -1,7 +1,7 @@
 package ksp.kos.ideaplugin.dataflow;
 
 import ksp.kos.ideaplugin.KerboScriptFile;
-import ksp.kos.ideaplugin.reference.Context;
+import ksp.kos.ideaplugin.reference.context.Context;
 
 import java.util.Objects;
 

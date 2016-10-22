@@ -6,7 +6,7 @@ import ksp.kos.ideaplugin.psi.KerboScriptExpr;
 import ksp.kos.ideaplugin.psi.KerboScriptFactor;
 import ksp.kos.ideaplugin.psi.KerboScriptTypes;
 import ksp.kos.ideaplugin.psi.KerboScriptUnaryExpr;
-import ksp.kos.ideaplugin.reference.Context;
+import ksp.kos.ideaplugin.reference.context.Context;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;

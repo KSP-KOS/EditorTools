@@ -3,7 +3,7 @@ package ksp.kos.ideaplugin.dataflow;
 import ksp.kos.ideaplugin.expressions.Expression;
 import ksp.kos.ideaplugin.expressions.SyntaxException;
 import ksp.kos.ideaplugin.psi.*;
-import ksp.kos.ideaplugin.reference.Context;
+import ksp.kos.ideaplugin.reference.context.Context;
 
 import java.util.List;
 import java.util.Set;

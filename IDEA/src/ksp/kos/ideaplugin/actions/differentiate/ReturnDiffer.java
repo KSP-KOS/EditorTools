@@ -8,7 +8,7 @@ import ksp.kos.ideaplugin.psi.KerboScriptElementFactory;
 import ksp.kos.ideaplugin.psi.KerboScriptExpr;
 import ksp.kos.ideaplugin.psi.KerboScriptInstruction;
 import ksp.kos.ideaplugin.psi.KerboScriptReturnStmt;
-import ksp.kos.ideaplugin.reference.PsiFlowContextAdapter;
+import ksp.kos.ideaplugin.reference.context.PsiFlowContextAdapter;
 
 /**
  * Created on 27/03/16.

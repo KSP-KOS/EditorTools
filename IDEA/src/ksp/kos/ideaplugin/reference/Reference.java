@@ -2,6 +2,7 @@ package ksp.kos.ideaplugin.reference;
 
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
 import ksp.kos.ideaplugin.psi.KerboScriptScope;
+import ksp.kos.ideaplugin.reference.context.Context;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -15,6 +16,10 @@ public interface Reference<T extends Reference> {
     ReferableType getReferableType();
 
     String getName();
+
+    default boolean matches(Reference declaration) {
+        return true;
+    }
 
     default T resolve() {
         return getKingdom().resolve(this);
@@ -42,6 +47,6 @@ public interface Reference<T extends Reference> {
 
     @NotNull
     static <T extends Reference> Reference<T> reference(Context<T> kingdom, ReferableType type, String name) {
-        return new ReferenceImpl<T>(kingdom, type, name);
+        return new ReferenceImpl<>(kingdom, type, name);
     }
 }

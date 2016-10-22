@@ -1,5 +1,7 @@
 package ksp.kos.ideaplugin.reference;
 
+import ksp.kos.ideaplugin.reference.context.Context;
+
 import java.util.Objects;
 
 /**

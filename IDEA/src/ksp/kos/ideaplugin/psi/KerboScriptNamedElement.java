@@ -1,6 +1,6 @@
 package ksp.kos.ideaplugin.psi;
 
-import ksp.kos.ideaplugin.reference.LocalContext;
+import ksp.kos.ideaplugin.reference.context.Context;
 import ksp.kos.ideaplugin.reference.ReferableType;
 import ksp.kos.ideaplugin.reference.Reference;
 import ksp.kos.ideaplugin.reference.ReferenceType;
@@ -15,7 +15,7 @@ public interface KerboScriptNamedElement extends KerboScriptBase, Reference<Kerb
     void setType(ReferenceType type);
 
     @Override
-    default LocalContext getKingdom() {
+    default Context<KerboScriptNamedElement> getKingdom() {
         return getScope().getCachedScope();
     }
 
@@ -34,5 +34,17 @@ public interface KerboScriptNamedElement extends KerboScriptBase, Reference<Kerb
             return this;
         }
         return Reference.super.resolve();
+    }
+
+    @Override
+    default boolean matches(Reference declaration) {
+        if (declaration instanceof KerboScriptNamedElement) {
+            KerboScriptNamedElement element = (KerboScriptNamedElement) declaration;
+            if (element.getTextOffset() > this.getTextOffset() &&
+                    declaration.getKingdom() == this.getKingdom()) {
+                return false;
+            }
+        }
+        return true;
     }
 }

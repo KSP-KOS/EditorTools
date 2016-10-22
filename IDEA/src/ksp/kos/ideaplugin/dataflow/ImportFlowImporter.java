@@ -3,9 +3,11 @@ package ksp.kos.ideaplugin.dataflow;
 import ksp.kos.ideaplugin.KerboScriptFile;
 import ksp.kos.ideaplugin.psi.KerboScriptDirective;
 import ksp.kos.ideaplugin.psi.KerboScriptInstruction;
+import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
 import ksp.kos.ideaplugin.psi.KerboScriptRunStmt;
-import ksp.kos.ideaplugin.reference.LocalContext;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 /**
  * Created on 09/04/16.
@@ -17,7 +19,7 @@ public class ImportFlowImporter extends FlowImporter<ImportFlow> {
 
     @NotNull
     @Override
-    protected LocalContext.ScopeMap getMap(KerboScriptFile file) {
+    protected Map<String, KerboScriptNamedElement> getMap(KerboScriptFile file) {
         return file.getCachedScope().getImports();
     }
 
@@ -40,7 +42,7 @@ public class ImportFlowImporter extends FlowImporter<ImportFlow> {
     }
 
     @Override
-    protected KerboScriptInstruction importFlow(KerboScriptFile file, ImportFlow flow, LocalContext.ScopeMap map) {
+    protected KerboScriptInstruction importFlow(KerboScriptFile file, ImportFlow flow, Map<String, KerboScriptNamedElement> map) {
         KerboScriptInstruction instruction = super.importFlow(file, flow, map);
         KerboScriptRunStmt runStmt = instruction.getRunStmt();
         map.put(runStmt.getName(), runStmt);

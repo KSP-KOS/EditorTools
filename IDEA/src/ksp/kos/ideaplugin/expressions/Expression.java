@@ -3,7 +3,7 @@ package ksp.kos.ideaplugin.expressions;
 import com.intellij.lang.ASTNode;
 import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
 import ksp.kos.ideaplugin.psi.*;
-import ksp.kos.ideaplugin.reference.Context;
+import ksp.kos.ideaplugin.reference.context.Context;
 
 import java.util.HashMap;
 import java.util.HashSet;

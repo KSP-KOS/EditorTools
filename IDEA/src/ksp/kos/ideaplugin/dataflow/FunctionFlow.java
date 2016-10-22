@@ -4,7 +4,7 @@ import com.intellij.psi.PsiFile;
 import ksp.kos.ideaplugin.KerboScriptFile;
 import ksp.kos.ideaplugin.expressions.*;
 import ksp.kos.ideaplugin.psi.*;
-import ksp.kos.ideaplugin.reference.Context;
+import ksp.kos.ideaplugin.reference.context.Context;
 import ksp.kos.ideaplugin.reference.ReferableType;
 import ksp.kos.ideaplugin.reference.Reference;
 import org.jetbrains.annotations.Nullable;
@@ -152,7 +152,7 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
         return null;
     }
 
-    public Reference getNextToDiff(Map<Reference, FunctionFlow> context) {
+    public Reference getNextToDiff(Map<Reference<KerboScriptNamedElement>, FunctionFlow> context) {
         AtomicReference<Reference> reference = new AtomicReference<>();
         visitExpresssions(new ExpressionVisitor() {
             @Override

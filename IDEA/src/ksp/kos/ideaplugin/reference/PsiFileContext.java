@@ -4,6 +4,8 @@ import ksp.kos.ideaplugin.KerboScriptFile;
 import ksp.kos.ideaplugin.psi.KerboScriptElementFactory;
 import ksp.kos.ideaplugin.psi.KerboScriptInstruction;
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
+import ksp.kos.ideaplugin.reference.context.Context;
+import ksp.kos.ideaplugin.reference.context.FileContext;
 import ksp.kos.utils.MapBuilder;
 
 import java.util.HashMap;
@@ -14,48 +16,19 @@ import java.util.Map;
  *
  * @author ptasha
  */
-public class FileContext extends LocalContext {
-    private KerboScriptFile kerboScriptFile;
+public class PsiFileContext extends FileContext<KerboScriptNamedElement> {
+    private final KerboScriptFile kerboScriptFile;
 
-    public FileContext(KerboScriptFile kerboScriptFile) {
-        this(kerboScriptFile, new LocalContext(null));
-    }
-
-    private FileContext(KerboScriptFile kerboScriptFile, LocalContext virtual) {
-        super(virtual);
+    public PsiFileContext(KerboScriptFile kerboScriptFile) {
+        // TODO combine virtual context and resolver together into SuperContext for whole project
+        super(new Context<>(null), kerboScriptFile.getPureName(), new PsiFileResolver(kerboScriptFile));
         this.kerboScriptFile = kerboScriptFile;
     }
 
     @Override
-    public KerboScriptFile getKerboScriptFile() {
-        return kerboScriptFile;
-    }
-
-    @Override
-    public KerboScriptNamedElement findDeclaration(Reference reference) {
-        if (reference.getReferableType()==ReferableType.FILE) {
-            return resolveFile(reference.getName());
-        }
-        KerboScriptNamedElement resolved = super.findDeclaration(reference);
-        if (resolved == null) {
-            for (KerboScriptNamedElement run : getImports().values()) {
-                KerboScriptFile dependency = resolveFile(run.getName());
-                if (dependency != null) {
-                    resolved = dependency.getCachedScope().findLocalDeclaration(reference);
-                    if (resolved != null) {
-                        return resolved;
-                    }
-                }
-            }
-            return null;
-        }
-        return resolved;
-    }
-
-    @Override
-    public KerboScriptNamedElement resolve(Reference reference) {
-        KerboScriptNamedElement resolved = findDeclaration(reference);
-        if (resolved == null) {
+    protected KerboScriptNamedElement resolve(Reference reference, boolean createAllowed) {
+        KerboScriptNamedElement resolved = super.resolve(reference, createAllowed);
+        if (resolved == null && createAllowed) {
             return createVirtual(reference);
         }
         return resolved;
@@ -68,10 +41,6 @@ public class FileContext extends LocalContext {
         } else {
             super.registerUnknown(type, name, element);
         }
-    }
-
-    public ScopeMap<KerboScriptNamedElement> getImports() {
-        return getDeclarations(ReferableType.FILE);
     }
 
     @Override
@@ -95,8 +64,8 @@ public class FileContext extends LocalContext {
         return declaration;
     }
 
-    private KerboScriptFile resolveFile(String name) {
-        return kerboScriptFile.resolveFile(name);
+    @Override
+    public KerboScriptNamedElement getFile() {
+        return kerboScriptFile;
     }
-
 }

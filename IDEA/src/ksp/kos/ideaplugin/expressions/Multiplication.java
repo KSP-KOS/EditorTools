@@ -2,7 +2,7 @@ package ksp.kos.ideaplugin.expressions;
 
 import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
 import ksp.kos.ideaplugin.psi.KerboScriptMultdivExpr;
-import ksp.kos.ideaplugin.reference.Context;
+import ksp.kos.ideaplugin.reference.context.Context;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;

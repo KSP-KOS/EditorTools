@@ -5,7 +5,7 @@ import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
 import ksp.kos.ideaplugin.psi.KerboScriptNumber;
 import ksp.kos.ideaplugin.psi.KerboScriptSciNumber;
 import ksp.kos.ideaplugin.psi.KerboScriptTypes;
-import ksp.kos.ideaplugin.reference.Context;
+import ksp.kos.ideaplugin.reference.context.Context;
 
 import java.util.HashMap;
 import java.util.function.BiFunction;

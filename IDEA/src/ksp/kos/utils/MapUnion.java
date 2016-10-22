@@ -3,7 +3,6 @@ package ksp.kos.utils;
 import com.google.common.collect.Sets;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,7 +11,7 @@ import java.util.Set;
  *
  * @author ptasha
  */
-public class MapUnion<K, V> extends AbstractMap<K, V> {
+public class MapUnion<K, V> extends TrueAbstractMap<K, V> {
     private final Map<K, V> map1;
     private final Map<K, V> map2;
 
@@ -30,14 +29,9 @@ public class MapUnion<K, V> extends AbstractMap<K, V> {
         return value;
     }
 
-    @Override
-    public boolean containsKey(Object key) {
-        return get(key)!=null;
-    }
-
     @NotNull
     @Override
     public Set<Entry<K, V>> entrySet() {
-        return Sets.union(map1.entrySet(), map2.entrySet());
+        return Sets.union(map1.entrySet(), map2.entrySet()); // TODO may cause perf issues
     }
 }

@@ -6,7 +6,7 @@ import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
 import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
 import ksp.kos.ideaplugin.psi.*;
-import ksp.kos.ideaplugin.reference.Context;
+import ksp.kos.ideaplugin.reference.context.Context;
 
 import java.util.ArrayList;
 import java.util.Collection;

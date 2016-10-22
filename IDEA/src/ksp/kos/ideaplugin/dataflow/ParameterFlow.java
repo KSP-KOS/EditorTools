@@ -1,7 +1,7 @@
 package ksp.kos.ideaplugin.dataflow;
 
 import ksp.kos.ideaplugin.psi.KerboScriptDeclareParameterClause;
-import ksp.kos.ideaplugin.reference.Context;
+import ksp.kos.ideaplugin.reference.context.Context;
 
 /**
  * Created on 17/03/16.

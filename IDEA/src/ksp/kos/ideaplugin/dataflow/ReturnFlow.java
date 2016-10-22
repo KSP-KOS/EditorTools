@@ -3,7 +3,7 @@ package ksp.kos.ideaplugin.dataflow;
 import ksp.kos.ideaplugin.expressions.Expression;
 import ksp.kos.ideaplugin.expressions.SyntaxException;
 import ksp.kos.ideaplugin.psi.KerboScriptReturnStmt;
-import ksp.kos.ideaplugin.reference.Context;
+import ksp.kos.ideaplugin.reference.context.Context;
 import org.jetbrains.annotations.NotNull;
 
 /**

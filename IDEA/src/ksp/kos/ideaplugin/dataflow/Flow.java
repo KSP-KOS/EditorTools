@@ -1,7 +1,7 @@
 package ksp.kos.ideaplugin.dataflow;
 
 import ksp.kos.ideaplugin.expressions.ExpressionVisitor;
-import ksp.kos.ideaplugin.reference.Context;
+import ksp.kos.ideaplugin.reference.context.Context;
 
 /**
  * Created on 12/03/16.

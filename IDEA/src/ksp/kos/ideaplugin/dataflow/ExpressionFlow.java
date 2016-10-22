@@ -4,7 +4,7 @@ import ksp.kos.ideaplugin.expressions.Constant;
 import ksp.kos.ideaplugin.expressions.Expression;
 import ksp.kos.ideaplugin.expressions.ExpressionVisitor;
 import ksp.kos.ideaplugin.expressions.Number;
-import ksp.kos.ideaplugin.reference.Context;
+import ksp.kos.ideaplugin.reference.context.Context;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;

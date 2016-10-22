@@ -4,7 +4,7 @@ import ksp.kos.ideaplugin.dataflow.FunctionFlow;
 import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
 import ksp.kos.ideaplugin.expressions.inline.InlineFunctions;
 import ksp.kos.ideaplugin.psi.KerboScriptExpr;
-import ksp.kos.ideaplugin.reference.Context;
+import ksp.kos.ideaplugin.reference.context.Context;
 import ksp.kos.ideaplugin.reference.Reference;
 
 import java.util.HashMap;

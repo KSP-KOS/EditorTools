@@ -12,7 +12,8 @@ import ksp.kos.ideaplugin.expressions.SyntaxException;
 import ksp.kos.ideaplugin.psi.KerboScriptDeclareFunctionClause;
 import ksp.kos.ideaplugin.psi.KerboScriptDeclareStmt;
 import ksp.kos.ideaplugin.psi.KerboScriptInstruction;
-import ksp.kos.ideaplugin.reference.PsiFlowContextAdapter;
+import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
+import ksp.kos.ideaplugin.reference.context.PsiFlowContextAdapter;
 import ksp.kos.ideaplugin.reference.Reference;
 import ksp.kos.utils.MapUnion;
 
@@ -39,12 +40,13 @@ public class FunctionDiffer implements Differ {
         KerboScriptDeclareStmt declare = (KerboScriptDeclareStmt) instruction;
         try {
             LinkedList<Reference> stack = new LinkedList<>();
-            Map<Reference, FunctionFlow> processing = new HashMap<>();
-            Map<Reference, FunctionFlow> processed = new HashMap<>();
-            MapUnion<Reference, FunctionFlow> context = new MapUnion<>(processing, processed);
+            Map<Reference<KerboScriptNamedElement>, FunctionFlow> processing = new HashMap<>();
+            Map<Reference<KerboScriptNamedElement>, FunctionFlow> processed = new HashMap<>();
+            MapUnion<Reference<KerboScriptNamedElement>, FunctionFlow> context = new MapUnion<>(processing, processed);
 
             Reference ref = declare.getDeclareFunctionClause();
             while (ref != null) {
+                // TODO use FileAdapter, create it first
                 PsiFlowContextAdapter contextAdapter = new PsiFlowContextAdapter(ref.getKingdom());
                 FunctionFlow function = FunctionFlow.parse((KerboScriptDeclareFunctionClause) ref.findDeclaration()).differentiate(contextAdapter);
                 while (function != null) {
@@ -62,8 +64,8 @@ public class FunctionDiffer implements Differ {
                 }
             }
 
-            for (Map.Entry<Reference, FunctionFlow> entry : processed.entrySet()) {
-                KerboScriptFile file = entry.getKey().getKingdom().getKerboScriptFile();
+            for (Map.Entry<Reference<KerboScriptNamedElement>, FunctionFlow> entry : processed.entrySet()) {
+                KerboScriptFile file = entry.getKey().findDeclaration().getKerboScriptFile();
                 KerboScriptFile diffFile = ensureDiffDependency(file);
                 FunctionFlowImporter.INSTANCE.importFlow(diffFile, entry.getValue());
                 // TODO import flows without \n

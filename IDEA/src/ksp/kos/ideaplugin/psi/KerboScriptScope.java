@@ -1,6 +1,6 @@
 package ksp.kos.ideaplugin.psi;
 
-import ksp.kos.ideaplugin.reference.LocalContext;
+import ksp.kos.ideaplugin.reference.context.Context;
 import ksp.kos.ideaplugin.reference.Reference;
 
 /**
@@ -9,7 +9,7 @@ import ksp.kos.ideaplugin.reference.Reference;
  * @author ptasha
  */
 public interface KerboScriptScope extends KerboScriptBase { // TODO remove me
-    LocalContext getCachedScope();
+    Context<KerboScriptNamedElement> getCachedScope();
 
     default KerboScriptNamedElement resolve(Reference reference) {
         return getCachedScope().resolve(reference);

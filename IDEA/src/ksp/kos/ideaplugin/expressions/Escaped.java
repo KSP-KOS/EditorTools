@@ -2,7 +2,7 @@ package ksp.kos.ideaplugin.expressions;
 
 
 import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
-import ksp.kos.ideaplugin.reference.Context;
+import ksp.kos.ideaplugin.reference.context.Context;
 
 import java.util.HashMap;
 

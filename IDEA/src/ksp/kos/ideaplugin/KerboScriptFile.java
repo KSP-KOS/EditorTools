@@ -24,7 +24,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class KerboScriptFile extends PsiFileBase implements KerboScriptScope, KerboScriptNamedElement {
     private static final ReferenceType TYPE = new ReferenceType(ReferableType.FILE, OccurrenceType.GLOBAL);
-    private final Cache<FileContext> cache = new Cache<>(this, new FileContext(this));
+    private final Cache<PsiFileContext> cache = new Cache<>(this, new PsiFileContext(this));
 
     public KerboScriptFile(@NotNull FileViewProvider viewProvider) {
         super(viewProvider, KerboScriptLanguage.INSTANCE);
@@ -100,7 +100,7 @@ public class KerboScriptFile extends PsiFileBase implements KerboScriptScope, Ke
     }
 
     @Override
-    public FileContext getCachedScope() {
+    public PsiFileContext getCachedScope() {
         return cache.getScope();
     }
 
