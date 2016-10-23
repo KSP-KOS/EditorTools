@@ -7,6 +7,6 @@ import ksp.kos.ideaplugin.reference.Reference;
  *
  * @author ptasha
  */
-public interface ReferenceResolver<B extends Reference, C extends Context<B>> {
-    B resolve(C context, Reference reference, boolean createAllowed);
+public interface ReferenceResolver<C extends LocalContext> {
+    Duality resolve(C context, Reference reference, boolean createAllowed);
 }

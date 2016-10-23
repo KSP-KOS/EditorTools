@@ -1,7 +1,8 @@
 package ksp.kos.ideaplugin.dataflow;
 
-import ksp.kos.ideaplugin.KerboScriptFile;
-import ksp.kos.ideaplugin.reference.context.Context;
+import ksp.kos.ideaplugin.reference.context.FileContext;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -17,8 +18,8 @@ public class ImportFlow extends BaseFlow<ImportFlow> implements NamedFlow<Import
         this.name = name;
     }
 
-    public ImportFlow(KerboScriptFile file) {
-        this(file.getPureName());
+    public ImportFlow(FileContext file) {
+        this(file.getName());
     }
 
     @Override
@@ -27,7 +28,7 @@ public class ImportFlow extends BaseFlow<ImportFlow> implements NamedFlow<Import
     }
 
     @Override
-    public ImportFlow differentiate(Context<ReferenceFlow> context) {
+    public ImportFlow differentiate(LocalContext context) {
         if (name.endsWith("_")) {
             return this;
         }
@@ -53,7 +54,7 @@ public class ImportFlow extends BaseFlow<ImportFlow> implements NamedFlow<Import
     }
 
     @Override
-    public int compareTo(ImportFlow o) {
+    public int compareTo(@NotNull ImportFlow o) {
         return getName().compareTo(o.getName());
     }
 }

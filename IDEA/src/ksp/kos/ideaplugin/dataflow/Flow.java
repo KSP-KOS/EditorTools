@@ -1,7 +1,7 @@
 package ksp.kos.ideaplugin.dataflow;
 
 import ksp.kos.ideaplugin.expressions.ExpressionVisitor;
-import ksp.kos.ideaplugin.reference.context.Context;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
 
 /**
  * Created on 12/03/16.
@@ -9,9 +9,9 @@ import ksp.kos.ideaplugin.reference.context.Context;
  * @author ptasha
  */
 public interface Flow<F extends Flow<F>> extends Dependency {
-    F differentiate(Context<ReferenceFlow> context, ContextBuilder contextBuilder);
+    F differentiate(LocalContext context, ContextBuilder contextBuilder);
 
-    F differentiate(Context<ReferenceFlow> context);
+    F differentiate(LocalContext context);
 
     String getText();
 

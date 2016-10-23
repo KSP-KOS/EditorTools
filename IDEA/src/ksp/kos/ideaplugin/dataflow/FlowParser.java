@@ -1,66 +1,31 @@
 package ksp.kos.ideaplugin.dataflow;
 
+import ksp.kos.ideaplugin.KerboScriptFile;
 import ksp.kos.ideaplugin.expressions.SyntaxException;
-import ksp.kos.ideaplugin.psi.*;
+import ksp.kos.ideaplugin.psi.KerboScriptDeclareFunctionClause;
+import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
 
-import java.util.List;
+import java.util.function.Function;
 
 /**
- * Created on 27/08/16.
+ * Created on 23/10/16.
  *
  * @author ptasha
  */
-public class FlowParser {
-    private ContextBuilder context;
+public class FlowParser implements Function<KerboScriptNamedElement, ReferenceFlow> {
+    public static final FlowParser INSTANCE = new FlowParser();
 
-    public FlowParser() {
-        this(null);
-    }
-
-    public FlowParser(ContextBuilder parent) {
-        context = new ContextBuilder(parent);
-    }
-
-    public boolean parseInstructions(List<KerboScriptInstruction> instructions) throws SyntaxException {
-        for (KerboScriptInstruction instruction : instructions) {
-            if (!parseInstruction(instruction)) return false;
-        }
-        return true;
-    }
-
-    public boolean parseInstruction(KerboScriptInstruction instruction) throws SyntaxException {
-        if (instruction instanceof KerboScriptSetStmt) {
-            VariableFlow variableFlow = VariableFlow.parse((KerboScriptSetStmt) instruction);
-            if (variableFlow != null) {
-                addFlow(variableFlow);
+    @Override
+    public ReferenceFlow apply(KerboScriptNamedElement psi) {
+        if (psi instanceof KerboScriptDeclareFunctionClause) {
+            try {
+                return FunctionFlow.parse((KerboScriptDeclareFunctionClause) psi);
+            } catch (SyntaxException e) {
+                e.printStackTrace(); // TODO
             }
-        } else if (instruction instanceof KerboScriptDeclareStmt) {
-            KerboScriptDeclareStmt declareStmt = (KerboScriptDeclareStmt) instruction;
-            KerboScriptDeclareParameterClause declareParameterClause = declareStmt.getDeclareParameterClause();
-            if (declareParameterClause != null) {
-                addFlow(ParameterFlow.parse(declareParameterClause));
-            } else if (declareStmt.getDeclareIdentifierClause() != null) {
-                addFlow(VariableFlow.parse(declareStmt.getDeclareIdentifierClause()));
-            }
-        } else if (instruction instanceof KerboScriptReturnStmt) {
-            addFlow(ReturnFlow.parse((KerboScriptReturnStmt) instruction));
-            return false;
-        } else if (instruction instanceof KerboScriptIfStmt) {
-            KerboScriptIfStmt ifStmt = (KerboScriptIfStmt) instruction;
-            addFlow(IfFlow.parse(ifStmt, context));
-        } else if (instruction.getInstructionBlock()!=null) {
-            KerboScriptInstructionBlock instructionBlock = instruction.getInstructionBlock();
-            return parseInstructions(instructionBlock.getInstructionList());
+        } else if (psi instanceof KerboScriptFile) {
+            return ((KerboScriptFile) psi).getCachedScope();
         }
-        // TODO throw exception on unknown instructions?
-        return true;
-    }
-
-    protected void addFlow(Flow<?> flow) {
-        context.add(flow);
-    }
-
-    public ContextBuilder getContext() {
-        return context;
+        return null;
     }
 }

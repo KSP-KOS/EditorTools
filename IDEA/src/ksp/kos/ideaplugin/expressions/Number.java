@@ -1,11 +1,10 @@
 package ksp.kos.ideaplugin.expressions;
 
 import com.intellij.lang.ASTNode;
-import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
 import ksp.kos.ideaplugin.psi.KerboScriptNumber;
 import ksp.kos.ideaplugin.psi.KerboScriptSciNumber;
 import ksp.kos.ideaplugin.psi.KerboScriptTypes;
-import ksp.kos.ideaplugin.reference.context.Context;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
 
 import java.util.HashMap;
 import java.util.function.BiFunction;
@@ -178,7 +177,7 @@ public class Number extends Atom {
     }
 
     @Override
-    public Expression differentiate(Context<ReferenceFlow> context) {
+    public Expression differentiate(LocalContext context) {
         return Number.ZERO;
     }
 

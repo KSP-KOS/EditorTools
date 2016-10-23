@@ -8,7 +8,6 @@ import ksp.kos.ideaplugin.psi.KerboScriptElementFactory;
 import ksp.kos.ideaplugin.psi.KerboScriptExpr;
 import ksp.kos.ideaplugin.psi.KerboScriptInstruction;
 import ksp.kos.ideaplugin.psi.KerboScriptReturnStmt;
-import ksp.kos.ideaplugin.reference.context.PsiFlowContextAdapter;
 
 /**
  * Created on 27/03/16.
@@ -32,7 +31,7 @@ public class ReturnDiffer implements Differ {
 
     protected String diff(KerboScriptExpr expr) throws ActionFailedException {
         try {
-            return Expression.parse(expr).differentiate(new PsiFlowContextAdapter(expr.getScope().getCachedScope())).getText();
+            return Expression.parse(expr).differentiate(expr.getScope().getCachedScope()).getText();
         } catch (SyntaxException e) {
             throw new ActionFailedException(e);
         }

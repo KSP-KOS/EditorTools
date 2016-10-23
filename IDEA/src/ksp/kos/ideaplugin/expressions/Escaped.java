@@ -1,8 +1,7 @@
 package ksp.kos.ideaplugin.expressions;
 
 
-import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
-import ksp.kos.ideaplugin.reference.context.Context;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
 
 import java.util.HashMap;
 
@@ -24,7 +23,7 @@ public class Escaped extends Atom {
     }
 
     @Override
-    public Expression differentiate(Context<ReferenceFlow> context) {
+    public Expression differentiate(LocalContext context) {
         return expression.differentiate(context);
     }
 

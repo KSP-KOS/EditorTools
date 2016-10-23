@@ -43,12 +43,8 @@ public class KerboScriptFile extends PsiFileBase implements KerboScriptScope, Ke
         return KerboScriptFileType.INSTANCE;
     }
 
-    public KerboScriptNamedElement findFunction(String name) {
-        return getCachedScope().findDeclaration(Reference.function(this, name));
-    }
-
     public KerboScriptNamedElement findVariable(String name) {
-        return getCachedScope().findDeclaration(Reference.variable(this, name));
+        return PsiSelfResolvable.variable(this, name).findDeclaration();
     }
 
     public KerboScriptFile resolveFile(String name) {

@@ -1,38 +1,42 @@
 package ksp.kos.ideaplugin.reference.context;
 
+import ksp.kos.ideaplugin.KerboScriptFile;
+import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
 import ksp.kos.ideaplugin.reference.ReferableType;
 import ksp.kos.ideaplugin.reference.Reference;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 08/10/16.
  *
  * @author ptasha
  */
-public abstract class FileContext<B extends Reference> extends Context<B> implements Reference<B> {
+public abstract class FileContext extends LocalContext implements ReferenceFlow {
     private final String name;
 
-    public FileContext(Context<B> parent, String name, FileContextResolver<B, FileContext<B>> fileResolver) {
+    public FileContext(LocalContext parent, String name, FileContextResolver fileResolver) {
         this(parent, name, createResolvers(fileResolver));
     }
 
-    protected FileContext(Context<B> parent, String name, List<ReferenceResolver<B, Context<B>>> resolvers) {
+    protected FileContext(LocalContext parent, String name, List<ReferenceResolver<LocalContext>> resolvers) {
         super(parent, resolvers);
         this.name = name;
     }
 
-    public static <B extends Reference> List<ReferenceResolver<B, Context<B>>> createResolvers(FileContextResolver<B, FileContext<B>> fileResolver) {
-        ArrayList<ReferenceResolver<B, Context<B>>> resolvers = new ArrayList<>();
-        resolvers.add(new FileResolver<>(fileResolver));
-        resolvers.addAll(Context.createResolvers());
-        resolvers.add(new ImportsResolver<>(fileResolver));
+    public static List<ReferenceResolver<LocalContext>> createResolvers(FileContextResolver fileResolver) {
+        ArrayList<ReferenceResolver<LocalContext>> resolvers = new ArrayList<>();
+        resolvers.add(new FileResolver(fileResolver));
+        resolvers.add(new LocalResolver());
+        resolvers.add(new VirtualResolver());
+        resolvers.add(new ImportsResolver(fileResolver));
         return resolvers;
     }
 
     @Override
-    public Context<B> getKingdom() {
+    public LocalContext getKingdom() {
         return this;
     }
 
@@ -46,48 +50,66 @@ public abstract class FileContext<B extends Reference> extends Context<B> implem
         return name;
     }
 
-    public abstract B getFile(); // TODO remove me
+    public Map<String, Duality> getImports() {
+        return getDeclarations(ReferableType.FILE);
+    }
 
-    public static class FileResolver<R extends Reference, C extends FileContext<R>> implements ReferenceResolver<R, Context<R>> {
+    @Override
+    protected void registerUnknown(ReferableType type, String name, Duality element) {
+        if (type==ReferableType.FILE) {
+            addDefinition(type, KerboScriptFile.stripExtension(name), element);
+        } else {
+            super.registerUnknown(type, name, element);
+        }
+    }
 
-        private final FileContextResolver<R, C> fileContextResolver;
+    public static class FileResolver implements ReferenceResolver<LocalContext> {
 
-        public FileResolver(FileContextResolver<R, C> fileContextResolver) {
+        private final FileContextResolver fileContextResolver;
+
+        public FileResolver(FileContextResolver fileContextResolver) {
             this.fileContextResolver = fileContextResolver;
         }
 
         @Override
-        public R resolve(Context<R> context, Reference reference, boolean createAllowed) {
+        public Duality resolve(LocalContext context, Reference reference, boolean createAllowed) {
             if (reference.getReferableType()==ReferableType.FILE) {
-                C fileContext = fileContextResolver.resolveFile(reference.getName());
-                if (fileContext!=null) {
-                    return fileContext.getFile();
-                }
+                return fileContextResolver.resolveFile(reference.getName());
             }
             return null;
         }
     }
 
-    public static class ImportsResolver<R extends Reference> implements ReferenceResolver<R, Context<R>> {
+    public static class ImportsResolver implements ReferenceResolver<LocalContext> {
 
-        private final FileContextResolver<R, FileContext<R>> fileContextResolver;
+        private final FileContextResolver fileContextResolver;
 
-        public ImportsResolver(FileContextResolver<R, FileContext<R>> fileContextResolver) {
+        public ImportsResolver(FileContextResolver fileContextResolver) {
             this.fileContextResolver = fileContextResolver;
         }
 
         @Override
-        public R resolve(Context<R> context, Reference reference, boolean createAllowed) {
-            for (R run : context.getDeclarations(ReferableType.FILE).values()) {
-                FileContext<R> dependency = fileContextResolver.resolveFile(run.getName());
+        public Duality resolve(LocalContext context, Reference reference, boolean createAllowed) {
+            for (Duality run : context.getDeclarations(ReferableType.FILE).values()) {
+                FileDuality dependency = fileContextResolver.resolveFile(run.getName());
                 if (dependency != null) {
-                    R resolved = dependency.findLocalDeclaration(reference);
+                    Duality resolved = dependency.getSemantics().findLocalDeclaration(reference);
                     if (resolved != null) {
                         return resolved;
                     }
                 }
             }
             return null;
+        }
+    }
+
+    private static class VirtualResolver extends ParentResolver {
+        @Override
+        public Duality resolve(LocalContext context, Reference reference, boolean createAllowed) {
+            if (!createAllowed) {
+                return null;
+            }
+            return super.resolve(context, reference, createAllowed);
         }
     }
 }

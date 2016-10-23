@@ -1,7 +1,7 @@
 package ksp.kos.ideaplugin.dataflow;
 
 import ksp.kos.ideaplugin.psi.KerboScriptDeclareParameterClause;
-import ksp.kos.ideaplugin.reference.context.Context;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
 
 /**
  * Created on 17/03/16.
@@ -27,7 +27,7 @@ public class ParameterFlow extends BaseFlow<ParameterFlow> implements NamedFlow<
     }
 
     @Override
-    public ParameterFlow differentiate(Context<ReferenceFlow> context, ContextBuilder contextBuilder) {
+    public ParameterFlow differentiate(LocalContext context, ContextBuilder contextBuilder) {
         contextBuilder.add(new ParameterFlow(name));
         ParameterFlow diff = differentiate(context);
         contextBuilder.add(diff);
@@ -35,7 +35,7 @@ public class ParameterFlow extends BaseFlow<ParameterFlow> implements NamedFlow<
     }
 
     @Override
-    public ParameterFlow differentiate(Context<ReferenceFlow> context) {
+    public ParameterFlow differentiate(LocalContext context) {
         return new ParameterFlow(name+"_");
     }
 

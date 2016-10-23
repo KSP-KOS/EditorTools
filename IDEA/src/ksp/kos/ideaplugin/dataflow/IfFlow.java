@@ -3,7 +3,7 @@ package ksp.kos.ideaplugin.dataflow;
 import ksp.kos.ideaplugin.expressions.Expression;
 import ksp.kos.ideaplugin.expressions.SyntaxException;
 import ksp.kos.ideaplugin.psi.*;
-import ksp.kos.ideaplugin.reference.context.Context;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
 
 import java.util.List;
 import java.util.Set;
@@ -84,20 +84,20 @@ public class IfFlow extends BaseFlow<IfFlow> {
     }
 
     private static ContextBuilder parseBlock(KerboScriptInstruction kerboScriptInstruction, ContextBuilder parent) throws SyntaxException {
-        FlowParser parser = new FlowParser(parent);
+        InstructionsParser parser = new InstructionsParser(parent);
         parser.parseInstruction(kerboScriptInstruction);
         return parser.getContext();
     }
 
     @Override
-    public IfFlow differentiate(Context<ReferenceFlow> context, ContextBuilder contextBuilder) {
+    public IfFlow differentiate(LocalContext context, ContextBuilder contextBuilder) {
         IfFlow diff = differentiate(context);
         contextBuilder.add(diff);
         return diff;
     }
 
     @Override
-    public IfFlow differentiate(Context<ReferenceFlow> context) {
+    public IfFlow differentiate(LocalContext context) {
         ContextBuilder trueContext = new ContextBuilder();
         trueList.differentiate(context, trueContext);
         ContextBuilder falseContext = new ContextBuilder();

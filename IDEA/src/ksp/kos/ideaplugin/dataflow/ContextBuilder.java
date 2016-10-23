@@ -1,7 +1,7 @@
 package ksp.kos.ideaplugin.dataflow;
 
 import ksp.kos.ideaplugin.expressions.ExpressionVisitor;
-import ksp.kos.ideaplugin.reference.context.Context;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -42,7 +42,7 @@ public class ContextBuilder { // TODO combine into diff context?
         return text;
     }
 
-    public void differentiate(Context<ReferenceFlow> context, ContextBuilder contextBuilder) {
+    public void differentiate(LocalContext context, ContextBuilder contextBuilder) {
         for (Flow<?> flow : list) {
             flow.differentiate(context, contextBuilder);
         }

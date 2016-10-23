@@ -9,7 +9,6 @@ import ksp.kos.ideaplugin.expressions.SyntaxException;
 import ksp.kos.ideaplugin.psi.KerboScriptBase;
 import ksp.kos.ideaplugin.psi.KerboScriptElementFactory;
 import ksp.kos.ideaplugin.psi.KerboScriptInstruction;
-import ksp.kos.ideaplugin.reference.context.PsiFlowContextAdapter;
 
 /**
  * Created on 27/03/16.
@@ -45,7 +44,7 @@ public abstract class DuplicateDiffer<P extends KerboScriptBase> implements Diff
 
     protected String diff(P variable) throws ActionFailedException {
         try {
-            return parse(variable).differentiate(new PsiFlowContextAdapter(variable.getScope().getCachedScope())).getText();
+            return parse(variable).differentiate(variable.getScope().getCachedScope()).getText();
         } catch (SyntaxException e) {
             throw new ActionFailedException(e);
         }

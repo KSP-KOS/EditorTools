@@ -3,7 +3,7 @@ package ksp.kos.ideaplugin.dataflow;
 import ksp.kos.ideaplugin.expressions.Expression;
 import ksp.kos.ideaplugin.expressions.SyntaxException;
 import ksp.kos.ideaplugin.psi.KerboScriptReturnStmt;
-import ksp.kos.ideaplugin.reference.context.Context;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -23,7 +23,7 @@ public class ReturnFlow extends ExpressionFlow<ReturnFlow> {
     }
 
     @Override
-    public ReturnFlow differentiate(Context<ReferenceFlow> context, ContextBuilder contextBuilder) {
+    public ReturnFlow differentiate(LocalContext context, ContextBuilder contextBuilder) {
         ReturnFlow diff = differentiate(context);
         contextBuilder.add(diff);
         return diff;

@@ -4,7 +4,7 @@ import ksp.kos.ideaplugin.expressions.Constant;
 import ksp.kos.ideaplugin.expressions.Expression;
 import ksp.kos.ideaplugin.expressions.ExpressionVisitor;
 import ksp.kos.ideaplugin.expressions.Number;
-import ksp.kos.ideaplugin.reference.context.Context;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -61,7 +61,7 @@ public abstract class ExpressionFlow<F extends ExpressionFlow<F>> extends BaseFl
     }
 
     @Override
-    public F differentiate(Context<ReferenceFlow> context) {
+    public F differentiate(LocalContext context) {
         return create(expression.differentiate(context));
     }
 

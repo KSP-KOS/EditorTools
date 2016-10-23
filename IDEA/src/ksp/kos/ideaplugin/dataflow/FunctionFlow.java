@@ -3,12 +3,16 @@ package ksp.kos.ideaplugin.dataflow;
 import com.intellij.psi.PsiFile;
 import ksp.kos.ideaplugin.KerboScriptFile;
 import ksp.kos.ideaplugin.expressions.*;
+import ksp.kos.ideaplugin.expressions.inline.InlineFunction;
 import ksp.kos.ideaplugin.psi.*;
-import ksp.kos.ideaplugin.reference.context.Context;
-import ksp.kos.ideaplugin.reference.ReferableType;
-import ksp.kos.ideaplugin.reference.Reference;
+import ksp.kos.ideaplugin.reference.*;
+import ksp.kos.ideaplugin.reference.context.Duality;
+import ksp.kos.ideaplugin.reference.context.FileContext;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -20,13 +24,13 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author ptasha
  */
 public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<FunctionFlow>, ReferenceFlow {
-    private final KerboScriptFile file;
+    private final FileContext file; // TODO replace file to FileContext
     private final String name;
 
     private final ContextBuilder parameters;
     private final ContextBuilder instructions;
 
-    public FunctionFlow(KerboScriptFile file, String name, ContextBuilder parameters, ContextBuilder instructions) {
+    public FunctionFlow(FileContext file, String name, ContextBuilder parameters, ContextBuilder instructions) {
         this.file = file;
         this.name = name;
         this.parameters = parameters;
@@ -40,12 +44,12 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
         FunctionParser parser = new FunctionParser();
         String name = function.getName();
         parser.parseInstructions(function.getInstructionBlock().getInstructionList());
-        return new FunctionFlow(function.getKerboScriptFile(), name, parser.getContext(), parser.getFlowContext());
+        return new FunctionFlow(function.getKerboScriptFile().getCachedScope(), name, parser.getContext(), parser.getFlowContext());
         // throw new SyntaxException("Return statement is not found for function " + name); // TODO check for return statement
     }
 
     @Override
-    public FunctionFlow differentiate(Context<ReferenceFlow> context) {
+    public FunctionFlow differentiate(LocalContext context) {
         ContextBuilder parameters = new ContextBuilder();
         this.parameters.differentiate(context, parameters); // TODO single parameter
         ContextBuilder flows = new ContextBuilder(parameters);
@@ -73,7 +77,7 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
     }
 
     @Override
-    public Context<ReferenceFlow> getKingdom() {
+    public LocalContext getKingdom() {
         return null; // TODO implement me
     }
 
@@ -87,13 +91,13 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
         return name;
     }
 
-    public Set<ImportFlow> getImports(KerboScriptFile newFile) {
+    public Set<ImportFlow> getImports(FileContext newFile) {
         HashSet<ImportFlow> imports = new HashSet<>();
         HashSet<String> context = new HashSet<>();
         visitExpresssions(new ExpressionVisitor() {
             @Override
             public void visitFunction(Function function) {
-                Reference<KerboScriptNamedElement> ref = Reference.function(file, function.getName());
+                DualitySelfResolvable ref = DualitySelfResolvable.function(file, function.getName());
                 addImport(findFunction(ref));
                 super.visitFunction(function);
             }
@@ -102,15 +106,15 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
             public void visitVariable(Variable variable) {
                 String name = variable.getName();
                 if (!context.contains(name)) {
-                    addImport(file.findVariable(name));
+                    addImport(DualitySelfResolvable.variable(file, name).findDeclaration());
                 }
                 context.add(name);
                 super.visitVariable(variable);
             }
 
-            private void addImport(KerboScriptNamedElement resolved) {
-                if (resolved != null && resolved.isReal()) {
-                    KerboScriptFile dependency = resolved.getKerboScriptFile();
+            private void addImport(Duality resolved) {
+                if (resolved != null) {
+                    FileContext dependency = resolved.getKingdom().getFileContext();
                     if (dependency != newFile) {
                         imports.add(new ImportFlow(dependency));
                     }
@@ -125,8 +129,8 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
         instructions.visit(visitor);
     }
 
-    private KerboScriptNamedElement findFunction(Reference<KerboScriptNamedElement> ref) {
-        KerboScriptNamedElement resolved = ref.findDeclaration();
+    private Duality findFunction(DualitySelfResolvable ref) {
+        Duality resolved = ref.findDeclaration();
         if (resolved!=null) {
             return resolved;
         }
@@ -135,15 +139,15 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
             while (name.endsWith("_")) {
                 name = name.substring(0, name.length() - 1);
             }
-            KerboScriptNamedElement orig = Reference.function(ref.getKingdom(), name).findDeclaration();
+            KerboScriptNamedElement orig = PsiSelfResolvable.function(ref.getKingdom(), name).findDeclaration();
             if (orig != null) {
                 PsiFile psiFile = orig.getContainingFile();
                 if (psiFile instanceof KerboScriptFile) {
                     String fileName = ((KerboScriptFile) psiFile).getPureName();
                     if (!fileName.endsWith("_")) {
-                        KerboScriptFile diffFile = this.file.findFile(fileName + "_");
+                        Duality<KerboScriptFile, FileContext> diffFile =  DualitySelfResolvable.file(this.file, fileName + "_").findDeclaration();
                         if (diffFile!=null) {
-                            return Reference.function(diffFile, ref.getName()).findDeclaration();
+                            return DualitySelfResolvable.function(diffFile.getSemantics(), ref.getName()).findDeclaration();
                         }
                     }
                 }
@@ -152,32 +156,33 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
         return null;
     }
 
-    public Reference getNextToDiff(Map<Reference<KerboScriptNamedElement>, FunctionFlow> context) {
-        AtomicReference<Reference> reference = new AtomicReference<>();
+    public Duality getNextToDiff(Map<? extends Reference, FunctionFlow> context) {
+        AtomicReference<Duality> reference = new AtomicReference<>();
         visitExpresssions(new ExpressionVisitor() {
             @Override
             public void visitFunction(Function function) {
                 if (reference.get() == null) {
                     String name = function.getName();
-                    Reference<KerboScriptNamedElement> ref = Reference.function(file, name);
-                    KerboScriptNamedElement declaration = findFunction(ref);
-                    if (declaration == null || !declaration.isReal()) {
+                    DualitySelfResolvable ref = DualitySelfResolvable.function(file, name);
+                    Duality declaration = findFunction(ref);
+                    if (declaration == null) {
                         reference.set(undiff(ref));
-                    } else {
+                    }
+                    if (reference.get()==null) {
                         super.visitFunction(function);
                     }
                 }
             }
 
             @Nullable
-            private Reference undiff(Reference<KerboScriptNamedElement> reference) {
+            private Duality undiff(DualitySelfResolvable reference) {
                 String name = reference.getName();
                 if (name.endsWith("_")) {
                     name = name.substring(0, name.length() - 1);
-                    Reference<KerboScriptNamedElement> undiff = Reference.function(reference.getKingdom(), name);
+                    DualitySelfResolvable undiff = DualitySelfResolvable.function(reference.getKingdom(), name);
                     if (!context.containsKey(undiff)) {
-                        KerboScriptNamedElement resolved = findFunction(undiff);
-                        if (resolved != null && resolved.isReal()) {
+                        Duality resolved = findFunction(undiff);
+                        if (resolved != null) {
                             return resolved;
                         } else {
                             return undiff(undiff);
@@ -199,17 +204,46 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
         return reference.get();
     }
 
-    public Expression getSimpleReturn() {
+    public InlineFunction getInlineFunction() {
         MixedDependency dependency = instructions.getReturn();
         ReturnFlow flow = dependency.getReturnFlow();
-        if (flow!=null && flow.isSimple()) {
-            return flow.getExpression();
+        if (flow != null) {
+            Expression expression = flow.getExpression();
+            if (flow.isSimple()) {
+                return inline(expression);
+            } else if (expression instanceof Function) {
+                Function function = (Function) expression;
+                if (function.getArgs().length == 0) {
+                    return inline(function);
+                } else if (function.getArgs().length == 1) {
+                    Expression arg = function.getArgs()[0];
+                    if (arg instanceof Variable) {
+                        Variable variable = (Variable) arg;
+                        if (parameters.getFlow(variable.getName()) != null) {
+                            return inline(function);
+                        }
+                    }
+                }
+            }
         }
         return null;
     }
 
-    private static class FunctionParser extends FlowParser {
-        private final FlowParser parser = new FlowParser(getContext());
+    @NotNull
+    private InlineFunction inline(Expression expression) {
+        return new InlineFunction(name, getArgNames(), expression);
+    }
+
+    private String[] getArgNames() {
+        ArrayList<String> names = new ArrayList<>();
+        for (Flow parameter : parameters.getList()) {
+            names.add(((ParameterFlow)parameter).getName());
+        }
+        return names.toArray(new String[names.size()]);
+    }
+
+    private static class FunctionParser extends InstructionsParser {
+        private final InstructionsParser parser = new InstructionsParser(getContext());
         private boolean parametersParsed = false;
 
         @Override

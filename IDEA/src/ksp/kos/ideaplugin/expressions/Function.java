@@ -1,11 +1,11 @@
 package ksp.kos.ideaplugin.expressions;
 
 import ksp.kos.ideaplugin.dataflow.FunctionFlow;
-import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
+import ksp.kos.ideaplugin.expressions.inline.InlineFunction;
 import ksp.kos.ideaplugin.expressions.inline.InlineFunctions;
 import ksp.kos.ideaplugin.psi.KerboScriptExpr;
-import ksp.kos.ideaplugin.reference.context.Context;
-import ksp.kos.ideaplugin.reference.Reference;
+import ksp.kos.ideaplugin.reference.FlowSelfResolvable;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
 
 import java.util.HashMap;
 import java.util.List;
@@ -57,28 +57,20 @@ public class Function extends Atom {
     }
 
     @Override
-    public Expression differentiate(Context<ReferenceFlow> context) {
+    public Expression differentiate(LocalContext context) {
         if (args.length==0) {
             return Number.ZERO;
         }
         String name = this.name + "_";
-        Reference<ReferenceFlow> ref = Reference.function(context, name);
-        FunctionFlow flow = (FunctionFlow) ref.resolve();
-        if (flow!=null) {
-            Expression ret = flow.getSimpleReturn();
-            if (ret!=null) {
-                return ret;
-            }
-        }
         if (args.length==1) {
-            return new Function(name, args).inline().multiply(args[0].differentiate(context));
+            return new Function(name, args).inline(context).multiply(args[0].differentiate(context));
         }
         Expression[] diffArgs = new Expression[args.length*2];
         for (int i = 0; i < args.length; i++) {
             diffArgs[2*i] = args[i];
             diffArgs[2*i + 1] = args[i].differentiate(context);
         }
-        return new Function(name + "_", diffArgs).inline();
+        return new Function(name, diffArgs).inline(context);
     }
 
     @Override
@@ -100,7 +92,25 @@ public class Function extends Atom {
     }
 
     private Expression inline() {
-        return InlineFunctions.getInstance().inline(this);
+        return inline((LocalContext)null);
+    }
+
+    private Expression inline(LocalContext context) {
+        Expression inlined = InlineFunctions.getInstance().inline(this);
+        if (inlined == null) {
+            if (context != null) { // TODO pass context to simplify
+                FlowSelfResolvable ref = FlowSelfResolvable.function(context, name);
+                FunctionFlow flow = (FunctionFlow) ref.resolve();
+                if (flow!=null) {
+                    InlineFunction inlineFunction = flow.getInlineFunction();
+                    if (inlineFunction!=null) {
+                        return inlineFunction.inline(args);
+                    }
+                }
+            }
+            return this;
+        }
+        return inlined;
     }
 
     @Override

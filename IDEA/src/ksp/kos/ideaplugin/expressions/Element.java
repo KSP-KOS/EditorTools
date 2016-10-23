@@ -1,12 +1,11 @@
 package ksp.kos.ideaplugin.expressions;
 
 import com.intellij.lang.ASTNode;
-import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
 import ksp.kos.ideaplugin.psi.KerboScriptExpr;
 import ksp.kos.ideaplugin.psi.KerboScriptFactor;
 import ksp.kos.ideaplugin.psi.KerboScriptTypes;
 import ksp.kos.ideaplugin.psi.KerboScriptUnaryExpr;
-import ksp.kos.ideaplugin.reference.context.Context;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -132,7 +131,7 @@ public class Element extends Expression {
     }
 
     @Override
-    public Expression differentiate(Context<ReferenceFlow> context) {
+    public Expression differentiate(LocalContext context) {
         if (power.equals(Number.ONE)) {
             Expression diff = atom.differentiate(context);
             if (sign == -1) {

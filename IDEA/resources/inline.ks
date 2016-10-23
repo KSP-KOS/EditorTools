@@ -17,3 +17,7 @@ function cos_ {
     parameter x.
     return -sin(x)*constant:degtorad.
 }
+
+function vang_ { // TODO it should understand it by itself
+    return 0.
+}

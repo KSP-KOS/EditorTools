@@ -1,5 +1,6 @@
 package ksp.kos.ideaplugin.reference.context;
 
+import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
 import ksp.kos.ideaplugin.reference.ReferableType;
 import ksp.kos.ideaplugin.reference.Reference;
 import org.jetbrains.annotations.NotNull;
@@ -12,58 +13,58 @@ import java.util.*;
  *
  * @author ptasha
  */
-public class Context<B extends Reference> {
-    protected final Context<B> parent;
-    private final Map<ReferableType, Map<String, B>> declarations = new HashMap<>();
+public class LocalContext {
+    protected final LocalContext parent;
+    private final Map<ReferableType, Map<String, Duality>> declarations = new HashMap<>();
 
-    private final List<ReferenceResolver<B, Context<B>>> resolvers;
+    private final List<ReferenceResolver<LocalContext>> resolvers;
 
-    public Context(Context<B> parent) {
+    public LocalContext(LocalContext parent) {
         this(parent, createResolvers());
     }
 
-    protected Context(Context<B> parent, List<ReferenceResolver<B, Context<B>>> resolvers) {
+    protected LocalContext(LocalContext parent, List<ReferenceResolver<LocalContext>> resolvers) {
         this.parent = parent;
         this.resolvers = resolvers;
     }
 
-    public static <B extends Reference> List<ReferenceResolver<B, Context<B>>> createResolvers() {
-        List<ReferenceResolver<B, Context<B>>> resolvers = new ArrayList<>();
-        resolvers.add(new LocalResolver<B>());
-        resolvers.add(new ParentResolver<B>());
+    public static List<ReferenceResolver<LocalContext>> createResolvers() {
+        List<ReferenceResolver<LocalContext>> resolvers = new ArrayList<>();
+        resolvers.add(new LocalResolver());
+        resolvers.add(new ParentResolver());
         return resolvers;
     }
 
-    public Context<B> getParent() {
+    public LocalContext getParent() {
         return parent;
     }
 
     @SuppressWarnings("unchecked")
     @NotNull
-    public Map<String, B> getFunctions() {
+    public Map<String, Duality> getFunctions() {
         return getDeclarations(ReferableType.FUNCTION);
     }
 
-    public B findDeclaration(Reference reference) {
+    public Duality findDeclaration(Reference reference) {
         return resolve(reference, false);
     }
 
     @Nullable
-    public B findLocalDeclaration(Reference reference) {
-        B declaration = getDeclarations(reference.getReferableType()).get(reference.getName());
+    public Duality findLocalDeclaration(Reference reference) {
+        Duality declaration = getDeclarations(reference.getReferableType()).get(reference.getName());
         if (declaration!=null && reference.matches(declaration)) {
             return declaration;
         }
         return null;
     }
 
-    public B resolve(Reference reference) {
+    public Duality resolve(Reference reference) {
         return resolve(reference, true);
     }
 
-    protected B resolve(Reference reference, boolean createAllowed) {
-        for (ReferenceResolver<B, Context<B>> resolver : resolvers) {
-            B resolved = resolver.resolve(this, reference, createAllowed);
+    protected Duality resolve(Reference reference, boolean createAllowed) {
+        for (ReferenceResolver<LocalContext> resolver : resolvers) {
+            Duality resolved = resolver.resolve(this, reference, createAllowed);
             if (resolved!=null) {
                 return resolved;
             }
@@ -75,7 +76,7 @@ public class Context<B extends Reference> {
         declarations.clear();
     }
 
-    public void register(B element) {
+    public void register(Duality element) {
         String name = element.getName();
         if (name!=null) {
             ReferableType type = element.getReferableType();
@@ -90,17 +91,21 @@ public class Context<B extends Reference> {
         }
     }
 
-    protected void registerUnknown(ReferableType type, String name, B element) {
+    public void register(KerboScriptNamedElement psi) {
+        register(new PsiDuality(psi));
     }
 
-    protected void addDefinition(ReferableType type, String name, B element) {
+    protected void registerUnknown(ReferableType type, String name, Duality element) {
+    }
+
+    protected void addDefinition(ReferableType type, String name, Duality element) {
         getDeclarations(type).put(name, element);
     }
 
     @SuppressWarnings("unchecked")
     @NotNull
-    public Map<String, B> getDeclarations(ReferableType type) {
-        Map<String, B> map = declarations.get(type);
+    public Map<String, Duality> getDeclarations(ReferableType type) {
+        Map<String, Duality> map = declarations.get(type);
         if (map==null) {
             map = createMap(type);
             declarations.put(type, map);
@@ -109,8 +114,17 @@ public class Context<B extends Reference> {
     }
 
     @NotNull
-    public Map<String, B> createMap(ReferableType type) {
+    public Map<String, Duality> createMap(ReferableType type) {
         return new ScopeMap<>();
+    }
+
+    public FileContext getFileContext() {
+        if (this instanceof FileContext) {
+            return (FileContext) this;
+        } else if (parent!=null) {
+            return parent.getFileContext();
+        }
+        return null;
     }
 
     public static class ScopeMap<T> extends LinkedHashMap<String, T> {
@@ -137,9 +151,9 @@ public class Context<B extends Reference> {
      *
      * @author ptasha
      */
-    public static class LocalResolver<B extends Reference> implements ReferenceResolver<B, Context<B>> {
+    public static class LocalResolver implements ReferenceResolver<LocalContext> {
         @Override
-        public B resolve(Context<B> context, Reference reference, boolean createAllowed) {
+        public Duality resolve(LocalContext context, Reference reference, boolean createAllowed) {
             return context.findLocalDeclaration(reference);
         }
     }
@@ -149,10 +163,10 @@ public class Context<B extends Reference> {
      *
      * @author ptasha
      */
-    public static class ParentResolver<B extends Reference> implements ReferenceResolver<B, Context<B>> {
+    public static class ParentResolver implements ReferenceResolver<LocalContext> {
         @Override
-        public B resolve(Context<B> context, Reference reference, boolean createAllowed) {
-            Context<B> parent = context.getParent();
+        public Duality resolve(LocalContext context, Reference reference, boolean createAllowed) {
+            LocalContext parent = context.getParent();
             if (parent!=null) {
                 return parent.resolve(reference, createAllowed);
             }

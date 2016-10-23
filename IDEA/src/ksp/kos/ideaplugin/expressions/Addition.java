@@ -1,8 +1,7 @@
 package ksp.kos.ideaplugin.expressions;
 
-import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
 import ksp.kos.ideaplugin.psi.KerboScriptArithExpr;
-import ksp.kos.ideaplugin.reference.context.Context;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -36,7 +35,7 @@ public class Addition extends MultiExpression<Addition.Op,Expression> {
     }
 
     @Override
-    public Expression differentiate(Context<ReferenceFlow> context) {
+    public Expression differentiate(LocalContext context) {
         MultiExpressionBuilder<Op, Expression> builder = createBuilder();
         for (Item<Op, Expression> item : items) {
             builder.addExpression(item.getOperation(), item.getExpression().differentiate(context));

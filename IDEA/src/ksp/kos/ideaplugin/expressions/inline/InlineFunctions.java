@@ -93,7 +93,7 @@ public class InlineFunctions {
     public Expression inline(Function function) {
         InlineFunction inlineFunction = functions.get(function.getName());
         if (inlineFunction == null) {
-            return function;
+            return null;
         }
         return inlineFunction.inline(function.getArgs());
     }
