@@ -1,6 +1,7 @@
 package ksp.kos.ideaplugin.expressions;
 
 import ksp.kos.ideaplugin.dataflow.FunctionFlow;
+import ksp.kos.ideaplugin.dataflow.ParameterFlow;
 import ksp.kos.ideaplugin.expressions.inline.InlineFunction;
 import ksp.kos.ideaplugin.expressions.inline.InlineFunctions;
 import ksp.kos.ideaplugin.psi.KerboScriptExpr;
@@ -62,9 +63,39 @@ public class Function extends Atom {
             return Number.ZERO;
         }
         String name = this.name + "_";
+        // TODO diff function here
+        FunctionFlow diff = (FunctionFlow) FlowSelfResolvable.function(context, name).resolve();
         if (args.length==1) {
             return new Function(name, args).inline(context).multiply(args[0].differentiate(context));
         }
+        FunctionFlow original = (FunctionFlow) FlowSelfResolvable.function(context, this.name).resolve();
+        if (original!=null && diff!=null) {
+            int j = 0;
+            List<ParameterFlow> origParams = original.getParameters();
+            List<ParameterFlow> diffParams = diff.getParameters();
+            Expression[] diffArgs = new Expression[diffParams.size()];
+            for (ParameterFlow diffParam : diffParams) {
+                int i = origParams.indexOf(diffParam);
+                if (i>=0) {
+                    diffArgs[j] = args[i];
+                } else if (diffParam.getName().endsWith("_")) {
+                    String paramName = diffParam.getName();
+                    paramName = paramName.substring(0, paramName.length() - 1);
+                    i = origParams.indexOf(new ParameterFlow(paramName));
+                    if (i < 0) {
+                        break;
+                    }
+                    diffArgs[j] = args[i].differentiate(context);
+                } else {
+                    break;
+                }
+                j++;
+            }
+            if (j==diffArgs.length) {
+                return new Function(name, diffArgs).inline(context);
+            }
+        }
+
         Expression[] diffArgs = new Expression[args.length*2];
         for (int i = 0; i < args.length; i++) {
             diffArgs[2*i] = args[i];
@@ -100,7 +131,7 @@ public class Function extends Atom {
         if (inlined == null) {
             if (context != null) { // TODO pass context to simplify
                 FlowSelfResolvable ref = FlowSelfResolvable.function(context, name);
-                FunctionFlow flow = (FunctionFlow) ref.resolve();
+                FunctionFlow flow = (FunctionFlow) ref.resolve(); // TODO shouldn't parse all functions here for speed sake
                 if (flow!=null) {
                     InlineFunction inlineFunction = flow.getInlineFunction();
                     if (inlineFunction!=null) {

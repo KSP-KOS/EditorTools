@@ -9,7 +9,7 @@ import ksp.kos.ideaplugin.reference.context.LocalContext;
  *
  * @author ptasha
  */
-public interface Reference<P extends KerboScriptNamedElement, F extends ReferenceFlow> {
+public interface Reference {
 
     LocalContext getKingdom();
 

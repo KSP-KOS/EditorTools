@@ -53,4 +53,9 @@ public class PsiFileContext extends FileContext {
         getParent().register(declaration);
         return declaration;
     }
+
+    @Override
+    public KerboScriptFile getSyntax() {
+        return kerboScriptFile;
+    }
 }

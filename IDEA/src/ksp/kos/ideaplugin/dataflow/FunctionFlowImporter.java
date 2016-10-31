@@ -16,6 +16,11 @@ public class FunctionFlowImporter extends FlowImporter<FunctionFlow> {
     public static final FunctionFlowImporter INSTANCE = new FunctionFlowImporter();
 
     @Override
+    public void importFlow(KerboScriptFile file, FunctionFlow flow) {
+        super.importFlow(file, flow);
+    }
+
+    @Override
     @NotNull
     protected Map<String, Duality> getMap(KerboScriptFile file) {
         return file.getCachedScope().getFunctions();

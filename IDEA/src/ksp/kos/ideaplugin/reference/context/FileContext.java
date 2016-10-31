@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author ptasha
  */
-public abstract class FileContext extends LocalContext implements ReferenceFlow {
+public abstract class FileContext extends LocalContext implements ReferenceFlow, FileDuality {
     private final String name;
 
     public FileContext(LocalContext parent, String name, FileContextResolver fileResolver) {
@@ -78,6 +78,11 @@ public abstract class FileContext extends LocalContext implements ReferenceFlow 
             }
             return null;
         }
+    }
+
+    @Override
+    public FileContext getSemantics() {
+        return this;
     }
 
     public static class ImportsResolver implements ReferenceResolver<LocalContext> {

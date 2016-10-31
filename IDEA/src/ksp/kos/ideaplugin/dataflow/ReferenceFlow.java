@@ -7,5 +7,5 @@ import ksp.kos.ideaplugin.reference.Reference;
  *
  * @author ptasha
  */
-public interface ReferenceFlow extends Reference { //TODO remove me
+public interface ReferenceFlow<F> extends Reference { //TODO remove me
 }

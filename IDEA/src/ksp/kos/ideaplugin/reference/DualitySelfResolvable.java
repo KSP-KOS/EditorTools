@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author ptasha
  */
-public interface DualitySelfResolvable<P extends KerboScriptNamedElement, F extends ReferenceFlow> extends Reference<P, F> {
+public interface DualitySelfResolvable<P extends KerboScriptNamedElement, F extends ReferenceFlow> extends Reference {
     static DualitySelfResolvable variable(LocalContext kingdom, String name) {
         return reference(kingdom, ReferableType.VARIABLE, name);
     }

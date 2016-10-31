@@ -6,5 +6,7 @@ package ksp.kos.ideaplugin.reference.context;
  * @author ptasha
  */
 public interface FileContextResolver {
+    FileDuality ensureFile(String name);
+
     FileDuality resolveFile(String name);
 }

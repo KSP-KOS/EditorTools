@@ -12,6 +12,8 @@ import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
 import ksp.kos.ideaplugin.psi.KerboScriptPsiWalker;
 import ksp.kos.ideaplugin.psi.KerboScriptScope;
 import ksp.kos.ideaplugin.reference.*;
+import ksp.kos.ideaplugin.reference.context.FileContext;
+import ksp.kos.ideaplugin.reference.context.FileDuality;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +24,7 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author ptasha
  */
-public class KerboScriptFile extends PsiFileBase implements KerboScriptScope, KerboScriptNamedElement {
+public class KerboScriptFile extends PsiFileBase implements KerboScriptScope, KerboScriptNamedElement, FileDuality {
     private static final ReferenceType TYPE = new ReferenceType(ReferableType.FILE, OccurrenceType.GLOBAL);
     private final Cache<PsiFileContext> cache = new Cache<>(this, new PsiFileContext(this));
 
@@ -41,10 +43,6 @@ public class KerboScriptFile extends PsiFileBase implements KerboScriptScope, Ke
     @Override
     public FileType getFileType() {
         return KerboScriptFileType.INSTANCE;
-    }
-
-    public KerboScriptNamedElement findVariable(String name) {
-        return PsiSelfResolvable.variable(this, name).findDeclaration();
     }
 
     public KerboScriptFile resolveFile(String name) {
@@ -131,5 +129,15 @@ public class KerboScriptFile extends PsiFileBase implements KerboScriptScope, Ke
 
     @Override
     public void setType(ReferenceType type) {
+    }
+
+    @Override
+    public KerboScriptFile getSyntax() {
+        return this;
+    }
+
+    @Override
+    public FileContext getSemantics() {
+        return getCachedScope();
     }
 }

@@ -3,6 +3,8 @@ package ksp.kos.ideaplugin.dataflow;
 import ksp.kos.ideaplugin.psi.KerboScriptDeclareParameterClause;
 import ksp.kos.ideaplugin.reference.context.LocalContext;
 
+import java.util.Objects;
+
 /**
  * Created on 17/03/16.
  *
@@ -46,5 +48,18 @@ public class ParameterFlow extends BaseFlow<ParameterFlow> implements NamedFlow<
 
     public static ParameterFlow parse(KerboScriptDeclareParameterClause parameterClause) {
         return new ParameterFlow(parameterClause.getName());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ParameterFlow that = (ParameterFlow) o;
+        return Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

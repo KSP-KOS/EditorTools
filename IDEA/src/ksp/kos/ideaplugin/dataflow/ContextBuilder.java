@@ -13,9 +13,9 @@ import java.util.ListIterator;
  *
  * @author ptasha
  */
-public class ContextBuilder { // TODO combine into diff context?
+public class ContextBuilder<F extends Flow<F>> { // TODO combine into diff context?
     private ContextBuilder parent;
-    private final List<Flow> list = new LinkedList<>();
+    private final List<F> list = new LinkedList<>();
     private final HashMap<String, Dependency> map = new HashMap<>();
     private final MixedDependency returnFlow = new MixedDependency();
 
@@ -49,7 +49,7 @@ public class ContextBuilder { // TODO combine into diff context?
     }
 
     public void simplify() {
-        for (ListIterator<Flow> iterator = list.listIterator(list.size()); iterator.hasPrevious(); ) {
+        for (ListIterator<F> iterator = list.listIterator(list.size()); iterator.hasPrevious(); ) {
             Flow variable = iterator.previous();
             // TODO simplify
             if (!variable.hasDependees()) {
@@ -58,7 +58,7 @@ public class ContextBuilder { // TODO combine into diff context?
         }
     }
 
-    public void add(Flow<?> flow) {
+    public void add(F flow) {
         list.add(flow);
     }
 
@@ -91,7 +91,7 @@ public class ContextBuilder { // TODO combine into diff context?
         this.returnFlow.addDependency(returnFlow); // TODO optimize?
     }
 
-    public List<Flow> getList() {
+    public List<F> getList() {
         return list;
     }
 

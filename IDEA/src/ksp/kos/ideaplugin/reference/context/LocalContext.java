@@ -1,5 +1,6 @@
 package ksp.kos.ideaplugin.reference.context;
 
+import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
 import ksp.kos.ideaplugin.reference.ReferableType;
 import ksp.kos.ideaplugin.reference.Reference;
@@ -45,7 +46,7 @@ public class LocalContext {
         return getDeclarations(ReferableType.FUNCTION);
     }
 
-    public Duality findDeclaration(Reference reference) {
+    public <K extends KerboScriptNamedElement, F extends ReferenceFlow> Duality<K, F> findDeclaration(Reference reference) {
         return resolve(reference, false);
     }
 
@@ -58,7 +59,7 @@ public class LocalContext {
         return null;
     }
 
-    public Duality resolve(Reference reference) {
+    public <K extends KerboScriptNamedElement, F extends ReferenceFlow> Duality<K, F> resolve(Reference reference) {
         return resolve(reference, true);
     }
 
