@@ -89,6 +89,11 @@ kOS version supported: 1.0.0
             <add-to-group group-id="RefactoringMenu4" anchor="last"/>
             <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl S"/>
         </action>
+        <action id="ksp.kos.ideaplugin.actions.Normalize" class="ksp.kos.ideaplugin.actions.Normalize" text="Normalize..."
+                description="Normalizes expression">
+            <add-to-group group-id="RefactoringMenu4" anchor="last"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl O"/>
+        </action>
     </actions>
 
 </idea-plugin>

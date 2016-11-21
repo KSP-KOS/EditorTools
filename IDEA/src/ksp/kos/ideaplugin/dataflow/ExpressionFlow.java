@@ -55,9 +55,12 @@ public abstract class ExpressionFlow<F extends ExpressionFlow<F>> extends BaseFl
     }
 
     public boolean isSimple() {
+        return isSimple(expression);
+    }
+
+    public static boolean isSimple(Expression expression) {
         return expression.equals(Number.ZERO) ||
-                expression.equals(Number.ONE) ||
-                expression instanceof Constant;
+                expression.equals(Number.ONE);
     }
 
     @Override

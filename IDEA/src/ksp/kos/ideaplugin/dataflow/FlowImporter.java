@@ -21,6 +21,7 @@ public abstract class FlowImporter<F extends NamedFlow<F>> {
     protected abstract Map<String, Duality> getMap(KerboScriptFile file);
 
     public void importFlow(KerboScriptFile file, F flow) {
+        // TODO sort out /ns
         Map<String, Duality> map = getMap(file);
         KerboScriptInstruction instruction = importFlow(file, flow, map);
         CodeStyleManager.getInstance(file.getProject()).reformatNewlyAddedElement(instruction.getParent().getNode(), instruction.getNode());

@@ -8,8 +8,10 @@ import ksp.kos.ideaplugin.psi.KerboScriptExpr;
 import ksp.kos.ideaplugin.reference.FlowSelfResolvable;
 import ksp.kos.ideaplugin.reference.context.LocalContext;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created on 30/01/16.
@@ -158,5 +160,19 @@ public class Function extends Atom {
 
     public static Expression log(Expression arg) {
         return new Function("log", arg);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Function function = (Function) o;
+        return Objects.equals(name, function.name) &&
+                Arrays.equals(args, function.args);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, args);
     }
 }

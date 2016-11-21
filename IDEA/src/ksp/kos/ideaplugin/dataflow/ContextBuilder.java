@@ -3,10 +3,7 @@ package ksp.kos.ideaplugin.dataflow;
 import ksp.kos.ideaplugin.expressions.ExpressionVisitor;
 import ksp.kos.ideaplugin.reference.context.LocalContext;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 /**
  * Created on 14/08/16.
@@ -101,5 +98,37 @@ public class ContextBuilder<F extends Flow<F>> { // TODO combine into diff conte
 
     public void setParent(ContextBuilder parent) {
         this.parent = parent;
+    }
+
+    public void sort() {
+        TreeSet<F> sorted = new TreeSet<>((o1, o2) -> {
+            if (o1 instanceof ReturnFlow) {
+                return 1;
+            } else if (o2 instanceof ReferenceFlow) {
+                return -1;
+            } else if (o1.isDependee(o2)) {
+                return -1;
+            } else if (o2.isDependee(o1)) {
+                return 1;
+            }
+            if (o1 instanceof VariableFlow && o2 instanceof VariableFlow) {
+                String n1 = ((VariableFlow) o1).getName();
+                String n2 = ((VariableFlow) o2).getName();
+                while (n1.endsWith("_")) {
+                    if (!n2.endsWith("_")) {
+                        return 1;
+                    }
+                    n1 = n1.substring(0, n1.length()-1);
+                    n2 = n2.substring(0, n2.length()-1);
+                }
+                if (n2.endsWith("_")) {
+                    return -1;
+                }
+            }
+            return list.indexOf(o1) - list.indexOf(o2);
+        });
+        sorted.addAll(list);
+        list.clear();
+        list.addAll(sorted);
     }
 }

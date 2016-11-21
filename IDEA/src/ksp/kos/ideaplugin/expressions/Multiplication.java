@@ -3,10 +3,9 @@ package ksp.kos.ideaplugin.expressions;
 import ksp.kos.ideaplugin.psi.KerboScriptMultdivExpr;
 import ksp.kos.ideaplugin.reference.context.LocalContext;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created on 30/01/16.
@@ -90,6 +89,98 @@ public class Multiplication extends MultiExpression<Multiplication.Op, Element> 
         return builder.createExpression();
     }
 
+    private static class NormalForm {
+        private final Expression mulNumber;
+        private final Expression divNumber;
+        private final Set<Item<Op, Element>> items;
+
+        public NormalForm(Expression mulNumber, Expression divNumber, Set<Item<Op, Element>> items) {
+            this.mulNumber = mulNumber;
+            this.divNumber = divNumber;
+            this.items = items;
+        }
+
+        public static NormalForm toNormal(Multiplication multiplication) {
+            Expression mulNumber = Number.ONE;
+            Expression divNumber = Number.ONE;
+            HashSet<Item<Op, Element>> items = new HashSet<>();
+            for (Item<Op, Element> item : multiplication.getItems()) {
+                if (item.getExpression().isNumber()) {
+                    if (item.getOperation()==Op.MUL) {
+                        mulNumber = mulNumber.multiply(item.getExpression());
+                    } else {
+                        divNumber = divNumber.multiply(item.getExpression());
+                    }
+                } else if (item.getExpression().isNegative()) {
+                    mulNumber = mulNumber.minus();
+                    items.add(new Item<>(item.getOperation(), Element.toElement(item.getExpression().minus())));
+                } else {
+                    items.add(item);
+                }
+            }
+            return new NormalForm(mulNumber, divNumber, items);
+        }
+
+        public Expression plus(NormalForm normalForm) {
+            if (!this.items.equals(normalForm.items)) {
+                return null;
+            }
+            MultiplicationBuilder builder = new MultiplicationBuilder();
+            builder.addExpression(
+                    this.mulNumber.multiply(normalForm.divNumber)
+                            .plus(normalForm.mulNumber.multiply(this.divNumber))
+                            .divide(this.divNumber).divide(normalForm.divNumber));
+            builder.addItems(items);
+            return builder.createExpression();
+        }
+    }
+
+    @Override
+    @Nullable
+    public Expression simplePlus(Expression expression) {
+        if (expression instanceof Multiplication) {
+            return NormalForm.toNormal(this).plus(NormalForm.toNormal((Multiplication) expression));
+        } else {
+            ArrayList<Item<Op, Element>> items = new ArrayList<>();
+            items.add(new Item<>(Op.MUL, Element.toElement(expression)));
+            return simplePlus(new Multiplication(items));
+        }
+    }
+
+    @Override
+    public Expression normalize() {
+        MultiplicationBuilder builder = new MultiplicationBuilder();
+        for (Item<Op, Element> item : items) {
+            builder.addExpression(item.getOperation(), item.getExpression().normalize().simplify());
+        }
+        return builder.createExpression();
+    }
+
+    @Override
+    public Expression divisor() {
+        MultiplicationBuilder builder = new MultiplicationBuilder();
+        for (Item<Op, Element> item : items) {
+            if (item.getOperation()==Op.DIV) {
+                builder.addExpression(Op.MUL, item.getExpression());
+            }
+        }
+        return builder.createExpression();
+    }
+
+    @Override
+    public Expression distribute() {
+        Expression addition = Number.ONE.distribute();
+        MultiplicationBuilder divisor = new MultiplicationBuilder();
+        for (Item<Op, Element> item : items) {
+            if (item.getOperation()==Op.MUL) {
+                addition = addition.distribute(item.getExpression().distribute());
+            } else {
+                divisor.addExpression(Op.MUL, item.getExpression());
+            }
+        }
+        return addition.divide(divisor.createExpression());
+    }
+
     @Override
     public boolean isNegative() {
         return items.get(0).getExpression().isNegative();
@@ -122,7 +213,7 @@ public class Multiplication extends MultiExpression<Multiplication.Op, Element> 
         }
     }
 
-    private static class MultiplicationBuilder extends MultiExpressionBuilder<Op, Element> implements ConsumeSupported<Op, Element> {
+    public static class MultiplicationBuilder extends MultiExpressionBuilder<Op, Element> implements ConsumeSupported<Op, Element> {
         public MultiplicationBuilder() {
             super(Multiplication.class);
         }
@@ -178,11 +269,21 @@ public class Multiplication extends MultiExpression<Multiplication.Op, Element> 
                     div.add(item);
                 }
             }
-            normalize(mult, Op.MUL);
-            if (mult.isEmpty()) {
+            Expression muln = normalize(mult);
+            Expression divn = normalize(div);
+            Number root = Number.root(muln, divn);
+            if (!root.equals(Number.ONE)) {
+                muln= muln.divide(root);
+                divn= divn.divide(root);
+            }
+            if (!muln.equals(Number.ONE)) {
+                mult.addFirst(createItem(Op.MUL, toElement(muln)));
+            } else if (mult.isEmpty()) {
                 mult.add(createItem(Op.MUL, toElement(Number.ONE)));
             }
-            normalize(div, Op.DIV);
+            if (!divn.equals(Number.ONE)) {
+                div.addFirst(createItem(Op.DIV, toElement(divn)));
+            }
             if (sign<0) {
                 mult.set(0, createItem(Op.MUL, mult.get(0).getExpression().minus()));
             }
@@ -191,7 +292,7 @@ public class Multiplication extends MultiExpression<Multiplication.Op, Element> 
             this.items.addAll(div);
         }
 
-        private void normalize(LinkedList<Item<Op, Element>> items, Op operation) {
+        private Expression normalize(LinkedList<Item<Op, Element>> items) {
             Expression number = Number.ONE;
             int index = -1;
             float score = 0;
@@ -200,7 +301,7 @@ public class Multiplication extends MultiExpression<Multiplication.Op, Element> 
                 Item<Op, Element> item = iterator.next();
                 Element expression = item.getExpression();
                 if (expression.isNumber()) {
-                    number = number.multiply(expression);
+                    number = number.multiply(expression).simplify();
                     iterator.remove();
                     i--;
                 } else if (expression.isAddition()) {
@@ -211,15 +312,15 @@ public class Multiplication extends MultiExpression<Multiplication.Op, Element> 
                     }
                 }
             }
-            if (!number.simplify().equals(Number.ONE)) {
-                if (score>0) {
+            if (!number.equals(Number.ONE)) {
+                if (score>0.99) {
                     Item<Op, Element> addition = items.get(index);
                     Expression expression = getAddition(addition.getExpression()).multiplyItems(number);
                     items.set(index, createItem(addition.getOperation(), toElement(expression)));
-                } else {
-                    items.addFirst(createItem(operation, toElement(number)));
+                    number = Number.ONE;
                 }
             }
+            return number;
         }
 
         private float getNumbersScore(Addition addition) {

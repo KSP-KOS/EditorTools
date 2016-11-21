@@ -7,6 +7,7 @@ import ksp.kos.ideaplugin.psi.KerboScriptTypes;
 import ksp.kos.ideaplugin.psi.KerboScriptUnaryExpr;
 import ksp.kos.ideaplugin.reference.context.LocalContext;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +38,7 @@ public class Element extends Expression {
                 return atom;
             }
         } else if (power.equals(Number.ZERO)) {
-            return Number.ONE;
+            return create(sign, Number.ONE);
         }
         return new Element(sign, atom, power);
     }
@@ -175,39 +176,80 @@ public class Element extends Expression {
     }
 
     @Override
-    public Expression multiply(Expression expression) {
-        if (canMultiply(expression)) {
-            Element element = (Element) expression;
-            if (this.isNumber() && element.isNumber()) {
-                return create(sign * element.sign, atom.multiply(element.getAtom()));
+    public Expression simplePlus(Expression expression) {
+        if (power.equals(Number.ONE)) {
+            if (sign<0) {
+                Expression simplePlus = atom.simplePlus(expression.minus());
+                if (simplePlus!=null) {
+                    return simplePlus.minus();
+                }
+                return null;
+            } else {
+                return atom.simplePlus(expression);
             }
-            return create(sign * element.sign, atom, power.plus(element.power));
-        } else if (isNumber()) {
-            if (expression instanceof Element) {
-                Element element = (Element) expression;
-                if (element.isNumber()) {
-                    return create(sign * element.sign, atom.multiply(element.getAtom()));
+        } else if (expression instanceof Element) {
+            Element element = (Element) expression;
+            if (power.equals(element.power) && atom.equals(element.atom)) {
+                if (sign==element.sign) {
+                    return Number.create(2).multiply(this);
+                } else {
+                    return Number.ZERO;
                 }
             }
         }
-        return super.multiply(expression);
+        return null;
     }
 
     @Override
-    public Expression divide(Expression expression) {
-        if (canMultiply(expression)) {
+    public Expression simpleMultiply(Expression expression) {
+        if (expression instanceof Element) {
             Element element = (Element) expression;
-            return create(sign * element.sign, atom, power.minus(element.power));
+            if (this.isNumber() && element.isNumber()) {
+                return create(sign * element.sign, atom.multiply(element.getAtom()));
+            } else if (atom.equals(((Element) expression).atom)) {
+                return create(sign * element.sign, atom, power.plus(element.power));
+            }
+        } else if (isNumber() && expression instanceof Number) {
+            return create(sign, atom.multiply(expression));
         }
-        return super.divide(expression);
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public Expression simpleDivide(Expression expression) {
+        if (expression instanceof Element) {
+            if (atom.equals(((Element) expression).atom)) {
+                Element element = (Element) expression;
+                return create(sign * element.sign, atom, power.minus(element.power));
+            }
+        } else if (atom.equals(expression)) {
+            return create(sign, atom, power.minus(Number.ONE));
+        } else if (power.equals(Number.ONE)) {
+            Expression div = atom.simpleDivide(expression);
+            if (div!=null) {
+                return create(sign, div, Number.ONE);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected Expression simpleDivideBackward(Expression expression) {
+        if (atom.equals(expression)) {
+            return create(sign, atom, Number.ONE.minus(power));
+        } else if (power.equals(Number.ONE)) {
+            Expression div = expression.simpleDivide(atom);
+            if (div!=null) {
+                return create(sign, div, Number.ONE);
+            }
+        }
+        return null;
     }
 
     @Override
     public boolean canMultiply(Expression expression) {
-        if (expression instanceof Element) {
-            return atom.equals(((Element) expression).atom);
-        }
-        return false;
+        return expression instanceof Element && atom.equals(((Element) expression).atom);
     }
 
     @Override
@@ -220,12 +262,43 @@ public class Element extends Expression {
         return sign < 0;
     }
 
+    @Override
     public boolean isNumber() {
-        return (atom instanceof Number) && power.equals(Number.ONE);
+        return atom.isNumber() && power.equals(Number.ONE);
     }
 
     public boolean isAddition() {
         return atom.isAddition() && power.equals(Number.ONE);
+    }
+
+    @Override
+    public Expression normalize() {
+        if (power.equals(Number.ONE)) {
+            Expression expression = atom.normalize();
+            if (sign <= 0) {
+                expression = expression.distribute(Element.create(-1, Number.ONE));
+            }
+            return expression;
+        }
+        return super.normalize();
+    }
+
+    @Override
+    public Expression distribute() {
+        if (power.equals(Number.ONE)) {
+            Expression expression = atom.distribute();
+            if (sign <= 0) {
+                expression = expression.distribute(Element.create(-1, Number.ONE));
+            }
+            return expression;
+        } else if (power.equals(Number.create(2))) {
+            Expression expression = atom.distribute().distribute(atom.distribute());
+            if (sign <= 0) {
+                expression = expression.distribute(Element.create(-1, Number.ONE));
+            }
+            return expression;
+        }
+        return super.distribute();
     }
 
     @Override

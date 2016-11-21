@@ -33,7 +33,9 @@ public class VariableFlow extends ExpressionFlow<VariableFlow> implements NamedF
     @Override
     public boolean addContext(ContextBuilder context) {
         super.addContext(context);
-        context.getMap().put(getName(), this);
+        if (!declare || context.getFlow(name) == null) {
+            context.getMap().put(getName(), this);
+        }
         return true;
     }
 

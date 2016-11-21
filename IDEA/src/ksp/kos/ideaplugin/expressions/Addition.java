@@ -66,6 +66,61 @@ public class Addition extends MultiExpression<Addition.Op,Expression> {
         return builder.createExpression();
     }
 
+    @Override
+    public Expression normalize() {
+        Expression expression = this.distribute();
+        if (expression instanceof Addition) {
+            return ((Addition) expression).extractRoot();
+        }
+        return expression;
+    }
+
+    public Expression extractRoot() {
+        Expression root = null;
+        AdditionBuilder builder = new AdditionBuilder();
+        for (Item<Op, Expression> item : items) {
+            Expression expression = item.getExpression();
+            if (root==null) {
+                root = item.getExpression();
+            } else {
+                root = root.root(item.getExpression());
+            }
+            builder.addExpression(item.getOperation(), expression);
+        }
+        Expression expression = builder.createExpression();
+        if (root.isNegative()) {
+            root = root.minus();
+        }
+        if (!root.equals(Number.ONE)) {
+            return expression.distribute(Multiplication.Op.DIV, root).multiply(root);
+        } else {
+            return expression;
+        }
+    }
+
+    @Override
+    public Expression distribute() {
+        AdditionBuilder builder = new AdditionBuilder();
+        for (Item<Op, Expression> item : items) {
+            builder.addExpression(item.getOperation(), item.getExpression().distribute());
+        }
+        return builder.createExpression();
+    }
+
+    @Override
+    public Expression distribute(Expression expression) {
+        return distribute(Multiplication.Op.MUL, expression);
+    }
+
+    @Override
+    public Expression distribute(Multiplication.Op operation, Expression expression) {
+        AdditionBuilder builder = new AdditionBuilder();
+        for (Item<Op, Expression> item : items) {
+            builder.addExpression(item.getOperation(), operation.apply(item.getExpression(), expression).distribute());
+        }
+        return builder.createExpression();
+    }
+
     public enum Op implements MultiExpression.Op {
         PLUS("+", Expression::plus),
         MINUS("-", Expression::minus);
@@ -136,12 +191,21 @@ public class Addition extends MultiExpression<Addition.Op,Expression> {
         }
 
         @Override
+        protected Item<Op, Expression> consumeItem(Item<Op, Expression> item, Item<Op, Expression> newItem) {
+            return this.consume(item, newItem); // TODO multiply must be the same
+        }
+
+        @Override
         public Item<Op, Expression> consume(Item<Op, Expression> item, Item<Op, Expression> newItem) {
-            if (item.getExpression().canAdd(newItem.getExpression())) { // TODO can be applied universally
-                Expression consumed = Number.ZERO;
-                consumed = item.getOperation().apply(consumed, item.getExpression());
-                consumed = newItem.getOperation().apply(consumed, newItem.getExpression());
-                return createItem(Op.PLUS, consumed);
+            Expression e1 = singleItemExpression(item);
+            Expression e2 = singleItemExpression(newItem);
+            Expression result = e1.simplePlus(e2);
+            if (result!=null) {
+                return createItem(Op.PLUS, result);
+            }
+            result = e2.simplePlus(e1);
+            if (result!=null) {
+                return createItem(Op.PLUS, result);
             }
             return null;
         }

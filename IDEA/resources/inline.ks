@@ -1,6 +1,6 @@
 function sqrt_ {
     parameter x.
-    return 0.5/sqrt(x).
+    return 1/2/sqrt(x).
 }
 
 function log_ {

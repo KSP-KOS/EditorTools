@@ -3,6 +3,8 @@ package ksp.kos.ideaplugin.dataflow;
 import ksp.kos.ideaplugin.expressions.ExpressionVisitor;
 import ksp.kos.ideaplugin.reference.context.LocalContext;
 
+import java.util.Set;
+
 /**
  * Created on 12/03/16.
  *
@@ -21,5 +23,19 @@ public interface Flow<F extends Flow<F>> extends Dependency {
 
     void removeDependee(Flow<?> flow);
 
+    Set<Flow<?>> getDependees();
+
     boolean hasDependees();
+
+    default boolean isDependee(Flow flow) {
+        if (getDependees().contains(flow)) {
+            return true;
+        }
+        for (Flow<?> dependee : getDependees()) {
+            if (dependee.isDependee(flow)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

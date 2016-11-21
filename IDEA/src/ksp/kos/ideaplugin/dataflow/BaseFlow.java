@@ -25,6 +25,11 @@ public abstract class BaseFlow<F extends BaseFlow<F>> implements Flow<F> {
     }
 
     @Override
+    public Set<Flow<?>> getDependees() {
+        return dependees;
+    }
+
+    @Override
     public boolean hasDependees() {
         return !dependees.isEmpty();
     }

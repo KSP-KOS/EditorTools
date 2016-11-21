@@ -4,6 +4,7 @@ package ksp.kos.ideaplugin.expressions;
 import ksp.kos.ideaplugin.reference.context.LocalContext;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * Created on 29/01/16.
@@ -69,5 +70,33 @@ public class Escaped extends Atom {
             return unescape(((Escaped) expression).getExpression());
         }
         return expression;
+    }
+
+    @Override
+    public Expression normalize() {
+        return expression.normalize();
+    }
+
+    @Override
+    public Expression distribute() {
+        return expression.distribute();
+    }
+
+    @Override
+    public Expression distribute(Expression expression) {
+        return this.expression.distribute(expression);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Escaped escaped = (Escaped) o;
+        return Objects.equals(expression, escaped.expression);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(expression);
     }
 }

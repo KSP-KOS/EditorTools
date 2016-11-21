@@ -2,6 +2,7 @@ package ksp.kos.ideaplugin.dataflow;
 
 import ksp.kos.ideaplugin.actions.differentiate.DiffContext;
 import ksp.kos.ideaplugin.expressions.*;
+import ksp.kos.ideaplugin.expressions.Number;
 import ksp.kos.ideaplugin.expressions.inline.InlineFunction;
 import ksp.kos.ideaplugin.psi.*;
 import ksp.kos.ideaplugin.reference.DualitySelfResolvable;
@@ -9,14 +10,11 @@ import ksp.kos.ideaplugin.reference.FlowSelfResolvable;
 import ksp.kos.ideaplugin.reference.ReferableType;
 import ksp.kos.ideaplugin.reference.Reference;
 import ksp.kos.ideaplugin.reference.context.Duality;
-import ksp.kos.ideaplugin.reference.context.FileContext;
 import ksp.kos.ideaplugin.reference.context.LocalContext;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created on 12/03/16.
@@ -25,7 +23,7 @@ import java.util.Set;
  */
 public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<FunctionFlow>,
         ReferenceFlow<FunctionFlow>, Duality<KerboScriptNamedElement, FunctionFlow> {
-    private final LocalContext context; // TODO replace file to FileContext, diff file context
+    private final LocalContext context;
     private final String name;
 
     private final ContextBuilder<ParameterFlow> parameters;
@@ -55,10 +53,16 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
 
     @Override
     public FunctionFlow differentiate(LocalContext context) {
-        ContextBuilder parameters = new ContextBuilder();
-        this.parameters.differentiate(context, parameters); // TODO single parameter
-
+        ContextBuilder<ParameterFlow> parameters = new ContextBuilder<>();
         ContextBuilder flows = new ContextBuilder(parameters);
+        if (this.parameters.getList().size()==1) {
+            String name = this.parameters.getList().get(0).getName();
+            parameters.add(new ParameterFlow(name));
+            flows.add(new VariableFlow(false, name+"_", Number.ONE));
+        } else {
+            this.parameters.differentiate(context, parameters);
+        }
+
         FunctionFlow diff = new FunctionFlow(context, name + "_", parameters, flows);
         context.register(diff);
 
@@ -70,7 +74,8 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
 
     private FunctionFlow simplify() {
         instructions.simplify();
-        parameters.simplify(); // TODO teach Function to deal with it
+        parameters.simplify();
+        instructions.sort();
 
         return this;
     }
@@ -101,33 +106,6 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
         return name;
     }
 
-    public Set<ImportFlow> getImports() {
-        HashSet<ImportFlow> imports = new HashSet<>();
-        visitExpresssions(new ExpressionVisitor() {
-            @Override
-            public void visitFunction(Function function) {
-                addImport(DualitySelfResolvable.function(context, function.getName()).findDeclaration());
-                super.visitFunction(function);
-            }
-
-            @Override
-            public void visitVariable(Variable variable) {
-                addImport(DualitySelfResolvable.variable(context, variable.getName()).findDeclaration());
-                super.visitVariable(variable);
-            }
-
-            private void addImport(Duality resolved) {
-                if (resolved != null) {
-                    FileContext dependency = resolved.getKingdom().getFileContext();
-                    if (dependency != context) {
-                        imports.add(new ImportFlow(dependency));
-                    }
-                }
-            }
-        });
-        return imports;
-    }
-
     public void visitExpresssions(ExpressionVisitor visitor) {
         parameters.visit(visitor);
         instructions.visit(visitor);
@@ -138,28 +116,42 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
         ReturnFlow flow = dependency.getReturnFlow();
         if (flow != null) {
             Expression expression = flow.getExpression();
-            if (flow.isSimple()) {
-                return inline(expression);
-            } else if (expression instanceof Function) {
-                Function function = (Function) expression;
-                if (function.getArgs().length == 0) {
-                    return inline(function);
-                } else if (function.getArgs().length == 1) {
-                    Expression arg = function.getArgs()[0];
-                    if (arg instanceof Variable) {
-                        Variable variable = (Variable) arg;
-                        if (parameters.getFlow(variable.getName()) != null) {
-                            return inline(function);
-                        }
-                    }
-                }
+            if (isSimple(expression)) {
+                return createInlineFunction(expression);
             }
         }
         return null;
     }
 
+    private boolean isSimple(Expression expression) {
+        if (ExpressionFlow.isSimple(expression)) {
+            return true;
+        } else if (expression instanceof Constant) {
+            return true;
+        } else if (expression instanceof Function) {
+            Function function = (Function) expression;
+            if (function.getArgs().length == 0) {
+                return true;
+            } else if (function.getArgs().length == 1) {
+                Expression arg = function.getArgs()[0];
+                if (arg instanceof Variable) {
+                    Variable variable = (Variable) arg;
+                    if (parameters.getFlow(variable.getName()) != null) {
+                        return true;
+                    }
+                }
+            }
+        } else if (expression instanceof Element) {
+            Element element = (Element) expression;
+            if (element.getPower().equals(Number.ONE)) {
+                return isSimple(element.getAtom());
+            }
+        }
+        return false;
+    }
+
     @NotNull
-    private InlineFunction inline(Expression expression) {
+    private InlineFunction createInlineFunction(Expression expression) {
         return new InlineFunction(name, getArgNames(), expression);
     }
 
