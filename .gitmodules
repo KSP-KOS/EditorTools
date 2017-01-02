@@ -1,0 +1,3 @@
+[submodule "emacs"]
+	path = emacs
+	url = git@github.com:charliegreen/kos-mode.git
