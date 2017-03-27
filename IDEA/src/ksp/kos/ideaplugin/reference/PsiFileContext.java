@@ -1,10 +1,14 @@
 package ksp.kos.ideaplugin.reference;
 
+import com.intellij.openapi.diagnostic.Logger;
 import ksp.kos.ideaplugin.KerboScriptFile;
 import ksp.kos.ideaplugin.psi.KerboScriptElementFactory;
 import ksp.kos.ideaplugin.psi.KerboScriptInstruction;
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
-import ksp.kos.ideaplugin.reference.context.*;
+import ksp.kos.ideaplugin.reference.context.Duality;
+import ksp.kos.ideaplugin.reference.context.FileContext;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
+import ksp.kos.ideaplugin.reference.context.PsiDuality;
 import ksp.kos.utils.MapBuilder;
 
 import java.util.HashMap;
@@ -16,6 +20,8 @@ import java.util.Map;
  * @author ptasha
  */
 public class PsiFileContext extends FileContext {
+    private static final Logger log = Logger.getInstance(PsiFileContext.class);
+
     private final KerboScriptFile kerboScriptFile;
 
     public PsiFileContext(KerboScriptFile kerboScriptFile) {
@@ -48,10 +54,15 @@ public class PsiFileContext extends FileContext {
         if (text == null) {
             return null;
         }
-        KerboScriptInstruction instruction = KerboScriptElementFactory.instruction(kerboScriptFile.getProject(), String.format(text, reference.getName()));
-        PsiDuality<?, ?> declaration = new PsiDuality<>(instruction.downTill(KerboScriptNamedElement.class));
-        getParent().register(declaration);
-        return declaration;
+        try {
+            KerboScriptInstruction instruction = KerboScriptElementFactory.instruction(kerboScriptFile.getProject(), String.format(text, reference.getName()));
+            PsiDuality<?, ?> declaration = new PsiDuality<>(instruction.downTill(KerboScriptNamedElement.class));
+            getParent().register(declaration);
+            return declaration;
+        } catch (IllegalArgumentException e) {
+            log.error("Failed to create virtual reference", e);
+            return null;
+        }
     }
 
     @Override

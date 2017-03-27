@@ -81,6 +81,18 @@ public class Number extends Atom {
         return psiE == null ? 0 : sign * Integer.parseInt(psiE.getText());
     }
 
+    public int getNumber() {
+        return number;
+    }
+
+    public int getPoint() {
+        return point;
+    }
+
+    public int getE() {
+        return e;
+    }
+
     @Override
     public String getText() {
         String text = "";
@@ -168,8 +180,11 @@ public class Number extends Atom {
             Number number = (Number) expression;
             if (this.number%number.number==0) {
                 return create(this.number/number.number, this.point - number.point, this.e - number.e);
-            } else if (10%number.number==0) {
-//                return create(this.number*10/number.number, this.point - number.point + 1, this.e - number.e);
+            } else {
+                Number root = root(this, expression);
+                if (!root.equals(Number.ONE)) {
+                    return this.divide(root).divide(expression.divide(root));
+                }
             }
         }
         return super.simpleDivide(expression);
@@ -227,12 +242,25 @@ public class Number extends Atom {
         return Number.ONE;
     }
 
+    private static final int[] SIMPLE_NUMBERS = new int[]{2, 3, 5, 7};
+
     public static Number root(Number n1, Number n2) {
         if (n1.number%n2.number==0) {
             return n2;
         } else if (n2.number%n1.number==0) {
             return n1;
+        } else {
+            int root = 1;
+            int nn1 = n1.number;
+            int nn2 = n2.number;
+            for (int simple : SIMPLE_NUMBERS) {
+                while (nn1%simple==0 && nn2%simple==0) {
+                    root*=simple;
+                    nn1/=simple;
+                    nn2/=simple;
+                }
+            }
+            return new Number(root);
         }
-        return Number.ONE;
     }
 }

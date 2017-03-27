@@ -177,17 +177,7 @@ public class Element extends Expression {
 
     @Override
     public Expression simplePlus(Expression expression) {
-        if (power.equals(Number.ONE)) {
-            if (sign<0) {
-                Expression simplePlus = atom.simplePlus(expression.minus());
-                if (simplePlus!=null) {
-                    return simplePlus.minus();
-                }
-                return null;
-            } else {
-                return atom.simplePlus(expression);
-            }
-        } else if (expression instanceof Element) {
+        if (expression instanceof Element) {
             Element element = (Element) expression;
             if (power.equals(element.power) && atom.equals(element.atom)) {
                 if (sign==element.sign) {
@@ -195,6 +185,19 @@ public class Element extends Expression {
                 } else {
                     return Number.ZERO;
                 }
+            }
+        }
+        if (power.equals(Number.ONE)) {
+            if (sign<0) {
+                if (Atom.toAtom(expression).equals(atom)) {
+                    return Number.ZERO;
+                }
+                Expression simplePlus = atom.simplePlus(expression.minus());
+                if (simplePlus!=null) {
+                    return simplePlus.minus();
+                }
+            } else {
+                return atom.simplePlus(expression);
             }
         }
         return null;
@@ -285,20 +288,25 @@ public class Element extends Expression {
 
     @Override
     public Expression distribute() {
-        if (power.equals(Number.ONE)) {
+        if (power instanceof Number) {
+            Number number = (Number) power;
+            if (number.getE()==0 && number.getPoint()==0 && number.getNumber()>0) {
+                return distribute(sign, atom, number.getNumber());
+            }
+        }
+        return super.distribute();
+    }
+
+    private Expression distribute(int sign, Atom atom, int power) {
+        if (power==1) {
             Expression expression = atom.distribute();
             if (sign <= 0) {
                 expression = expression.distribute(Element.create(-1, Number.ONE));
             }
             return expression;
-        } else if (power.equals(Number.create(2))) {
-            Expression expression = atom.distribute().distribute(atom.distribute());
-            if (sign <= 0) {
-                expression = expression.distribute(Element.create(-1, Number.ONE));
-            }
-            return expression;
+        } else {
+            return distribute(sign, atom, power-1).distribute(atom.distribute());
         }
-        return super.distribute();
     }
 
     @Override
