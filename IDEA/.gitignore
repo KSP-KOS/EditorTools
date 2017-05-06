@@ -2,5 +2,7 @@ out
 gen
 *~
 .idea
-IDEA.iml
+*.iml
 IDEA.jar
+.directory
+KerboScriptLexer.java
