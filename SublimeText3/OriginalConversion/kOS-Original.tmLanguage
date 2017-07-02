@@ -28,7 +28,7 @@
 			<key>comment</key>
 			<string>comments</string>
 			<key>match</key>
-			<string>(?:(\/\/.*))</string>
+			<string>\/\/(.*)</string>
 			<key>name</key>
 			<string>comment.line.kos</string>
 		</dict>
@@ -50,7 +50,7 @@
 			<key>comment</key>
 			<string>flow control loop</string>
 			<key>match</key>
-			<string>\b(?i:(for|until|from))\b</string>
+			<string>\b(?i:(for|until))\b</string>
 			<key>name</key>
 			<string>keyword.control.repeat.kos</string>
 		</dict>
@@ -58,7 +58,7 @@
 			<key>comment</key>
 			<string>flow control statement</string>
 			<key>match</key>
-			<string>\b(?i:(break|preserve|do|wait|step))\b</string>
+			<string>\b(?i:(break|preserve))\b</string>
 			<key>name</key>
 			<string>keyword.control.statement.kos</string>
 		</dict>
@@ -82,7 +82,7 @@
 			<key>comment</key>
 			<string>arithmetic operator</string>
 			<key>match</key>
-			<string>(\+|\-|\*|/|\^)</string>
+			<string>(\+|\-|\*|/|\^|\(|\))</string>
 			<key>name</key>
 			<string>keyword.operator.arithmetic.kos</string>
 		</dict>
@@ -144,7 +144,7 @@
 			<key>comment</key>
 			<string>bound variables</string>
 			<key>match</key>
-			<string>\b(?i:(throttle|steering|wheelthrottle|wheelsteering|ship|target|encounter|alt|heading|prograde|retrograde|facing|maxthrust|velocity|geoposition|latitude|longitude|up|north|body|angularmomentum|angularvel|angularvelocity|commrange|mass|verticalspeed|surfacespeed|airspeed|vesselname|altitude|apoapsis|periapsis|sensor|srfprograde|srfrerograde|obt|status|vesselname))\s</string>
+			<string>\b(?i:(throttle|steering|wheelthrottle|wheelsteering|ship|target|encounter|alt|heading|prograde|retrograde|facing|maxthrust|velocity|geoposition|latitude|longitude|up|north|body|angularmomentum|angularvel|angularvelocity|commrange|mass|verticalspeed|surfacespeed|airspeed|vesselname|altitude|apoapsis|periapsis|sensor|srfprograde|srfrerograde|obt|status|vesselname))\b</string>
 			<key>name</key>
 			<string>constant.language.kos</string>
 		</dict>
@@ -174,17 +174,9 @@
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>part functions</string>
+			<string>list functions</string>
 			<key>match</key>
-			<string>\b(?i:(bodies|targets|resources|parts|engines|sensors|elements|dockingports|files|volumes))\b</string>
-			<key>name</key>
-			<string>support.function.kos</string>
-		</dict>
-		<dict>
-			<key>comment</key>
-			<string>basic collections</string>
-			<key>match</key>
-			<string>\b(?i:(list|range))\b</string>
+			<string>\b(?i:(list|bodies|targets|resources|parts|engines|sensors|elements|dockingports|files|volumes))\b</string>
 			<key>name</key>
 			<string>support.function.kos</string>
 		</dict>
@@ -440,7 +432,7 @@
 			<key>comment</key>
 			<string>other keywords...</string>
 			<key>match</key>
-			<string>\b(?i:(print|at|volume|in|all))\b</string>
+			<string>\b(?i:(print|at|from|volume|in|all))\b</string>
 			<key>name</key>
 			<string>keyword.other.kos</string>
 		</dict>
