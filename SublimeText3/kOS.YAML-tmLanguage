@@ -29,11 +29,11 @@ patterns:
   name: keyword.control.conditional.kos
   comment: flow control conditional
 
-- match: \b(?i:(for|until))\b
+- match: \b(?i:(for|until|from))\b
   name: keyword.control.repeat.kos
   comment: flow control loop
 
-- match: \b(?i:(break|preserve))\b
+- match: \b(?i:(break|preserve|do|wait|step))\b
   name: keyword.control.statement.kos
   comment: flow control statement
 
@@ -45,7 +45,7 @@ patterns:
   name: keyword.operator.comparison.kos
   comment: comparison operator
 
-- match: (\+|\-|\*|/|\^|\(|\))
+- match: (\+|\-|\*|/|\^)
   name: keyword.operator.arithmetic.kos
   comment: arithmetic operator
 
@@ -76,9 +76,10 @@ patterns:
   name: variable.parameter.kos
   comment: version parameters
 
-- match: \b(?i:(throttle|steering|wheelthrottle|wheelsteering|ship|target|encounter|alt|heading|prograde|retrograde|facing|maxthrust|velocity|geoposition|latitude|longitude|up|north|body|angularmomentum|angularvel|angularvelocity|commrange|mass|verticalspeed|surfacespeed|airspeed|vesselname|altitude|apoapsis|periapsis|sensor|srfprograde|srfrerograde|obt|status|vesselname))\b
+- match: \b(?i:(throttle|steering|wheelthrottle|wheelsteering|ship|target|encounter|alt|heading|prograde|retrograde|facing|maxthrust|velocity|geoposition|latitude|longitude|up|north|body|angularmomentum|angularvel|angularvelocity|commrange|mass|verticalspeed|surfacespeed|airspeed|vesselname|altitude|apoapsis|periapsis|sensor|srfprograde|srfrerograde|obt|status|vesselname))\s
   name: constant.language.kos
   comment: bound variables
+  #Edited from original
 
 - match: \b(?i:(sas|rcs|gear|legs|chutes|lights|panels|brakes|abort|ag[1-9][0-9]|ag[0-9]))\b
   name: constant.language.kos
@@ -92,9 +93,13 @@ patterns:
   name: variable.parameter.kos
   comment: eta structure members
 
-- match: \b(?i:(list|bodies|targets|resources|parts|engines|sensors|elements|dockingports|files|volumes))\b
+- match: \b(?i:(bodies|targets|resources|parts|engines|sensors|elements|dockingports|files|volumes))\b
   name: support.function.kos
-  comment: list functions
+  comment: part functions
+
+- match: \b(?i:(list|range))\b
+  name: support.function.kos
+  comment: basic collections
 
 - match: \b(?i:(r|q|heading|lookdirup|angleaxis|rotatefromto))\b
   name: support.function.kos
@@ -220,7 +225,7 @@ patterns:
   name: support.type.kos
   comment: support types
 
-- match: \b(?i:(print|at|from|volume|in|all))\b
+- match: \b(?i:(print|at|volume|in|all))\b
   name: keyword.other.kos
   comment: other keywords...
 ...
