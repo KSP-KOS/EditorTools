@@ -1,5 +1,5 @@
 # [PackageDev] target_format: plist, ext: tmLanguage
-# Converted from https://github.com/KSP-KOS/EditorTools/tree/develop/Atom/grammars
+# Converted from https://github.com/jim-hart/EditorTools/tree/develop/Atom/grammars
 # unless otherwise noted
 
 ---
@@ -74,10 +74,9 @@ patterns:
   name: variable.parameter.kos
   comment: version parameters
 
-- match: \b(?i:(throttle|steering|wheelthrottle|wheelsteering|ship|target|encounter|alt|heading|prograde|retrograde|facing|maxthrust|velocity|geoposition|latitude|longitude|up|north|body|angularmomentum|angularvel|angularvelocity|commrange|mass|verticalspeed|surfacespeed|airspeed|vesselname|altitude|apoapsis|periapsis|sensor|srfprograde|srfrerograde|obt|status|vesselname))\s
+- match: \b(?<!\:)(?i:(throttle|steering|wheelthrottle|wheelsteering|ship|target|encounter|alt|heading|prograde|retrograde|facing|maxthrust|velocity|geoposition|latitude|longitude|up|north|body|angularmomentum|angularvel|angularvelocity|commrange|mass|verticalspeed|surfacespeed|airspeed|vesselname|altitude|apoapsis|periapsis|sensor|srfprograde|srfrerograde|obt|status|vesselname))((?=\:)|\s)
   name: constant.language.kos
   comment: bound variables
-  #Edited from original
 
 - match: \b(?i:(sas|rcs|gear|legs|chutes|lights|panels|brakes|abort|ag[1-9][0-9]|ag[0-9]))\b
   name: constant.language.kos
@@ -95,15 +94,11 @@ patterns:
   name: support.function.kos
   comment: part functions
 
-- match: \b(?i:(list|range))\b
-  name: support.function.kos
-  comment: basic collections
-
 - match: \b(?i:(r|q|heading|lookdirup|angleaxis|rotatefromto))\b
   name: support.function.kos
   comment: directional functions
 
-- match: \b\:(?i:(vector|forevector|topvector|upvector|starvector|rightvector|inverse))
+- match: \b(?<=\:)(?i:(vector|forevector|topvector|upvector|starvector|rightvector|inverse))
   name: variable.parameter.kos
   comment: directional structure members
 
@@ -111,35 +106,35 @@ patterns:
   name: support.function.kos
   comment: vector functions
 
-- match: \b\:(?i:(x|y|z|normalized|sqrmagnitude|direction|vec))\b
+- match: \b(?<=\:)(?i:(x|y|z|normalized|sqrmagnitude|direction|vec))\b
   name: variable.parameter.kos
   comment: vector structure member
 
-- match: \b\:(?i:(lat|lng|distance|terrainheight|heading|bearing|position|altitudeposition))
+- match: \b(?<=\:)(?i:(lat|lng|distance|terrainheight|heading|bearing|position|altitudeposition))
   name: variable.parameter.kos
   comment: geographical structure member
 
-- match: \b\:(?i:(name|apoapsis|periapsis|body|period|inclination|eccentricity|semimajoraxis|semiminoraxis|lan|longitudeofascendingnode|argumentofperiapsis|trueanomaly|meananomalyatepoch|transition|position|velocity|nextpatch|hasnextpatch))\b
+- match: \b(?<=\:)(?i:(name|apoapsis|periapsis|body|period|inclination|eccentricity|semimajoraxis|semiminoraxis|lan|longitudeofascendingnode|argumentofperiapsis|trueanomaly|meananomalyatepoch|transition|position|velocity|nextpatch|hasnextpatch))\b
   name: variable.parameter.kos
   comment: orbit structure member
 
-- match: \b\:(?i:(orbit|surface|name|body|hasbody|hasorbit|hasobt|obt|up|north|prograde|srfprograde|retrograde|srfretrograde|position|velocity|distance|direction|latitude|longitude|altitude|geoposition|patches))\b
+- match: \b(?<=\:)(?i:(orbit|surface|name|body|hasbody|hasorbit|hasobt|obt|up|north|prograde|srfprograde|retrograde|srfretrograde|position|velocity|distance|direction|latitude|longitude|altitude|geoposition|patches))\b
   name: variable.parameter.kos
   comment: orbitable structure member
 
-- match: \b\:(?i:(body|exists|oxygen|scale|sealevelpressure|height))\b
+- match: \b(?<=\:)(?i:(body|exists|oxygen|scale|sealevelpressure|height))\b
   name: variable.parameter.kos
   comment: atmosphere structure member
 
-- match: \b\:(?i:(name|description|mass|altitude|rotationperiod|radius|mu|atm|angularvel|geopositionof|altitudeof))\b
+- match: \b(?<=\:)(?i:(name|description|mass|altitude|rotationperiod|radius|mu|atm|angularvel|geopositionof|altitudeof))\b
   name: variable.parameter.kos
   comment: body structure member
 
-- match: \b\:(?i:(name|amount|capacity|parts))\b
+- match: \b(?<=\:)(?i:(name|amount|capacity|parts))\b
   name: variable.parameter.kos
   comment: aggregateresource structure member
 
-- match: \b\:(?i:(aquirerange|aquireforce|aquire|torque|reengageddistance|dockedshipname|portfacing|state|targetable))\b
+- match: \b(?<=\:)(?i:(aquirerange|aquireforce|aquire|torque|reengageddistance|dockedshipname|portfacing|state|targetable))\b
   name: variable.parameter.kos
   comment: dockingport structure member
 
@@ -147,7 +142,7 @@ patterns:
   name: support.function.kos
   comment: dockingport functions
 
-- match: \b\:(?i:(thrustlimit|maxthrust|thrust|fuelflow|isp|flameout|ignition|allowrestart|allowshutdown|throttlelock))\b
+- match: \b(?<=\:)(?i:(thrustlimit|maxthrust|thrust|fuelflow|isp|flameout|ignition|allowrestart|allowshutdown|throttlelock))\b
   name: variable.parameter.kos
   comment: engine structure member
 
@@ -155,15 +150,15 @@ patterns:
   name: support.function.kos
   comment: engine functions
 
-- match: \b\:(?i:(range|responsespeed|pitchangle|yawangle|rollangle|lock))\b
+- match: \b(?<=\:)(?i:(range|responsespeed|pitchangle|yawangle|rollangle|lock))\b
   name: variable.parameter.kos
   comment: gimbal structure member
 
-- match: \b\:(?i:(deltav|burnvector|eta|prograde|radialout|normal|orbit))\b
+- match: \b(?<=\:)(?i:(deltav|burnvector|eta|prograde|radialout|normal|orbit))\b
   name: variable.parameter.kos
   comment: maneuvernode structure member
 
-- match: \b\:(?i:(name|title|mass|drymass|wetmass|tag|controlfrom|stage|uid|rotation|position|facing|resources|targetable|ship|modules|allmodules|parent|hasparent|hasphysics|children))\b
+- match: \b(?<=\:)(?i:(name|title|mass|drymass|wetmass|tag|controlfrom|stage|uid|rotation|position|facing|resources|targetable|ship|modules|allmodules|parent|hasparent|hasphysics|children))\b
   name: variable.parameter.kos
   comment: part structure member
 
@@ -171,7 +166,7 @@ patterns:
   name: support.function.kos
   comment: part functions
 
-- match: \b\:(?i:(name|part|allfields|allevents|allactions|hasfield|hasevent|hasaction))\b
+- match: \b(?<=\:)(?i:(name|part|allfields|allevents|allactions|hasfield|hasevent|hasaction))\b
   name: variable.parameter.kos
   comment: partmodule structure member
 
@@ -179,7 +174,7 @@ patterns:
   name: support.function.kos
   comment: partmodule functions
 
-- match: \b\:(?i:(active|type|readout|powerconsumption))\b
+- match: \b(?<=\:)(?i:(active|type|readout|powerconsumption))\b
   name: variable.parameter.kos
   comment: sensor structure member
 
@@ -187,27 +182,27 @@ patterns:
   name: support.function.kos
   comment: sensor functions
 
-- match: \b\:(?i:(ready|number|resources))\b
+- match: \b(?<=\:)(?i:(ready|number|resources))\b
   name: variable.parameter.kos
   comment: stage structure member
 
-- match: \b\:(?i:(control|bearing|heading|maxthrust|facing|mass|wetmass|drymass|verticalspeed|surfacespeed|airspeeed|termvelocity|shipname|name|angularmomentum|angularvel|sensors|loaded|patches|rootpart|parts|resources|partsnamed|partstitled|partstagged|partsdubbed|modulesnamed|partsingroup|modulesingroup|allpartstagged))\b
+- match: \b(?<=\:)(?i:(control|bearing|heading|maxthrust|facing|mass|wetmass|drymass|verticalspeed|surfacespeed|airspeeed|termvelocity|shipname|name|angularmomentum|angularvel|sensors|loaded|patches|rootpart|parts|resources|partsnamed|partstitled|partstagged|partsdubbed|modulesnamed|partsingroup|modulesingroup|allpartstagged))\b
   name: variable.parameter.kos
   comment: vessel structure member
 
-- match: \b\:(?i:(acc|pres|temp|grav|light))\b
+- match: \b(?<=\:)(?i:(acc|pres|temp|grav|light))\b
   name: variable.parameter.kos
   comment: vesselsensors structure member
 
-- match: \b\:(?i:(name|amount|capacity|toggleable|enabled))\b
+- match: \b(?<=\:)(?i:(name|amount|capacity|toggleable|enabled))\b
   name: variable.parameter.kos
   comment: resource structure member
 
-- match: \b\:(?i:(name|body|geoposition|position|altitude|agl|nearsurface|grounded|index|clustered))\b
+- match: \b(?<=\:)(?i:(name|body|geoposition|position|altitude|agl|nearsurface|grounded|index|clustered))\b
   name: variable.parameter.kos
   comment: waypoint structure member
 
-- match: \b\:(?i:(r|red|g|green|b|blue|a|alpha|html|hex))\b
+- match: \b(?<=\:)(?i:(r|red|g|green|b|blue|a|alpha|html|hex))\b
   name: variable.parameter.kos
   comment: rgba structure member
 
@@ -226,4 +221,14 @@ patterns:
 - match: \b(?i:(print|at|volume|in|all))\b
   name: keyword.other.kos
   comment: other keywords...
+
+# New additions-----------------------------------------------------------------
+- match: \b(?i:(list|range))\b
+  name: support.function.kos
+  comment: basic collections
+
+- match: \b(?<=\:)(?i:(mag))\b
+  name: variable.parameter.kos
+  comment: Unsorted parameters (functionality won't change once they are sorted)
+
 ...

@@ -16,10 +16,26 @@ If you wish to make alternations or additions to the definition, you can use [Pa
 
 ## Additional Coverage
 
-xeger provided the ground work for this package, so all credit goes to him.  However, I've added additional coverage for keywords, methods, and structures not included in the original.  New additions are ongoing.  Some changes to the original package were made to add contrast in cases where the same word could be used in different contexts.
-
-For example, `SHIP:HEADING` vs `HEADING(90,90)`.  In this case, `HEADING` can be used as a field, or like a traditional function call.  While highlighting of fields remains unchanged from xeger's version, using it like a function call will result in different syntax highlighting in ST3.  
+The original syntax highlighting package written by xeger was intended for Atom.  While a direct, unedited port does the job, alterations were made to bring highlighting in line with sublime defaults.  This isn't a commentary on the original, it was just written for a different editor. Additions mostly include coverage for new keywords, methods, and structures not available in kOS when the original Atom package was released.  New additions are ongoing.
 
 
 
+### Functional changes
 
+Most functional changes involve taking away highlighting to add contrast to longer lines of code, or to account for contextual usage.  For example `SHIP:HEADING` vs `HEADING(90,90)`.  In this case, `HEADING` can be used as a structure suffix, or like a traditional function call.    
+
+**Changes include**:
+
+  - Parenthesis `( )` were stripped of highlighting (they were showing up as reserved keywords)
+  - Suffix colons are no longer highlighted with the suffix to better help identify breaks in long `STRUCTURE:SUFFIX` chains
+
+
+**Upcoming/Ongoing changes include**:
+
+  - Additional keyword coverage
+  - STRUCTURE:SUFFIX validation, which either adds error highlighting, or  simply removes highlighting if a invalid suffix is used with a    structure, or vice versa.  This is more time consuming than difficult as it involves correctly accounting for all possible structure/suffix combinations.  
+
+
+### Suggestions and Requests
+
+If you feel a current feature could be improved, or if you would like a new feature entirely, I'm always open suggestions and requests. 

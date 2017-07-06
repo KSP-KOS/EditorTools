@@ -144,7 +144,7 @@
 			<key>comment</key>
 			<string>bound variables</string>
 			<key>match</key>
-			<string>\b(?i:(throttle|steering|wheelthrottle|wheelsteering|ship|target|encounter|alt|heading|prograde|retrograde|facing|maxthrust|velocity|geoposition|latitude|longitude|up|north|body|angularmomentum|angularvel|angularvelocity|commrange|mass|verticalspeed|surfacespeed|airspeed|vesselname|altitude|apoapsis|periapsis|sensor|srfprograde|srfrerograde|obt|status|vesselname))\s</string>
+			<string>\b(?&lt;!\:)(?i:(throttle|steering|wheelthrottle|wheelsteering|ship|target|encounter|alt|heading|prograde|retrograde|facing|maxthrust|velocity|geoposition|latitude|longitude|up|north|body|angularmomentum|angularvel|angularvelocity|commrange|mass|verticalspeed|surfacespeed|airspeed|vesselname|altitude|apoapsis|periapsis|sensor|srfprograde|srfrerograde|obt|status|vesselname))((?=\:)|\s)</string>
 			<key>name</key>
 			<string>constant.language.kos</string>
 		</dict>
@@ -182,14 +182,6 @@
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>basic collections</string>
-			<key>match</key>
-			<string>\b(?i:(list|range))\b</string>
-			<key>name</key>
-			<string>support.function.kos</string>
-		</dict>
-		<dict>
-			<key>comment</key>
 			<string>directional functions</string>
 			<key>match</key>
 			<string>\b(?i:(r|q|heading|lookdirup|angleaxis|rotatefromto))\b</string>
@@ -200,7 +192,7 @@
 			<key>comment</key>
 			<string>directional structure members</string>
 			<key>match</key>
-			<string>\b\:(?i:(vector|forevector|topvector|upvector|starvector|rightvector|inverse))</string>
+			<string>\b(?&lt;=\:)(?i:(vector|forevector|topvector|upvector|starvector|rightvector|inverse))</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -216,7 +208,7 @@
 			<key>comment</key>
 			<string>vector structure member</string>
 			<key>match</key>
-			<string>\b\:(?i:(x|y|z|normalized|sqrmagnitude|direction|vec))\b</string>
+			<string>\b(?&lt;=\:)(?i:(x|y|z|normalized|sqrmagnitude|direction|vec))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -224,7 +216,7 @@
 			<key>comment</key>
 			<string>geographical structure member</string>
 			<key>match</key>
-			<string>\b\:(?i:(lat|lng|distance|terrainheight|heading|bearing|position|altitudeposition))</string>
+			<string>\b(?&lt;=\:)(?i:(lat|lng|distance|terrainheight|heading|bearing|position|altitudeposition))</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -232,7 +224,7 @@
 			<key>comment</key>
 			<string>orbit structure member</string>
 			<key>match</key>
-			<string>\b\:(?i:(name|apoapsis|periapsis|body|period|inclination|eccentricity|semimajoraxis|semiminoraxis|lan|longitudeofascendingnode|argumentofperiapsis|trueanomaly|meananomalyatepoch|transition|position|velocity|nextpatch|hasnextpatch))\b</string>
+			<string>\b(?&lt;=\:)(?i:(name|apoapsis|periapsis|body|period|inclination|eccentricity|semimajoraxis|semiminoraxis|lan|longitudeofascendingnode|argumentofperiapsis|trueanomaly|meananomalyatepoch|transition|position|velocity|nextpatch|hasnextpatch))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -240,7 +232,7 @@
 			<key>comment</key>
 			<string>orbitable structure member</string>
 			<key>match</key>
-			<string>\b\:(?i:(orbit|surface|name|body|hasbody|hasorbit|hasobt|obt|up|north|prograde|srfprograde|retrograde|srfretrograde|position|velocity|distance|direction|latitude|longitude|altitude|geoposition|patches))\b</string>
+			<string>\b(?&lt;=\:)(?i:(orbit|surface|name|body|hasbody|hasorbit|hasobt|obt|up|north|prograde|srfprograde|retrograde|srfretrograde|position|velocity|distance|direction|latitude|longitude|altitude|geoposition|patches))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -248,7 +240,7 @@
 			<key>comment</key>
 			<string>atmosphere structure member</string>
 			<key>match</key>
-			<string>\b\:(?i:(body|exists|oxygen|scale|sealevelpressure|height))\b</string>
+			<string>\b(?&lt;=\:)(?i:(body|exists|oxygen|scale|sealevelpressure|height))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -256,7 +248,7 @@
 			<key>comment</key>
 			<string>body structure member</string>
 			<key>match</key>
-			<string>\b\:(?i:(name|description|mass|altitude|rotationperiod|radius|mu|atm|angularvel|geopositionof|altitudeof))\b</string>
+			<string>\b(?&lt;=\:)(?i:(name|description|mass|altitude|rotationperiod|radius|mu|atm|angularvel|geopositionof|altitudeof))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -264,7 +256,7 @@
 			<key>comment</key>
 			<string>aggregateresource structure member</string>
 			<key>match</key>
-			<string>\b\:(?i:(name|amount|capacity|parts))\b</string>
+			<string>\b(?&lt;=\:)(?i:(name|amount|capacity|parts))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -272,7 +264,7 @@
 			<key>comment</key>
 			<string>dockingport structure member</string>
 			<key>match</key>
-			<string>\b\:(?i:(aquirerange|aquireforce|aquire|torque|reengageddistance|dockedshipname|portfacing|state|targetable))\b</string>
+			<string>\b(?&lt;=\:)(?i:(aquirerange|aquireforce|aquire|torque|reengageddistance|dockedshipname|portfacing|state|targetable))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -288,7 +280,7 @@
 			<key>comment</key>
 			<string>engine structure member</string>
 			<key>match</key>
-			<string>\b\:(?i:(thrustlimit|maxthrust|thrust|fuelflow|isp|flameout|ignition|allowrestart|allowshutdown|throttlelock))\b</string>
+			<string>\b(?&lt;=\:)(?i:(thrustlimit|maxthrust|thrust|fuelflow|isp|flameout|ignition|allowrestart|allowshutdown|throttlelock))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -304,7 +296,7 @@
 			<key>comment</key>
 			<string>gimbal structure member</string>
 			<key>match</key>
-			<string>\b\:(?i:(range|responsespeed|pitchangle|yawangle|rollangle|lock))\b</string>
+			<string>\b(?&lt;=\:)(?i:(range|responsespeed|pitchangle|yawangle|rollangle|lock))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -312,7 +304,7 @@
 			<key>comment</key>
 			<string>maneuvernode structure member</string>
 			<key>match</key>
-			<string>\b\:(?i:(deltav|burnvector|eta|prograde|radialout|normal|orbit))\b</string>
+			<string>\b(?&lt;=\:)(?i:(deltav|burnvector|eta|prograde|radialout|normal|orbit))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -320,7 +312,7 @@
 			<key>comment</key>
 			<string>part structure member</string>
 			<key>match</key>
-			<string>\b\:(?i:(name|title|mass|drymass|wetmass|tag|controlfrom|stage|uid|rotation|position|facing|resources|targetable|ship|modules|allmodules|parent|hasparent|hasphysics|children))\b</string>
+			<string>\b(?&lt;=\:)(?i:(name|title|mass|drymass|wetmass|tag|controlfrom|stage|uid|rotation|position|facing|resources|targetable|ship|modules|allmodules|parent|hasparent|hasphysics|children))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -336,7 +328,7 @@
 			<key>comment</key>
 			<string>partmodule structure member</string>
 			<key>match</key>
-			<string>\b\:(?i:(name|part|allfields|allevents|allactions|hasfield|hasevent|hasaction))\b</string>
+			<string>\b(?&lt;=\:)(?i:(name|part|allfields|allevents|allactions|hasfield|hasevent|hasaction))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -352,7 +344,7 @@
 			<key>comment</key>
 			<string>sensor structure member</string>
 			<key>match</key>
-			<string>\b\:(?i:(active|type|readout|powerconsumption))\b</string>
+			<string>\b(?&lt;=\:)(?i:(active|type|readout|powerconsumption))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -368,7 +360,7 @@
 			<key>comment</key>
 			<string>stage structure member</string>
 			<key>match</key>
-			<string>\b\:(?i:(ready|number|resources))\b</string>
+			<string>\b(?&lt;=\:)(?i:(ready|number|resources))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -376,7 +368,7 @@
 			<key>comment</key>
 			<string>vessel structure member</string>
 			<key>match</key>
-			<string>\b\:(?i:(control|bearing|heading|maxthrust|facing|mass|wetmass|drymass|verticalspeed|surfacespeed|airspeeed|termvelocity|shipname|name|angularmomentum|angularvel|sensors|loaded|patches|rootpart|parts|resources|partsnamed|partstitled|partstagged|partsdubbed|modulesnamed|partsingroup|modulesingroup|allpartstagged))\b</string>
+			<string>\b(?&lt;=\:)(?i:(control|bearing|heading|maxthrust|facing|mass|wetmass|drymass|verticalspeed|surfacespeed|airspeeed|termvelocity|shipname|name|angularmomentum|angularvel|sensors|loaded|patches|rootpart|parts|resources|partsnamed|partstitled|partstagged|partsdubbed|modulesnamed|partsingroup|modulesingroup|allpartstagged))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -384,7 +376,7 @@
 			<key>comment</key>
 			<string>vesselsensors structure member</string>
 			<key>match</key>
-			<string>\b\:(?i:(acc|pres|temp|grav|light))\b</string>
+			<string>\b(?&lt;=\:)(?i:(acc|pres|temp|grav|light))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -392,7 +384,7 @@
 			<key>comment</key>
 			<string>resource structure member</string>
 			<key>match</key>
-			<string>\b\:(?i:(name|amount|capacity|toggleable|enabled))\b</string>
+			<string>\b(?&lt;=\:)(?i:(name|amount|capacity|toggleable|enabled))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -400,7 +392,7 @@
 			<key>comment</key>
 			<string>waypoint structure member</string>
 			<key>match</key>
-			<string>\b\:(?i:(name|body|geoposition|position|altitude|agl|nearsurface|grounded|index|clustered))\b</string>
+			<string>\b(?&lt;=\:)(?i:(name|body|geoposition|position|altitude|agl|nearsurface|grounded|index|clustered))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -408,7 +400,7 @@
 			<key>comment</key>
 			<string>rgba structure member</string>
 			<key>match</key>
-			<string>\b\:(?i:(r|red|g|green|b|blue|a|alpha|html|hex))\b</string>
+			<string>\b(?&lt;=\:)(?i:(r|red|g|green|b|blue|a|alpha|html|hex))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -443,6 +435,22 @@
 			<string>\b(?i:(print|at|volume|in|all))\b</string>
 			<key>name</key>
 			<string>keyword.other.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>basic collections</string>
+			<key>match</key>
+			<string>\b(?i:(list|range))\b</string>
+			<key>name</key>
+			<string>support.function.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Unsorted parameters (functionality won't change once they are sorted)</string>
+			<key>match</key>
+			<string>\b(?&lt;=\:)(?i:(mag))\b</string>
+			<key>name</key>
+			<string>variable.parameter.kos</string>
 		</dict>
 	</array>
 	<key>scopeName</key>
