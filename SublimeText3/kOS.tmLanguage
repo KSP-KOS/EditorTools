@@ -26,7 +26,7 @@
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>comments</string>
+			<string>source code comments</string>
 			<key>match</key>
 			<string>(?:(\/\/.*))</string>
 			<key>name</key>
@@ -59,6 +59,14 @@
 			<string>flow control statement</string>
 			<key>match</key>
 			<string>\b(?i:(break|preserve|do|wait|step))\b</string>
+			<key>name</key>
+			<string>keyword.control.statement.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Ship system control statements</string>
+			<key>match</key>
+			<string>\b(?i:(lock|unlock|toggle|on|off))\b</string>
 			<key>name</key>
 			<string>keyword.control.statement.kos</string>
 		</dict>
@@ -104,17 +112,11 @@
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>assignment keywords</string>
+			<string>assignment keywords and operators</string>
 			<key>match</key>
-			<string>\b(?i:(set|to|lock|unlock|declare|parameter|toggle|on|off))\b</string>
+			<string>\b(?i:(set|to|\=))\b</string>
 			<key>name</key>
 			<string>keyword.operator.assignment.kos</string>
-		</dict>
-		<dict>
-			<key>match</key>
-			<string>\b(?i:(global|local|parameter))\b</string>
-			<key>name</key>
-			<string>storage.modifier.kos</string>
 		</dict>
 		<dict>
 			<key>comment</key>
@@ -136,7 +138,7 @@
 			<key>comment</key>
 			<string>version parameters</string>
 			<key>match</key>
-			<string>\b(?i:(major|minor))</string>
+			<string>\b(?&lt;=\:)(?i:(major|minor))</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -150,9 +152,9 @@
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>bound toggleables</string>
+			<string>stock action groups</string>
 			<key>match</key>
-			<string>\b(?i:(sas|rcs|gear|legs|chutes|lights|panels|brakes|abort|ag[1-9][0-9]|ag[0-9]))\b</string>
+			<string>\b(?i:(sas|rcs|gear|lights|panels|brakes|abort|ag[1-9]|ag10]))\b</string>
 			<key>name</key>
 			<string>constant.language.kos</string>
 		</dict>
@@ -160,7 +162,7 @@
 			<key>comment</key>
 			<string>alt structure members</string>
 			<key>match</key>
-			<string>\b(?i:(apoapsis|periapsis|radar))\b</string>
+			<string>\b(?&lt;=\:)(?i:(apoapsis|periapsis|radar))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -168,7 +170,7 @@
 			<key>comment</key>
 			<string>eta structure members</string>
 			<key>match</key>
-			<string>\b(?i:(apoapsis|periapsis|transition))\b</string>
+			<string>\b(?&lt;=\:)(?i:(apoapsis|periapsis|transition))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -176,7 +178,7 @@
 			<key>comment</key>
 			<string>part functions</string>
 			<key>match</key>
-			<string>\b(?i:(bodies|targets|resources|parts|engines|sensors|elements|dockingports|files|volumes))\b</string>
+			<string>\b(?&lt;!\:)(?i:(bodies|targets|resources|parts|engines|sensors|elements|dockingports|files|volumes))(?=\()\b</string>
 			<key>name</key>
 			<string>support.function.kos</string>
 		</dict>
@@ -438,11 +440,19 @@
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>basic collections</string>
+			<string>basic collections when used as functions</string>
 			<key>match</key>
-			<string>\b(?i:(list|range))\b</string>
+			<string>\b(?i:(list|range))(?=\()\b</string>
 			<key>name</key>
 			<string>support.function.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Unsorted keywords</string>
+			<key>match</key>
+			<string>\b(?i:(list|return))\b</string>
+			<key>name</key>
+			<string>keyword.control.kos</string>
 		</dict>
 		<dict>
 			<key>comment</key>
@@ -451,6 +461,54 @@
 			<string>\b(?&lt;=\:)(?i:(mag))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Structures</string>
+			<key>match</key>
+			<string>\b(?i:(part|vessel))(?=\:|\s)\b</string>
+			<key>name</key>
+			<string>constant.language.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>kOS pseudo action groups</string>
+			<key>match</key>
+			<string>\b(?i:(legs|chutes|chutessafe|panels|radiators|ladders|bays|deploydrills|drills|fuelcells|isru|intakes))\b</string>
+			<key>name</key>
+			<string>constant.language.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>user defined function identifier</string>
+			<key>match</key>
+			<string>\b(?i:(function))\s</string>
+			<key>name</key>
+			<string>support.function.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>function related assignments and scopes</string>
+			<key>match</key>
+			<string>\b(?i:(parameter|declare|local|global))\s</string>
+			<key>name</key>
+			<string>keyword.other.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>user defined function name (must start with letter or underscore)</string>
+			<key>match</key>
+			<string>\b(?i:((?&lt;=function\s)[\_[:alpha:]]\w+))\b</string>
+			<key>name</key>
+			<string>entity.name.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>general function identifier</string>
+			<key>match</key>
+			<string>\b(?i:(\w+)(?=\())\b</string>
+			<key>name</key>
+			<string>support.function.kos</string>
 		</dict>
 	</array>
 	<key>scopeName</key>
