@@ -235,7 +235,7 @@ patterns:
   comment: basic collections when used as functions
 
 - name: keyword.control.kos
-  match: \b(?i:(list|return))\b
+  match: \b(?i:(list|return|@lazyglobal))\b
   comment: Unsorted keywords 
 
 - name: variable.parameter.kos
@@ -267,6 +267,14 @@ patterns:
 - name: support.function.kos
   match: \b(?i:(\w+)(?=\())\b
   comment: general function identifier
+
+- name: support.function.kos
+  match: (?i:(\w+)(?=@))
+  comment: delegate function identifier
+
+- name: keyword.other.kos
+  match: (?i:(?<=\w)(@))
+  comment: delegate identifier (trying to combine identifer and delegate with begin and end keys)
 
 ...
 

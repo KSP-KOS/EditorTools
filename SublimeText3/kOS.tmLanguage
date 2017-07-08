@@ -450,7 +450,7 @@
 			<key>comment</key>
 			<string>Unsorted keywords</string>
 			<key>match</key>
-			<string>\b(?i:(list|return))\b</string>
+			<string>\b(?i:(list|return|@lazyglobal))\b</string>
 			<key>name</key>
 			<string>keyword.control.kos</string>
 		</dict>
@@ -509,6 +509,22 @@
 			<string>\b(?i:(\w+)(?=\())\b</string>
 			<key>name</key>
 			<string>support.function.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>delegate function identifier</string>
+			<key>match</key>
+			<string>(?i:(\w+)(?=@))</string>
+			<key>name</key>
+			<string>support.function.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>delegate identifier (trying to combine identifer and delegate with begin and end keys)</string>
+			<key>match</key>
+			<string>(?i:(?&lt;=\w)(@))</string>
+			<key>name</key>
+			<string>keyword.other.kos</string>
 		</dict>
 	</array>
 	<key>scopeName</key>

@@ -20,15 +20,18 @@ Changes and new additions to the kOS syntax for ST3 are highlighted here. Check 
 
 **Changes include**:
 
-  - Certain punctuation/delimters were stripped of highlighting to improve readability and provide contrast where needed.  Suffix colons, for example, are no longer highlighted with the suffix to better help identify breaks in long `STRUCTURE:SUFFIX` chains
+  - Certain punctuation/delimiters were stripped of highlighting to improve readability and provide contrast where needed.  Suffix colons, for example, are no longer highlighted with the suffix to better help identify breaks in long `STRUCTURE:SUFFIX` chains
   - User-defined functions are now supported. Initial definitions vs. calls to those functions receive different highlighting. 
   - Contextual distinction of reserved words; for example `SHIP:HEADING` vs `HEADING(90,90)`.  In this case, `HEADING`'s highlighting will differentiate based on whether its used as a structure suffix, or as a traditional function call
+  - Delegate highlighting (similar to how Python decorators are highlighted)
 
 
 **Upcoming/Ongoing changes include**:
 
   - Additional keyword coverage (check commit log)
-  - STRUCTURE:SUFFIX validation, which either adds error highlighting, or  simply removes highlighting if a invalid suffix is used with a    structure, or vice versa.  This is more time consuming than difficult as it involves correctly accounting for all possible structure/suffix combinations.  
+  - STRUCTURE:SUFFIX validation, which either adds error highlighting, or  simply removes highlighting if a invalid suffix is used with a    structure, or vice versa.  This is more time consuming than difficult as it involves correctly accounting for all possible structure/suffix combinations.
+  - Anonymous function support.
+  - Multiple parameters defined on a single line.  
 
 
 ### Suggestions and Requests
