@@ -49,6 +49,19 @@ The following item in this section represent highlight support for structures, a
   - [TimeSpan](https://ksp-kos.github.io/KOS/structures/misc/time.html)
     - TIME support added as well
 
+## Examples
+> Monokai
+![Monokai](https://github.com/jim-hart/EditorTools/blob/develop/SublimeText3/ExampleImages/MonokaiSnippet.png)
+
+> Solarized Dark
+![Solarized Dark](https://github.com/jim-hart/EditorTools/blob/develop/SublimeText3/ExampleImages/SolarizedDarkSnippet.png)
+
+> Solarized Light
+![Solarized Light](https://github.com/jim-hart/EditorTools/blob/develop/SublimeText3/ExampleImages/SolarizedLightSnippet.png)
+
+> Twilight
+![Twilight](https://github.com/jim-hart/EditorTools/blob/develop/SublimeText3/ExampleImages/TwilightSnippet.png)
+
 ---
 
 
