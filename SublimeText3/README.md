@@ -39,14 +39,14 @@ Changes and new additions to the kOS syntax for ST3 are highlighted here. Check 
 
 The following item in this section represent highlight support for structures, and their parameters and methods, that were not available at the time of the original packages release.  This list doesn't represent all updates, just entirely new additions.  
 
-  - [Connection](https://ksp-kos.github.io/KOS/structures/communication/connection.html?highlight=connection)
-  - [kOS Pseudo Action Groups](https://ksp-kos.github.io/KOS/commands/flight/systems.html?highlight=pseudo#kos-pseudo-action-groups)
+  - [Connection](https://ksp-kos.github.io/KOS/structures/communication/connection.html)
+  - [kOS Pseudo Action Groups](https://ksp-kos.github.io/KOS/commands/flight/systems.html)
   - [Message](https://ksp-kos.github.io/KOS/structures/communication/message.html)
   - [MessageQueue](https://ksp-kos.github.io/KOS/structures/communication/message_queue.html)
-  - [ScienceData](https://ksp-kos.github.io/KOS/structures/vessels/sciencedatavalue.html?highlight=sciencedata)
+  - [ScienceData](https://ksp-kos.github.io/KOS/structures/vessels/sciencedatavalue.html)
   - [ScienceExperimentModule](https://ksp-kos.github.io/KOS/structures/vessels/scienceexperiment.html)
-  - [PIDLoop](https://ksp-kos.github.io/KOS/structures/misc/pidloop.html?highlight=pidloop)
-  - [TimeSpan](https://ksp-kos.github.io/KOS/structures/misc/time.html?highlight=time)
+  - [PIDLoop](https://ksp-kos.github.io/KOS/structures/misc/pidloop.html)
+  - [TimeSpan](https://ksp-kos.github.io/KOS/structures/misc/time.html)
     - TIME support added as well
 
 ---
