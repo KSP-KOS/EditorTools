@@ -1,6 +1,6 @@
 # Sublime Text 3 - kOS Syntax Highlighting
 
-This syntax definition was ported from [xeger's Atom package](https://github.com/KSP-KOS/EditorTools/tree/develop/Atom).  
+This syntax definition is a fork of [xeger's Atom package](https://github.com/KSP-KOS/EditorTools/tree/develop/Atom).  
 
 To install the kOS definition as is, place the `kOS.tmlLanguage` file your **user** package directory.  his directory by opening Sublime Text and selecting the following:
 
@@ -11,7 +11,7 @@ The User folder will be among the listed directories.
 
 ### Additional Coverage
 
-The original syntax highlighting package written by xeger was intended for Atom.  While a direct, unedited port does the job, updates are ongoing to bring highlighting in line with sublime defaults.  This isn't a commentary on the original, it was just written for a different editor. Additions primarily include coverage for additional keywords, along with added support for kOS features not available when the original Atom package was released.
+The original syntax highlighting package written by xeger was intended for Atom.  While a direct, unedited port does the job, updates are ongoing to bring highlighting in line with sublime defaults.  This isn't a commentary on the original, it was just written for a different editor. Additions primarily include coverage for additional keywords, along with added support for kOS features that were not available when the original Atom package was released.
 
 
 ## Supported features
@@ -32,7 +32,24 @@ Changes and new additions to the kOS syntax for ST3 are highlighted here. Check 
   - Additional keyword coverage (check commit log)
   - STRUCTURE:SUFFIX validation, which prevents highlighting if an invalid suffix is used with a structure, or vice versa.  This is supported on most newly added member groups, but updating old groups is an ongoing process.  
   - Anonymous function support.
-  - Highlighting for multiple parameters declared on a single line.  
+  - Highlighting for multiple parameters declared on a single line. 
+
+
+**Updated Syntax Support**
+
+The following item in this section represent highlight support for structures, and their parameters and methods, that were not available at the time of the original packages release.  This list doesn't represent all updates, just entirely new additions.  
+
+  - [Connection](https://ksp-kos.github.io/KOS/structures/communication/connection.html?highlight=connection)
+  - [kOS Pseudo Action Groups](https://ksp-kos.github.io/KOS/commands/flight/systems.html?highlight=pseudo#kos-pseudo-action-groups)
+  - [Message](https://ksp-kos.github.io/KOS/structures/communication/message.html)
+  - [MessageQueue](https://ksp-kos.github.io/KOS/structures/communication/message_queue.html)
+  - [ScienceData](https://ksp-kos.github.io/KOS/structures/vessels/sciencedatavalue.html?highlight=sciencedata)
+  - [ScienceExperimentModule](https://ksp-kos.github.io/KOS/structures/vessels/scienceexperiment.html)
+  - [PIDLoop](https://ksp-kos.github.io/KOS/structures/misc/pidloop.html?highlight=pidloop)
+  - [TimeSpan](https://ksp-kos.github.io/KOS/structures/misc/time.html?highlight=time)
+    - TIME support added as well
+
+---
 
 
 ### Suggestions and Requests

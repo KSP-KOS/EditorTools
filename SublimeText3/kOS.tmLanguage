@@ -118,7 +118,7 @@
 			<key>comment</key>
 			<string>other keywords...</string>
 			<key>match</key>
-			<string>\b(?i:(at|in|all|list|range|))\b</string>
+			<string>\b(?i:(at|in|all|list|range|print))\b</string>
 			<key>name</key>
 			<string>keyword.other.kos</string>
 		</dict>
@@ -180,9 +180,17 @@
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>Core functions</string>
+			<string>Core Mathematical Functions</string>
 			<key>match</key>
-			<string>\b(?i:(abs|ceiling|floor|ln|log10|mod|min|max|round|sqrt|sin|cos|tan|arcsin|arccos|arctan|arctan2|constant))\b</string>
+			<string>\b(?i:(abs|ceiling|floor|ln|log10|mod|min|max|random|round|sqrt|(un)?char))\b</string>
+			<key>name</key>
+			<string>support.function.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Trigonometric Functions</string>
+			<key>match</key>
+			<string>\b(?i:(sin|cos|tan|arcsin|arccos|arctan|arctan2|constant))\b</string>
 			<key>name</key>
 			<string>support.function.kos</string>
 		</dict>
@@ -190,7 +198,7 @@
 			<key>comment</key>
 			<string>Terminal commands</string>
 			<key>match</key>
-			<string>\b(?i:(print|clearscreen|reboot|shutdown))\b</string>
+			<string>\b(?i:(clearscreen|reboot|shutdown))\b</string>
 			<key>name</key>
 			<string>support.function.kos</string>
 		</dict>
@@ -206,23 +214,7 @@
 			<key>comment</key>
 			<string>volume navigation and creation</string>
 			<key>match</key>
-			<string>\b(?i:(?&lt;=volume\:)(exists|create|createdir|open))\b</string>
-			<key>name</key>
-			<string>support.function.kos</string>
-		</dict>
-		<dict>
-			<key>comment</key>
-			<string>file reading/writing</string>
-			<key>match</key>
-			<string>\b(?i:(?&lt;=volumefile\:)(readall|write|writeln|clear))\b</string>
-			<key>name</key>
-			<string>support.function.kos</string>
-		</dict>
-		<dict>
-			<key>comment</key>
-			<string>file reading/writing</string>
-			<key>match</key>
-			<string>\b(?i:(cd|copypath|movepath|deletepath|path|scriptpath|runpath))\b</string>
+			<string>\b(?i:(?&lt;=volume\:)(exists|create(dir)?|open))\b</string>
 			<key>name</key>
 			<string>support.function.kos</string>
 		</dict>
@@ -230,13 +222,37 @@
 			<key>comment</key>
 			<string>File structures and terminal constants</string>
 			<key>match</key>
-			<string>\b(?i:(file(s)?|volume(file|s)?|mapview))\b</string>
+			<string>\b(?i:(file(s)?|volume(file|s)?|archive|core))\b</string>
 			<key>name</key>
 			<string>constant.language.kos</string>
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>version parameters</string>
+			<string>file reading/writing</string>
+			<key>match</key>
+			<string>\b(?i:(?&lt;=volumefile\:)(readall|write(ln)?|clear|(read|write)json))\b</string>
+			<key>name</key>
+			<string>support.function.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>file reading/writing</string>
+			<key>match</key>
+			<string>\b(?i:(cd|(copy|move|delete|script|run)?path))\b</string>
+			<key>name</key>
+			<string>support.function.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>CORE structure parameters</string>
+			<key>match</key>
+			<string>\b(?i:(?&lt;=core\:)(vessel|element|version|currentvolume|messages))\b</string>
+			<key>name</key>
+			<string>variable.parameter.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Version parameters</string>
 			<key>match</key>
 			<string>\b(?i:(?&lt;=version\:)(major|minor|build))\b</string>
 			<key>name</key>
@@ -244,9 +260,9 @@
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>kOS system information</string>
+			<string>misc kOS information</string>
 			<key>match</key>
-			<string>\b(?i:(version|(session)?time|config|core))\b</string>
+			<string>\b(?i:((session)?time|config|mapview))\b</string>
 			<key>name</key>
 			<string>constant.language.kos</string>
 		</dict>
@@ -262,7 +278,7 @@
 			<key>comment</key>
 			<string>color structures</string>
 			<key>match</key>
-			<string>\b(?i:(rgba|hsva))\b</string>
+			<string>\b(?i:((rgb|hsv)a))\b</string>
 			<key>name</key>
 			<string>support.constant.kos</string>
 		</dict>
@@ -286,7 +302,7 @@
 			<key>comment</key>
 			<string>Functions for creating user defined colors</string>
 			<key>match</key>
-			<string>\b(?i:(rgb(a)?|hsv(a)?))\b</string>
+			<string>\b(?i:((rgb|hsv)(a)?))\b</string>
 			<key>name</key>
 			<string>support.function.kos</string>
 		</dict>
@@ -310,7 +326,7 @@
 			<key>comment</key>
 			<string>Basic action groups</string>
 			<key>match</key>
-			<string>\b(?i:(sas|rcs|gear|lights|panels|brakes|abort|ag[1-9]))\b</string>
+			<string>\b(?i:(sas|rcs|gear|lights|panels|brakes|abort))\b</string>
 			<key>name</key>
 			<string>constant.language.kos</string>
 		</dict>
@@ -332,63 +348,111 @@
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>Structures</string>
+			<string>Core bound variables and structures</string>
 			<key>match</key>
-			<string>\b(?i:(part|vessel|engines))(?=\:|\s)\b</string>
+			<string>\b(?i:(part|vessel|engines|ship|(has)?target|alt|eta|time(span)?|(wheel)?(throttle|steering)|encounter|science(data|experimentmodule)|vector|direction|pidloop))(?=\:|\s)\b</string>
 			<key>name</key>
 			<string>constant.language.kos</string>
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>Ship parameters</string>
+			<string>SHIP/VESSEL/TARGET parameters when used as constants</string>
 			<key>match</key>
-			<string>\b(?&lt;!\:)(?i:((wheel)?(throttle|steering)|ship|target|encounter|alt|(head|fac)ing|(pro|retro)grade|maxthrust|velocity|geoposition|(lati|longi)tude|up|north|body|angular(momentum|vel|velocity)|commrange|mass|(vertical|surface|air)speed|vesselname|altitude|apoapsis|periapsis|sensor|srf(prograde|retrograde)|obt|status))((?=\:)|\s)</string>
+			<string>\b(?&lt;!\:)(?i:((head|fac)ing|(pro|retro)grade|maxthrust|velocity|geoposition|(lati|longi|alti)tude|up|north|body|angular(momentum|vel(ocity)?)|mass|(vertical|ground|surface|air)speed|(apo|peri)apsis|sensors|(srf)(pro|rero)grade|obt|status|shipname))(?=\:|\s)\b</string>
 			<key>name</key>
 			<string>constant.language.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Ship, Vessel, and Target parameters when used as members</string>
+			<key>match</key>
+			<string>\b(?i:(?&lt;=\:)((head|fac)ing|(pro|retro)grade|maxthrust|velocity|geoposition|(lati|longi|alti)tude|up|north|body|angular(momentum|vel(ocity)?)|mass|(vertical|ground|surface|air)speed|(apo|peri)apsis|sensors|(srf)(pro|rero)grade|obt|status|shipname))\b</string>
+			<key>name</key>
+			<string>variable.parameter.kos</string>
 		</dict>
 		<dict>
 			<key>comment</key>
 			<string>vessel structure member</string>
 			<key>match</key>
-			<string>\b(?&lt;=\:)(?i:(control|(bear|head|fac)ing|maxthrust|(wet|dry)?mass|(vertical|surface|air)speed|termvelocity|(ship)?name|angular(momentum|vel)|sensors|loaded|patches|rootpart|resources|(all)?parts|parts(tagged|dubbed|named|titled)|modulesnamed|(parts|modules)ingroup))\b</string>
+			<string>\b(?i:(?&lt;=\:)(control|(bear|head|fac)ing|(max|available)thrust|(wet|dry)?mass|(vertical|surface|air)speed|dynamicpressure|q|termvelocity|(ship)?name|status|type|angular(momentum|vel)|sensors|loaded|unpacked|loaddistance|isdead|patches|(root|control)part|elements|resources|crewcapacity|connection))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>part functions</string>
+			<string>vessel methods</string>
+			<key>match</key>
+			<string>\b(?i:(?&lt;=\:)((max|available)thrustat|allpartstagged|parts(tagged|dubbed|named|titled)(pattern)?|modulesnamed|(parts|modules)ingroup|crew))\b</string>
+			<key>name</key>
+			<string>support.function.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>PIDLoop structure parameters</string>
+			<key>match</key>
+			<string>\b(?i:(?&lt;=\:)(lastsampletime|k(p|i|d)|(in|(min|max)?out)put|setpoint|error(sum)?|(p|i|d)term|changerate))\b</string>
+			<key>name</key>
+			<string>variable.parameter.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>PIDLoop methods</string>
+			<key>match</key>
+			<string>\b(?i:(?&lt;=\:)(reset|update))\b</string>
+			<key>name</key>
+			<string>variable.parameter.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>LIST types for ship parts and bodies</string>
 			<key>match</key>
 			<string>\b(?&lt;!\:)(?i:(bodies|targets|resources|parts|engines|sensors|elements|dockingports))(?=\()\b</string>
 			<key>name</key>
-			<string>support.function.kos</string>
+			<string>constant.language.kos</string>
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>part parameters</string>
+			<string>PART parameters</string>
 			<key>match</key>
-			<string>\b(?&lt;=\:)(?i:(name|title|(dry|wet)?mass|tag|controlfrom|stage|uid|rotation|position|facing|resources|targetable|ship|(all)?modules|parent|has(parent|physics)|children))\b</string>
+			<string>\b(?i:(\:)(name|title|(dry|wet)?mass|tag|stage|uid|rotation|position|facing|resources|targetable|ship|(all)?modules|parent|has(parent|physics)|children))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>part/partmodule functions</string>
+			<string>PART methods</string>
 			<key>match</key>
-			<string>\b(?i:(getmodule(byindex)?|(get|set)field|do(event|action))|has(field|event|action))\b</string>
+			<string>\b(?i:(getmodule(byindex)?|(get|set)field|do(event|action))|has(field|event|action|controlfrom))\b</string>
 			<key>name</key>
 			<string>support.function.kos</string>
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>partmodule structure member</string>
+			<string>PartModule parameters</string>
 			<key>match</key>
-			<string>\b(?&lt;=\:)(?i:(name|part|all((fields)|((event|action)(s|names)))))\b</string>
+			<string>\b(?&lt;=\:)(?i:(name|part|all(field|even|action)(s|names)))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>vessel sensors structure parameters</string>
+			<string>PartModule methods</string>
+			<key>match</key>
+			<string>\b(?i:((get|set)field|do(event|action))|has(field|event|action))\b</string>
+			<key>name</key>
+			<string>support.function.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>SENSOR structure parameters</string>
+			<key>match</key>
+			<string>\b(?&lt;=\:)(?i:(active|type|display|powerconsumption))\b</string>
+			<key>name</key>
+			<string>variable.parameter.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>VesselSensors structure parameters</string>
 			<key>match</key>
 			<string>\b(?&lt;=\:)(?i:(acc|pres|temp|grav|light))\b</string>
 			<key>name</key>
@@ -396,25 +460,25 @@
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>sensor structure parameters</string>
+			<string>ENGINE parameters</string>
 			<key>match</key>
-			<string>\b(?&lt;=\:)(?i:(active|type|readout|powerconsumption))\b</string>
+			<string>\b(?&lt;=\:)(?i:(thrust(limit)?|(max|available)thrust|fuelflow|(v(accum)?|s(ealevel)?)?isp|flameout|ignition|allow(restart|shutdown)|throttlelock|(multi|primary)?mode|modes|autoswitch|(has)?gimbal))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>engine parameters</string>
+			<string>ENGINE methods</string>
 			<key>match</key>
-			<string>\b(?&lt;=\:)(?i:(thrust(limit|lock)|(max)?thrust|fuelflow|isp|flameout|ignition|allow(restart|shutdown)))\b</string>
+			<string>\b(?&lt;=\:)(?i:((max|available)thrustat|ispat|togglemode|activate|shutdown))\b</string>
 			<key>name</key>
-			<string>variable.parameter.kos</string>
+			<string>support.function.kos</string>
 		</dict>
 		<dict>
 			<key>comment</key>
 			<string>gimbal parameters</string>
 			<key>match</key>
-			<string>\b(?&lt;=\:)(?i:(range|responsespeed|(pitch|yaw|roll)angle|lock))\b</string>
+			<string>\b(?&lt;=\:)(?i:(lock|(pitch|yaw|roll)(angle)?|limit|range|responsespeed))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -430,7 +494,7 @@
 			<key>comment</key>
 			<string>resource structure parameters</string>
 			<key>match</key>
-			<string>\b(?&lt;=\:)(?i:(name|amount|capacity|toggleable|enabled))\b</string>
+			<string>\b(?&lt;=\:)(?i:(name|amount|(dens|capac)ity|toggleable|enabled))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -438,7 +502,15 @@
 			<key>comment</key>
 			<string>stage structure parameters</string>
 			<key>match</key>
-			<string>\b(?&lt;=\:)(?i:(ready|number|resources))\b</string>
+			<string>\b(?&lt;=\:)(?i:(ready|number|resource(s|lex)))\b</string>
+			<key>name</key>
+			<string>variable.parameter.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>ALT structure parameters</string>
+			<key>match</key>
+			<string>\b(?i:(?&lt;=alt\:)(radar|(apo|peri)apsis))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -446,31 +518,15 @@
 			<key>comment</key>
 			<string>ETA structure parameters</string>
 			<key>match</key>
-			<string>\b(?i:(?&lt;=alt\:)(radar))\b</string>
+			<string>\b(?&lt;=\:)(?i:((apo|peri)apsis|transition))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>TIME parameters</string>
+			<string>TIME/TimeSpan parameters</string>
 			<key>match</key>
-			<string>\b(?i:(?&lt;=time\:)(clock|calendar|year|day|hour|minute|seconds))\b</string>
-			<key>name</key>
-			<string>variable.parameter.kos</string>
-		</dict>
-		<dict>
-			<key>comment</key>
-			<string>TIMESPAN parameters, because \K, \G, and everything else I tried doesn't like me.</string>
-			<key>match</key>
-			<string>\b(?i:(?&lt;=timespan\:)(clock|calendar|year|day|hour|minute|seconds))\b</string>
-			<key>name</key>
-			<string>variable.parameter.kos</string>
-		</dict>
-		<dict>
-			<key>comment</key>
-			<string>ETA structure parameters</string>
-			<key>match</key>
-			<string>\b(?&lt;=\:)(?i:(apoapsis|periapsis|transition))\b</string>
+			<string>\b(?i:((?&lt;=time\:)|(?&lt;=timespan\:))(clock|calendar|year|day|hour|minute|seconds))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
@@ -478,7 +534,7 @@
 			<key>comment</key>
 			<string>SHIP and navigation structures</string>
 			<key>match</key>
-			<string>\b(?i:(waypoint|allwaypoints|nextnode|ship|soi))\b</string>
+			<string>\b(?i:(waypoint|allwaypoints|(next|has)node|allnodes|ship|soi))\b</string>
 			<key>name</key>
 			<string>constant.language.kos</string>
 		</dict>
@@ -508,7 +564,15 @@
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>vector functions</string>
+			<string>Vector structure parameters</string>
+			<key>match</key>
+			<string>\b(?&lt;=\:)(?i:(x|y|z|normalized|mag|sqrmagnitude|direction|vec))\b</string>
+			<key>name</key>
+			<string>variable.parameter.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Vector methods</string>
 			<key>match</key>
 			<string>\b(?i:(v(dot|crs|ang|xcl)|vector(dotproduct|crossproduct|angle|exclude)))\b</string>
 			<key>name</key>
@@ -516,35 +580,19 @@
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>vector structure member</string>
+			<string>Directional structure parameters</string>
 			<key>match</key>
-			<string>\b(?&lt;=\:)(?i:(x|y|z|normalized|sqrmagnitude|direction|vec))\b</string>
+			<string>\b(?&lt;=\:)(?i:(pitch|yaw|roll|(fore|top|up|star|right)?vector|inverse))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>directional functions</string>
+			<string>Direction methods</string>
 			<key>match</key>
 			<string>\b(?i:(r|q|heading|lookdirup|angleaxis|rotatefromto))\b</string>
 			<key>name</key>
 			<string>support.function.kos</string>
-		</dict>
-		<dict>
-			<key>comment</key>
-			<string>directional structure parameters</string>
-			<key>match</key>
-			<string>\b(?&lt;=\:)(?i:((fore|top|up|star|right)?vector|inverse|mag))\b</string>
-			<key>name</key>
-			<string>variable.parameter.kos</string>
-		</dict>
-		<dict>
-			<key>comment</key>
-			<string>support types</string>
-			<key>match</key>
-			<string>\b(?i:(v|vector|direction|latlng))\b</string>
-			<key>name</key>
-			<string>support.type.kos</string>
 		</dict>
 		<dict>
 			<key>comment</key>
@@ -588,11 +636,83 @@
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>geographical structure member</string>
+			<string>GeoCoordinate structure parameters</string>
 			<key>match</key>
-			<string>\b(?&lt;=\:)(?i:(lat|lng|distance|terrainheight|heading|bearing|(altitude)?position))\b</string>
+			<string>\b(?&lt;=\:)(?i:(lat|lng|distance|terrainheight|heading|bearing|position|velocity))\b</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>GeoCoordinate methods</string>
+			<key>match</key>
+			<string>\b(?&lt;=\:)(?i:(latlng|altitude(posistion|velocity)))\b</string>
+			<key>name</key>
+			<string>support.function.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Connection Structures</string>
+			<key>match</key>
+			<string>\b(?i:(connection|message(s)|queue))(?=\:|\s)\b</string>
+			<key>name</key>
+			<string>constant.language.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Connection Structures as parameters</string>
+			<key>match</key>
+			<string>\b(?i:(?&lt;=\:)(connection|message(s)|queue))\b</string>
+			<key>name</key>
+			<string>constant.variable.parameter.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Connection structure parameters</string>
+			<key>match</key>
+			<string>\b(?i:(isconnected|delay|destination))\b</string>
+			<key>name</key>
+			<string>support.parameter.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Message and MessageQueue structure parameters</string>
+			<key>match</key>
+			<string>\b(?i:((sent|received)at|(has)?sender|content|empty|length))\b</string>
+			<key>name</key>
+			<string>support.parameter.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Message and MessageQueue methods</string>
+			<key>match</key>
+			<string>\b(?i:(?&lt;=\:)(sendmessage|pop|peek|clear|push))\b</string>
+			<key>name</key>
+			<string>support.function.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>ScienceData structure parameters</string>
+			<key>match</key>
+			<string>\b(?i:(?&lt;=sciencedata\:)(title|(science|transmit)value|dataamount))\b</string>
+			<key>name</key>
+			<string>variable.parameter.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>ScienceExperimentModule structure parameters</string>
+			<key>match</key>
+			<string>\b(?i:(?&lt;=scienceexperimentmodule\:)((inoper|rerunn)able|deployed|(has)?data))\b</string>
+			<key>name</key>
+			<string>variable.parameter.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>ScienceExperimentModule methods</string>
+			<key>match</key>
+			<string>\b(?i:(?&lt;=scienceexperimentmodule\:)(deploy|reset|transmit|dump))\b</string>
+			<key>name</key>
+			<string>support.function.kos</string>
 		</dict>
 	</array>
 	<key>scopeName</key>
