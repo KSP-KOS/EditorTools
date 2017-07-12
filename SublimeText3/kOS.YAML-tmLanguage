@@ -51,7 +51,7 @@ patterns:
   comment: boolean operators
 
 - name: keyword.operator.assignment.kos
-  match: \b(?i:(declare|parameter|local|global|set|to|is|\=|@lazyglobal))\b
+  match: \b(?i:(declare|local|global|parameter|set|to|is|\=))\b
   comment: assignment operators and directives
 
 - name: keyword.operator.comparison.kos
@@ -67,7 +67,7 @@ patterns:
   comment: other keywords...
 
 
-# -------------------------------User Functions--------------------------------
+# ----------------------------------Functions----------------------------------
 - name: support.function.kos
   match: \b(?i:(function))(?=\s)
   comment: user defined function declaration
@@ -84,9 +84,17 @@ patterns:
   match: (?i:(\w+)(?=@))
   comment: delegate function-name identifier
 
+- name: constant.language.kos
+  match: (?i:(?<=@)lazyglobal)\b
+  comment: lazyglobal directive
+
 - name: keyword.other.kos
-  match: (?i:(?<=\w)(@))
-  comment: delegate tag; working on using captures with above
+  match: (?i:((?<=\w)@)|@(?=lazyglobal))
+  comment: Directive and delegate tag identifier
+
+- name: variable.parameter.kos
+  match: \b(?i:(?<=parameter\s)(\w).*(?=\.))
+  comment: Function parameter variables (single line parameters only)
 
 
 # --------------------Mathematical Functions and Constants---------------------
@@ -198,7 +206,7 @@ patterns:
 
 #CORE
 - name: constant.language.kos
-  match: \b(?i:(part|vessel|engines|ship|(has)?target|alt|eta|time(span)?|(wheel)?(throttle|steering)|encounter|science(data|experimentmodule)|vector|direction|pidloop))(?=\:|\s)\b
+  match: \b(?<!\:)(?<!\:)(?i:(part|vessel|engines|ship|(has)?target|alt|eta|time(span)?|(wheel)?(throttle|steering)|encounter|science(data|experimentmodule)|vector|direction|pidloop))(?=\:|\s)\b
   comment: Core bound variables and structures
 
 - name: constant.language.kos
@@ -225,7 +233,6 @@ patterns:
   match: \b(?i:(?<=\:)(reset|update))\b
   comment: PIDLoop methods
 
-
 #GENERAL 
 - name: constant.language.kos
   match: \b(?<!\:)(?i:(bodies|targets|resources|parts|engines|sensors|elements|dockingports))(?=\()\b
@@ -248,7 +255,6 @@ patterns:
   comment: PartModule methods
 
 #SENSORS
-
 - name: variable.parameter.kos
   match: \b(?<=\:)(?i:(active|type|display|powerconsumption))\b
   comment: SENSOR structure parameters
@@ -298,7 +304,6 @@ patterns:
 - name: variable.parameter.kos
   match: \b(?i:((?<=time\:)|(?<=timespan\:))(clock|calendar|year|day|hour|minute|seconds))\b
   comment: TIME/TimeSpan parameters
-
 
 #NODES AND WAYPOINTS
 - name: constant.language.kos
@@ -388,7 +393,6 @@ patterns:
   match: \b(?i:(?<=\:)(sendmessage|pop|peek|clear|push))\b
   comment: Message and MessageQueue methods
 
-
 #SCIENCE
 - name: variable.parameter.kos
   match: \b(?i:(?<=sciencedata\:)(title|(science|transmit)value|dataamount))\b
@@ -403,3 +407,4 @@ patterns:
   comment: ScienceExperimentModule methods
 
 ...
+

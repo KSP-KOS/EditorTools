@@ -94,7 +94,7 @@
 			<key>comment</key>
 			<string>assignment operators and directives</string>
 			<key>match</key>
-			<string>\b(?i:(declare|parameter|local|global|set|to|is|\=|@lazyglobal))\b</string>
+			<string>\b(?i:(declare|local|global|parameter|set|to|is|\=))\b</string>
 			<key>name</key>
 			<string>keyword.operator.assignment.kos</string>
 		</dict>
@@ -156,11 +156,27 @@
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>delegate tag; working on using captures with above</string>
+			<string>lazyglobal directive</string>
 			<key>match</key>
-			<string>(?i:(?&lt;=\w)(@))</string>
+			<string>(?i:(?&lt;=@)lazyglobal)\b</string>
+			<key>name</key>
+			<string>constant.language.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Directive and delegate tag identifier</string>
+			<key>match</key>
+			<string>(?i:((?&lt;=\w)@)|@(?=lazyglobal))</string>
 			<key>name</key>
 			<string>keyword.other.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Function parameter variables (single line parameters only)</string>
+			<key>match</key>
+			<string>\b(?i:(?&lt;=parameter\s)(\w).*(?=\.))</string>
+			<key>name</key>
+			<string>variable.parameter.kos</string>
 		</dict>
 		<dict>
 			<key>comment</key>
@@ -350,7 +366,7 @@
 			<key>comment</key>
 			<string>Core bound variables and structures</string>
 			<key>match</key>
-			<string>\b(?i:(part|vessel|engines|ship|(has)?target|alt|eta|time(span)?|(wheel)?(throttle|steering)|encounter|science(data|experimentmodule)|vector|direction|pidloop))(?=\:|\s)\b</string>
+			<string>\b(?&lt;!\:)(?&lt;!\:)(?i:(part|vessel|engines|ship|(has)?target|alt|eta|time(span)?|(wheel)?(throttle|steering)|encounter|science(data|experimentmodule)|vector|direction|pidloop))(?=\:|\s)\b</string>
 			<key>name</key>
 			<string>constant.language.kos</string>
 		</dict>
