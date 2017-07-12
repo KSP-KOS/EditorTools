@@ -33,7 +33,7 @@ A summary of features and updates to the kOS syntax for ST3 are highlighted here
     - Action Groups 0-250 are now supported; anything outside that range won't be highlighted.
 
   - Comment Toggling
-    - The keyboard shortcut for toggling comments (Default: `CTRL + \`) now works with all `.ks` files.  
+    - The keyboard shortcut for toggling comments (Default: `CTRL + /`) now works with all `.ks` files.  
 
 
 **Upcoming/Ongoing Changes Include**:
@@ -78,7 +78,7 @@ The following items in this section represent support for structures, parameters
 
 ### Customization
 
-If you wish to make alternations or additions to the definition, you can use [PackageDev](https://github.com/SublimeText/PackageDev) along with the `kOS.YAML-tmlLanguage` file to create your own version. While you can edit the `.tmlLanguage` file directly and skip the PackageDev route, the `YAML-tmlLanguage` file is more readable, and easier to manipulate.
+If you wish to make alternations or additions to the definition, you can use [PackageDev](https://github.com/SublimeText/PackageDev) along with the `kOS.YAML-tmlLanguage` file to create your own version. While you can edit the `.tmlLanguage` file directly and skip the PackageDev route, the `.YAML-tmlLanguage` file is more readable, and easier to manipulate.
 
 An overview of creating syntax definitions in Sublime Text can be [found here](http://docs.sublimetext.info/en/latest/extensibility/syntaxdefs.html).
 
