@@ -1,9 +1,9 @@
 package ksp.kos.ideaplugin.psi;
 
 import com.intellij.psi.PsiElement;
-import ksp.kos.ideaplugin.reference.NamedType;
 import ksp.kos.ideaplugin.reference.ReferenceType;
-import ksp.kos.ideaplugin.reference.SuffixtermType;
+import ksp.kos.ideaplugin.reference.OccurrenceType;
+import ksp.kos.ideaplugin.reference.ReferableType;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -16,55 +16,55 @@ import java.util.List;
 public class KerboScriptPsiWalker extends KerboScriptVisitor {
     @Override
     public void visitScope(@NotNull KerboScriptScope o) {
-        o.clearCache();
+        o.getCachedScope().clear();
         super.visitScope(o);
     }
 
     @Override
     public void visitRunStmt(@NotNull KerboScriptRunStmt o) {
-        o.setType(new NamedType(SuffixtermType.FILE, ReferenceType.REFERENCE));
+        o.setType(new ReferenceType(ReferableType.FILE, OccurrenceType.REFERENCE));
         super.visitRunStmt(o);
     }
 
     @Override
     public void visitDeclareFunctionClause(@NotNull KerboScriptDeclareFunctionClause o) {
-        o.setType(new NamedType(SuffixtermType.FUNCTION, ReferenceType.LOCAL));
+        o.setType(new ReferenceType(ReferableType.FUNCTION, OccurrenceType.LOCAL));
         super.visitDeclareFunctionClause(o);
     }
 
     @Override
     public void visitDeclareIdentifierClause(@NotNull KerboScriptDeclareIdentifierClause o) {
-        o.setType(new NamedType(SuffixtermType.VARIABLE, ReferenceType.LOCAL));
+        o.setType(new ReferenceType(ReferableType.VARIABLE, OccurrenceType.LOCAL));
         super.visitDeclareIdentifierClause(o);
     }
 
     @Override
     public void visitDeclareParameterClause(@NotNull KerboScriptDeclareParameterClause o) {
-        o.setType(new NamedType(SuffixtermType.VARIABLE, ReferenceType.LOCAL));
+        o.setType(new ReferenceType(ReferableType.VARIABLE, OccurrenceType.LOCAL));
         super.visitDeclareParameterClause(o);
     }
 
     @Override
     public void visitAtom(@NotNull KerboScriptAtom o) {
         if (o.getNode().findChildByType(KerboScriptTypes.IDENTIFIER) == null) {
-            o.setType(new NamedType(SuffixtermType.OTHER, ReferenceType.NONE));
+            o.setType(new ReferenceType(ReferableType.OTHER, OccurrenceType.NONE));
         } else {
             PsiElement parent = o.getParent();
             if (parent instanceof KerboScriptSuffixterm) { // function, array, method
                 if (parent.getParent() instanceof KerboScriptSuffixTrailer) { // method or array-field
-                    o.setType(new NamedType(
-                            isFunction((KerboScriptSuffixterm) parent) ? SuffixtermType.METHOD : SuffixtermType.FIELD,
-                            ReferenceType.REFERENCE));
+                    o.setType(new ReferenceType(
+                            isFunction((KerboScriptSuffixterm) parent) ? ReferableType.METHOD : ReferableType.FIELD,
+                            OccurrenceType.REFERENCE));
                 } else { // function or array
-                    o.setType(new NamedType(
-                            isFunction((KerboScriptSuffixterm) parent) ? SuffixtermType.FUNCTION : SuffixtermType.VARIABLE,
-                            ReferenceType.REFERENCE));
+                    o.setType(new ReferenceType(
+                            isFunction((KerboScriptSuffixterm) parent) ? ReferableType.FUNCTION : ReferableType.VARIABLE,
+                            OccurrenceType.REFERENCE));
                 }
             } else { // variable or field
                 if (parent instanceof KerboScriptSuffixTrailer) { // field
-                    o.setType(new NamedType(SuffixtermType.FIELD, ReferenceType.REFERENCE));
+                    o.setType(new ReferenceType(ReferableType.FIELD, OccurrenceType.REFERENCE));
                 } else { // variable
-                    o.setType(new NamedType(SuffixtermType.VARIABLE, ReferenceType.REFERENCE));
+                    o.setType(new ReferenceType(ReferableType.VARIABLE, OccurrenceType.REFERENCE));
                 }
             }
         }

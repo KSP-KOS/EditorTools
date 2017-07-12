@@ -43,12 +43,13 @@ public class KerboScriptFindUsagesProvider implements FindUsagesProvider {
     public String getType(@NotNull PsiElement element) {
         if (element instanceof KerboScriptNamedElementImpl) {
             KerboScriptNamedElementImpl kerboScriptElement = (KerboScriptNamedElementImpl) element;
-            if (kerboScriptElement.isFunction()) {
-                return "function";
-            } else if (kerboScriptElement.isVariable()) {
-                return "variable";
-            } else if (kerboScriptElement.isFile()) {
-                return "script";
+            switch (kerboScriptElement.getReferableType()) {
+                case FUNCTION:
+                    return "function";
+                case VARIABLE:
+                    return "variable";
+                case FILE:
+                    return "script";
             }
         }
         return "";

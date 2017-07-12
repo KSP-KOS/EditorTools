@@ -1,16 +1,37 @@
 <idea-plugin version="2" url="https://github.com/KSP-KOS/EditorTools/tree/develop/IDEA">
     <id>kos-ksp.idea-plugin</id>
     <name>KerboScript(kOS)</name>
-    <version>1.0.2</version>
+    <version>1.0.5</version>
     <vendor email="ynicorn@gmail.com" url="https://github.com/valery-labuzhsky">Valery Labuzhsky
     </vendor>
 
     <description><![CDATA[
 This plugin enables support for kOS KerboScript in IntelliJ IDEA IDE.<br/>
-kOS version supported: 0.18.2
+kOS version supported: 1.0.0
     ]]></description>
 
     <change-notes><![CDATA[
+  <strong>Changes in version 1.0.5:</strong>
+<ul>
+    <li>Support of kOS 1.0.0</li>
+</ul>
+
+  <strong>Changes in version 1.0.4:</strong>
+<ul>
+    <li>Support of IDEA 162</li>
+    <li>Support of kOS 0.20.1</li>
+    <li>Differentiate a function</li>
+    <li>Bugfixes</li>
+</ul>
+
+  <strong>Changes in version 1.0.3:</strong>
+<ul>
+    <li>Support of kOS 0.19.0</li>
+    <li>Base formatting</li>
+    <li>Refactoring: inline variable, differentiate, simplify</li>
+    <li>Bugfix</li>
+</ul>
+
   <strong>Changes in version 1.0.2:</strong>
 <ul>
     <li>Stateful lexer allows keywords as identifiers</li>
@@ -31,7 +52,7 @@ kOS version supported: 0.18.2
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="141.0"/>
+    <idea-version since-build="162.0"/>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
@@ -48,11 +69,26 @@ kOS version supported: 0.18.2
         <lang.refactoringSupport language="KerboScript"
                                  implementationClass="ksp.kos.ideaplugin.KerboScriptRefactoringSupportProvider"/>
         <lang.findUsagesProvider language="KerboScript" implementationClass="ksp.kos.ideaplugin.KerboScriptFindUsagesProvider"/>
+        <lang.formatter language="KerboScript" implementationClass="ksp.kos.ideaplugin.format.KerboScriptFormattingModelBuilder"/>
         <problemFileHighlightFilter implementation="ksp.kos.ideaplugin.KerboScriptHighlightFilter"/>
+        <refactoring.inlineHandler language="KerboScript" implementationClass="ksp.kos.ideaplugin.refactoring.VirtualCheckInlineHandler"/>
+        <refactoring.inlineHandler language="KerboScript" implementationClass="ksp.kos.ideaplugin.refactoring.VariableInlineHandler"/>
+        <refactoring.inlineHandler language="KerboScript" implementationClass="ksp.kos.ideaplugin.refactoring.FunctionInlineHandler"/>
+        <refactoring.inlineHandler language="KerboScript" implementationClass="ksp.kos.ideaplugin.refactoring.NotSupportedInlineHandler"/>
     </extensions>
 
     <actions>
         <!-- Add your actions here -->
+        <action id="ksp.kos.ideaplugin.actions.differentiate.Differentiate" class="ksp.kos.ideaplugin.actions.differentiate.Differentiate"
+                text="Differentiate..." description="Compute a derivative">
+            <add-to-group group-id="RefactoringMenu4" anchor="last"/>
+            <keyboard-shortcut first-keystroke="control alt D" keymap="$default"/>
+        </action>
+        <action id="ksp.kos.ideaplugin.actions.Simplify" class="ksp.kos.ideaplugin.actions.Simplify" text="Simplify..."
+                description="Simplifies expression">
+            <add-to-group group-id="RefactoringMenu4" anchor="last"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl S"/>
+        </action>
     </actions>
 
 </idea-plugin>

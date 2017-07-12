@@ -5,19 +5,20 @@ package ksp.kos.ideaplugin.reference;
  *
  * @author ptasha
  */
-public enum ReferenceType {
-    LOCAL(true),
-    GLOBAL(true),
-    REFERENCE(false),
-    NONE(false);
+public class ReferenceType {
+    private final ReferableType type;
+    private final OccurrenceType occurrenceType;
 
-    private final boolean decaration;
-
-    ReferenceType(boolean decaration) {
-        this.decaration = decaration;
+    public ReferenceType(ReferableType type, OccurrenceType occurrenceType) {
+        this.type = type;
+        this.occurrenceType = occurrenceType;
     }
 
-    public boolean isDecaration() {
-        return decaration;
+    public ReferableType getType() {
+        return type;
+    }
+
+    public OccurrenceType getOccurrenceType() {
+        return occurrenceType;
     }
 }
