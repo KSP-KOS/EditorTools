@@ -1,4 +1,4 @@
-# [vim-kerboscript](https://github.com/tomvanderlee/vim-kerboscript)
+# kerboscript.vim
 
 Syntax highlighting for kerboscript.
 
