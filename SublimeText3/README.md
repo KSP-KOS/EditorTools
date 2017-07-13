@@ -12,7 +12,7 @@ Download the `kOS.tmlLanguage` and `kOS.tmlPreferences` files, and place them in
 
 If you just want the path information, you can find the default Packages directory for Windows, Linux, and OSX [here](https://www.sublimetext.com/docs/3/revert.html)
 
-The `kOS.YAML-tmlLanguage` is not needed for the syntax definition to work; it's only used to build the final `.tmlLanguage` file.  It can also be used to change any of the syntax highlighting to suit your own preferences.  Additional details can be found in the [Customization](https://github.com/jim-hart/EditorTools/tree/develop/SublimeText3#customizations) section.
+Those looking to modify the syntax definition to suit their preferences can find more information in the [Customization](https://github.com/KSP-KOS/EditorTools/tree/develop/SublimeText3#customizations) section.
 
 ## Supported Features
 
@@ -63,22 +63,22 @@ The following items in this section represent support for structures, parameters
 
 ## Examples
 > Monokai
-![Monokai](https://github.com/jim-hart/EditorTools/blob/develop/SublimeText3/ExampleImages/MonokaiSnippet.png)
+![Monokai](https://github.com/KSP-KOS/EditorTools/blob/develop/SublimeText3/ExampleImages/MonokaiSnippet.png)
 
 > Solarized Dark
-![Solarized Dark](https://github.com/jim-hart/EditorTools/blob/develop/SublimeText3/ExampleImages/SolarizedDarkSnippet.png)
+![Solarized Dark](https://github.com/KSP-KOS/EditorTools/blob/develop/SublimeText3/ExampleImages/SolarizedDarkSnippet.png)
 
 > Solarized Light
-![Solarized Light](https://github.com/jim-hart/EditorTools/blob/develop/SublimeText3/ExampleImages/SolarizedLightSnippet.png)
+![Solarized Light](https://github.com/KSP-KOS/EditorTools/blob/develop/SublimeText3/ExampleImages/SolarizedLightSnippet.png)
 
 > Twilight
-![Twilight](https://github.com/jim-hart/EditorTools/blob/develop/SublimeText3/ExampleImages/TwilightSnippet.png)
+![Twilight](https://github.com/KSP-KOS/EditorTools/blob/develop/SublimeText3/ExampleImages/TwilightSnippet.png)
 
 ---
 
 ### Customization
 
-If you wish to make alternations or additions to the definition, you can use [PackageDev](https://github.com/SublimeText/PackageDev) along with the `kOS.YAML-tmlLanguage` file to create your own version. While you can edit the `.tmlLanguage` file directly and skip the PackageDev route, the `.YAML-tmlLanguage` file is more readable, and easier to manipulate.
+If you wish to make alternations or additions to the definition, you can use [PackageDev](https://github.com/SublimeText/PackageDev) along with the `kOS.YAML-tmlLanguage` file in the [src directory](https://github.com/KSP-KOS/EditorTools/blob/develop/SublimeText3/src) to create your own version. While you can edit the `.tmlLanguage` file directly and skip the PackageDev route, the `.YAML-tmlLanguage` file is more readable, and easier to manipulate.
 
 An overview of creating syntax definitions in Sublime Text can be [found here](http://docs.sublimetext.info/en/latest/extensibility/syntaxdefs.html).
 
