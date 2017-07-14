@@ -68,14 +68,6 @@
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>basic collections when used as functions</string>
-			<key>match</key>
-			<string>\b(?i:(list|range))(?=\()\b</string>
-			<key>name</key>
-			<string>support.function.kos</string>
-		</dict>
-		<dict>
-			<key>comment</key>
 			<string>flow control (statements)</string>
 			<key>match</key>
 			<string>\b(?i:(break|preserve|do|wait|step|return))\b</string>
@@ -118,7 +110,7 @@
 			<key>comment</key>
 			<string>other keywords...</string>
 			<key>match</key>
-			<string>\b(?i:(at|in|all|list|range|print))\b</string>
+			<string>\b(?i:(at|in|all|list|range|print))(?!\:)\b</string>
 			<key>name</key>
 			<string>keyword.other.kos</string>
 		</dict>
@@ -177,6 +169,94 @@
 			<string>\b(?i:(?&lt;=parameter\s)(\w).*(?=\.))</string>
 			<key>name</key>
 			<string>variable.parameter.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>basic collections when used as functions</string>
+			<key>match</key>
+			<string>\b(?i:(list|range|lexicon|queue|stack|uniqueset))(?=\()\b</string>
+			<key>name</key>
+			<string>support.function.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>basic collections when used as structures</string>
+			<key>match</key>
+			<string>\b(?i:(list|range|lexicon|queue|stack|uniqueset))(?=\:)\b</string>
+			<key>name</key>
+			<string>constant.language.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>List, Queue, Stack, and UniqueSet parameter</string>
+			<key>match</key>
+			<string>\b(?&lt;=\:)(?i:(copy))\b</string>
+			<key>name</key>
+			<string>variable.parameter.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Enumerable parameters</string>
+			<key>match</key>
+			<string>\b(?&lt;=\:)(?i:((reverse)?iterator|length|empty|dump))\b</string>
+			<key>name</key>
+			<string>variable.parameter.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Iterator parameters</string>
+			<key>match</key>
+			<string>\b(?&lt;=\:)(?i:(atend|index|value))\b</string>
+			<key>name</key>
+			<string>variable.parameter.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Iterator(next) and Enumerable(contains) methods</string>
+			<key>match</key>
+			<string>\b(?i:(next|contains))(?=\()?\b</string>
+			<key>name</key>
+			<string>support.function.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Lexicon parameters</string>
+			<key>match</key>
+			<string>\b(?&lt;=\:)(?i:(case(sensitive)?|length|dump|keys|values))\b</string>
+			<key>name</key>
+			<string>variable.parameter.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Lexicon methods</string>
+			<key>match</key>
+			<string>\b(?&lt;=\:)(?i:(add|remove|clear|copy|has(key|value)))\b</string>
+			<key>name</key>
+			<string>support.function.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>List methods</string>
+			<key>match</key>
+			<string>\b(?&lt;=\:)(?i:(add|insert|remove|clear|sublist|join))\b</string>
+			<key>name</key>
+			<string>support.function.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>Queue and Stack methods</string>
+			<key>match</key>
+			<string>\b(?&lt;=\:)(?i:(push|pop|peek|clear))\b</string>
+			<key>name</key>
+			<string>support.function.kos</string>
+		</dict>
+		<dict>
+			<key>comment</key>
+			<string>UniqueSet methods</string>
+			<key>match</key>
+			<string>\b(?&lt;=\:)(?i:(add|remove|clear))\b</string>
+			<key>name</key>
+			<string>support.function.kos</string>
 		</dict>
 		<dict>
 			<key>comment</key>
@@ -688,7 +768,7 @@
 			<key>match</key>
 			<string>\b(?i:(isconnected|delay|destination))\b</string>
 			<key>name</key>
-			<string>support.parameter.kos</string>
+			<string>variable.parameter.kos</string>
 		</dict>
 		<dict>
 			<key>comment</key>
@@ -696,7 +776,7 @@
 			<key>match</key>
 			<string>\b(?i:((sent|received)at|(has)?sender|content|empty|length))\b</string>
 			<key>name</key>
-			<string>support.parameter.kos</string>
+			<string>variable.parameter.kos</string>
 		</dict>
 		<dict>
 			<key>comment</key>
