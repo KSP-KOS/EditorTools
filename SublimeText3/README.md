@@ -60,6 +60,8 @@ The following items in this section represent support for structures, parameters
   - [PIDLoop](https://ksp-kos.github.io/KOS/structures/misc/pidloop.html)
   - [TimeSpan](https://ksp-kos.github.io/KOS/structures/misc/time.html)
     - TIME support added as well
+  - [All Collections](http://ksp-kos.github.io/KOS_DOC/structures/collections.html)
+    - Structures, Methods, and Parameters
 
 ## Examples
 > Monokai
