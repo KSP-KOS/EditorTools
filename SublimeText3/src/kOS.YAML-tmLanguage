@@ -38,10 +38,6 @@ patterns:
   match: \b(?i:(for|until|from))\b
   comment: flow control (loops)
 
-- name: support.function.kos
-  match: \b(?i:(list|range))(?=\()\b
-  comment: basic collections when used as functions
-
 - name: keyword.control.statement.kos
   match: \b(?i:(break|preserve|do|wait|step|return))\b
   comment: flow control (statements)
@@ -63,7 +59,7 @@ patterns:
   comment: arithmetic operator
 
 - name: keyword.other.kos
-  match: \b(?i:(at|in|all|list|range|print))\b
+  match: \b(?i:(at|in|all|list|range|print))(?!\:)\b
   comment: other keywords...
 
 
@@ -95,6 +91,60 @@ patterns:
 - name: variable.parameter.kos
   match: \b(?i:(?<=parameter\s)(\w).*(?=\.))
   comment: Function parameter variables (single line parameters only)
+
+
+# ---------------------------------Collections---------------------------------
+
+#GENERAL
+- name: support.function.kos
+  match: \b(?i:(list|range|lexicon|queue|stack|uniqueset))(?=\()\b
+  comment: basic collections when used as functions
+
+- name: constant.language.kos
+  match: \b(?i:(list|range|lexicon|queue|stack|uniqueset))(?=\:)\b
+  comment: basic collections when used as structures
+
+- name: variable.parameter.kos
+  match: \b(?<=\:)(?i:(copy))\b
+  comment: List, Queue, Stack, and UniqueSet parameter
+
+#Enumerable
+- name: variable.parameter.kos
+  match: \b(?<=\:)(?i:((reverse)?iterator|length|empty|dump))\b
+  comment: Enumerable parameters
+
+#Iterator
+- name: variable.parameter.kos
+  match: \b(?<=\:)(?i:(atend|index|value))\b
+  comment: Iterator parameters
+
+- name: support.function.kos
+  match: \b(?i:(next|contains))(?=\()?\b
+  comment: Iterator(next) and Enumerable(contains) methods
+
+#Lexicon
+- name: variable.parameter.kos
+  match: \b(?<=\:)(?i:(case(sensitive)?|length|dump|keys|values))\b
+  comment: Lexicon parameters
+
+- name: support.function.kos
+  match: \b(?<=\:)(?i:(add|remove|clear|copy|has(key|value)))\b
+  comment: Lexicon methods
+
+#List
+- name: support.function.kos
+  match: \b(?<=\:)(?i:(add|insert|remove|clear|sublist|join))\b
+  comment: List methods
+
+#Queue and Stack
+- name: support.function.kos
+  match: \b(?<=\:)(?i:(push|pop|peek|clear))\b
+  comment: Queue and Stack methods
+
+#UniqueSet
+- name: support.function.kos
+  match: \b(?<=\:)(?i:(add|remove|clear))\b
+  comment: UniqueSet methods
 
 
 # --------------------Mathematical Functions and Constants---------------------
@@ -381,11 +431,11 @@ patterns:
   match: \b(?i:(?<=\:)(connection|message(s)|queue))\b
   comment: Connection Structures as parameters
 
-- name: support.parameter.kos
+- name: variable.parameter.kos
   match: \b(?i:(isconnected|delay|destination))\b
   comment: Connection structure parameters
 
-- name: support.parameter.kos
+- name: variable.parameter.kos
   match: \b(?i:((sent|received)at|(has)?sender|content|empty|length))\b
   comment: Message and MessageQueue structure parameters
 
