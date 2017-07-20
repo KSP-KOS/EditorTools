@@ -1,4 +1,4 @@
-# [vim-kerboscript](https://github.com/tomvanderlee/vim-kerboscript)
+# kerboscript.vim
 
 Syntax highlighting for kerboscript.
 
@@ -6,17 +6,22 @@ Syntax highlighting for kerboscript.
 
 I recommend using a plugin manager like [pathogen](https://github.com/tpope/vim-pathogen) or [vundle](https://github.com/gmarik/Vundle.vim) to install kerboscript.vim.
 
-### Pathogen
+### With Pathogen 
 
-In ~/.vim/bundle clone git://github.com/tomvanderlee/vim-kerboscript.git
+In ~/.vim/bundle download the VIM subdirectory with svn
 
     cd ~/.vim/bundle
-    git clone git://github.com/tomvanderlee/vim-kerboscript.git
+    svn export https://github.com/KSP-KOS/EditorTools/trunk/VIM/vim-kerboscript
 
-### Vundle
+### With Vundle
 
-Add tomvanderlee/vim-kerboscript to your `.vimrc`
+Add VIM/vim-kerboscript to your `.vimrc`
 
-    Plugin 'tomvanderlee/vim-kerboscript'
+    Plugin 'VIM/vim-kerboscript'
 
 Launch `vim` and run `:PluginInstall`
+
+#### Attribution
+
+Author: [Tom Vanderlee](https://github.com/tomvanderlee)
+

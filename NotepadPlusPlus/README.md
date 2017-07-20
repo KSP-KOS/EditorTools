@@ -7,18 +7,17 @@ Current kOS version supported: 0.18.2
 
 *****
 
-###Previews:
+### Previews:
 
 **Style: Frozen**
-
-![Kerboscript - Frozen](https://github.com/KSP-KOS/EditorTools/blob/npp-0.18.2/NotepadPlusPlus/preview/kerboscript_frozen.png "Kerboscript - Frozen")
+![Kerboscript - Frozen](https://github.com/KSP-KOS/EditorTools/blob/develop/NotepadPlusPlus/preview/kerboscript_frozen.png)
 
 **Style: Monokai**
-![Kerboscript - Monokai](https://github.com/KSP-KOS/EditorTools/blob/npp-0.18.2/NotepadPlusPlus/preview/kerboscript_monokai.png "Kerboscript - Monokai")
+![Kerboscript - Monokai](https://github.com/KSP-KOS/EditorTools/blob/develop/NotepadPlusPlus/preview/kerboscript_monokai.png)
 
 *****
 
-###Installation
+### Installation
 
 * Download `KerboScript_[style].xml` to a directory of your choice.
 * Open N++, then go to the **Language** menu
