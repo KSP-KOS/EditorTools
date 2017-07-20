@@ -7,7 +7,7 @@ Current kOS version supported: 0.18.2
 
 *****
 
-###Previews:
+### Previews:
 
 **Style: Frozen**
 ![Kerboscript - Frozen](https://github.com/KSP-KOS/EditorTools/blob/develop/NotepadPlusPlus/preview/kerboscript_frozen.png)
@@ -17,7 +17,7 @@ Current kOS version supported: 0.18.2
 
 *****
 
-###Installation
+### Installation
 
 * Download `KerboScript_[style].xml` to a directory of your choice.
 * Open N++, then go to the **Language** menu
