@@ -4,6 +4,8 @@ import com.intellij.lang.ASTNode;
 import ksp.kos.ideaplugin.psi.KerboScriptNumber;
 import ksp.kos.ideaplugin.psi.KerboScriptSciNumber;
 import ksp.kos.ideaplugin.psi.KerboScriptTypes;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.function.BiFunction;
@@ -40,7 +42,9 @@ public class Number extends Atom {
     }
 
     private Number(int number, int point, int e) {
-        if (number < 0) throw new IllegalArgumentException("Negative numbers are not allowed");
+        if (number < 0) {
+            throw new IllegalArgumentException("Negative numbers are not allowed");
+        }
         this.number = number;
         this.point = point;
         this.e = e;
@@ -77,6 +81,18 @@ public class Number extends Atom {
         return psiE == null ? 0 : sign * Integer.parseInt(psiE.getText());
     }
 
+    public int getNumber() {
+        return number;
+    }
+
+    public int getPoint() {
+        return point;
+    }
+
+    public int getE() {
+        return e;
+    }
+
     @Override
     public String getText() {
         String text = "";
@@ -100,29 +116,19 @@ public class Number extends Atom {
     }
 
     @Override
-    public Expression plus(Expression expression) {
+    @Nullable
+    public Expression simplePlus(Expression expression) {
         if (number == 0) {
             return expression;
         } else if (expression instanceof Number) {
-            Expression result = addition((Number) expression, (x, y) -> x + y);
-            if (result != null) {
-                return result;
+            return addition((Number) expression, (x, y) -> x + y);
+        } else if (expression instanceof Element) {
+            Element element = (Element) expression;
+            if (element.getPower().equals(Number.ONE) && element.getAtom() instanceof Number) {
+                return addition((Number) element.getAtom(), (x, y) -> x + element.getSign()*y);
             }
         }
-        return super.plus(expression);
-    }
-
-    @Override
-    public Expression minus(Expression expression) {
-        if (number == 0) {
-            return expression.minus();
-        } else if (expression instanceof Number) {
-            Expression result = addition((Number) expression, (x, y) -> x - y);
-            if (result != null) {
-                return result;
-            }
-        }
-        return super.minus(expression);
+        return null;
     }
 
     private Expression addition(Number number, BiFunction<Integer, Integer, Integer> function) {
@@ -163,11 +169,25 @@ public class Number extends Atom {
     }
 
     @Override
-    public Expression divide(Expression expression) {
+    @Nullable
+    public Expression simpleDivide(Expression expression) {
         if (number == 0) {
             return ZERO;
+        } else if (expression instanceof Number) {
+            if (expression.equals(ONE)) {
+                return this;
+            }
+            Number number = (Number) expression;
+            if (this.number%number.number==0) {
+                return create(this.number/number.number, this.point - number.point, this.e - number.e);
+            } else {
+                Number root = root(this, expression);
+                if (!root.equals(Number.ONE)) {
+                    return this.divide(root).divide(expression.divide(root));
+                }
+            }
         }
-        return super.divide(expression);
+        return super.simpleDivide(expression);
     }
 
     @Override
@@ -176,8 +196,13 @@ public class Number extends Atom {
     }
 
     @Override
-    public Expression differentiate() {
+    public Expression differentiate(LocalContext context) {
         return Number.ZERO;
+    }
+
+    @Override
+    public boolean isNumber() {
+        return true;
     }
 
     @Override
@@ -199,5 +224,43 @@ public class Number extends Atom {
 
     public double doubleValue() {
         return number * Math.pow(10, e - point);
+    }
+
+    public static Number root(Expression n1, Expression n2) {
+        return root(getNumber(n1), getNumber(n2));
+    }
+
+    private static Number getNumber(Expression expression) {
+        if (expression instanceof Number) {
+            return (Number) expression;
+        } else if (expression instanceof Element) {
+            Element element = (Element) expression;
+            if (element.isNumber()) {
+                return (Number) element.getAtom();
+            }
+        }
+        return Number.ONE;
+    }
+
+    private static final int[] SIMPLE_NUMBERS = new int[]{2, 3, 5, 7};
+
+    public static Number root(Number n1, Number n2) {
+        if (n1.number%n2.number==0) {
+            return n2;
+        } else if (n2.number%n1.number==0) {
+            return n1;
+        } else {
+            int root = 1;
+            int nn1 = n1.number;
+            int nn2 = n2.number;
+            for (int simple : SIMPLE_NUMBERS) {
+                while (nn1%simple==0 && nn2%simple==0) {
+                    root*=simple;
+                    nn1/=simple;
+                    nn2/=simple;
+                }
+            }
+            return new Number(root);
+        }
     }
 }

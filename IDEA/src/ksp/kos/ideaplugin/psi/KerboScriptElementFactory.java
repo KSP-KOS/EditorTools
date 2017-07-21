@@ -43,7 +43,7 @@ public class KerboScriptElementFactory {
         if (child instanceof KerboScriptInstruction) {
             return ((KerboScriptInstruction) child);
         } else {
-            throw new RuntimeException(text+" is not instruction");
+            throw new IllegalArgumentException(text+" is not instruction");
         }
     }
 

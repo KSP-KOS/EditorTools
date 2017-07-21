@@ -4,8 +4,11 @@ import ksp.kos.ideaplugin.KerboScriptFile;
 import ksp.kos.ideaplugin.psi.KerboScriptDirective;
 import ksp.kos.ideaplugin.psi.KerboScriptInstruction;
 import ksp.kos.ideaplugin.psi.KerboScriptRunStmt;
-import ksp.kos.ideaplugin.reference.LocalScope;
+import ksp.kos.ideaplugin.reference.context.Duality;
+import ksp.kos.ideaplugin.reference.context.PsiDuality;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Map;
 
 /**
  * Created on 09/04/16.
@@ -17,7 +20,7 @@ public class ImportFlowImporter extends FlowImporter<ImportFlow> {
 
     @NotNull
     @Override
-    protected LocalScope.ScopeMap getMap(KerboScriptFile file) {
+    protected Map<String, Duality> getMap(KerboScriptFile file) {
         return file.getCachedScope().getImports();
     }
 
@@ -40,10 +43,10 @@ public class ImportFlowImporter extends FlowImporter<ImportFlow> {
     }
 
     @Override
-    protected KerboScriptInstruction importFlow(KerboScriptFile file, ImportFlow flow, LocalScope.ScopeMap map) {
+    protected KerboScriptInstruction importFlow(KerboScriptFile file, ImportFlow flow, Map<String, Duality> map) {
         KerboScriptInstruction instruction = super.importFlow(file, flow, map);
         KerboScriptRunStmt runStmt = instruction.getRunStmt();
-        map.put(runStmt.getName(), runStmt);
+        map.put(runStmt.getName(), new PsiDuality<>(runStmt));
         return instruction;
     }
 }

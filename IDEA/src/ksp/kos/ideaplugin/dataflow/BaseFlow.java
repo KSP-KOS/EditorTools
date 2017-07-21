@@ -1,6 +1,8 @@
 package ksp.kos.ideaplugin.dataflow;
 
-import java.util.HashMap;
+import ksp.kos.ideaplugin.expressions.ExpressionVisitor;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,12 +24,28 @@ public abstract class BaseFlow<F extends BaseFlow<F>> implements Flow<F> {
         dependees.remove(flow);
     }
 
+    @Override
+    public Set<Flow<?>> getDependees() {
+        return dependees;
+    }
+
+    @Override
     public boolean hasDependees() {
         return !dependees.isEmpty();
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public void addContext(HashMap<String, NamedFlow<?>> context) {
+    public boolean addContext(ContextBuilder context) {
+        return true;
+    }
+
+    @Override
+    public F differentiate(LocalContext context, ContextBuilder contextBuilder) {
+        return differentiate(context);
+    }
+
+    @Override
+    public void accept(ExpressionVisitor visitor) {
     }
 }

@@ -1,7 +1,6 @@
 package ksp.kos.ideaplugin.actions.differentiate;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.psi.PsiElement;
 import ksp.kos.ideaplugin.actions.ActionFailedException;
 import ksp.kos.ideaplugin.expressions.Expression;
 import ksp.kos.ideaplugin.expressions.SyntaxException;
@@ -32,7 +31,7 @@ public class ReturnDiffer implements Differ {
 
     protected String diff(KerboScriptExpr expr) throws ActionFailedException {
         try {
-            return Expression.parse(expr).differentiate().getText();
+            return Expression.parse(expr).differentiate(expr.getScope().getCachedScope()).getText();
         } catch (SyntaxException e) {
             throw new ActionFailedException(e);
         }

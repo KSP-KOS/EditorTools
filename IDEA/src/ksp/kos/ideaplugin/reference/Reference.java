@@ -1,43 +1,23 @@
 package ksp.kos.ideaplugin.reference;
 
+import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
-import ksp.kos.ideaplugin.psi.KerboScriptScope;
-import org.jetbrains.annotations.NotNull;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
 
 /**
- * Created on 10/04/16.
+ * Created on 22/10/16.
  *
  * @author ptasha
  */
 public interface Reference {
-    KerboScriptScope getKingdom();
+
+    LocalContext getKingdom();
 
     ReferableType getReferableType();
 
     String getName();
 
-    default KerboScriptNamedElement resolve() {
-        return getKingdom().resolve(this);
-    }
-
-    default KerboScriptNamedElement findDeclaration() {
-        return getKingdom().getCachedScope().findDeclaration(this);
-    }
-
-    static Reference variable(KerboScriptScope kingdom, String name) {
-        return reference(kingdom, ReferableType.VARIABLE, name);
-    }
-
-    static Reference function(KerboScriptScope kingdom, String name) {
-        return reference(kingdom, ReferableType.FUNCTION, name);
-    }
-
-    static Reference copy(Reference reference) {
-        return reference(reference.getKingdom(), reference.getReferableType(), reference.getName());
-    }
-
-    @NotNull
-    static Reference reference(KerboScriptScope kingdom, ReferableType type, String name) {
-        return new ReferenceImpl(kingdom, type, name);
+    default boolean matches(Reference declaration) {
+        return true;
     }
 }

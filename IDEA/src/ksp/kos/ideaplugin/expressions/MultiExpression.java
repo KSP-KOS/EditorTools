@@ -29,6 +29,23 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
         items = createBuilder().parse(expr).createItems();
     }
 
+    public List<Item<O, E>> getItems() {
+        return items;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MultiExpression<?, ?> that = (MultiExpression<?, ?>) o;
+        return Objects.equals(items, that.items);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(items);
+    }
+
     @Override
     public String getText() {
         String text = "";
@@ -48,7 +65,7 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
         private final O operation;
         private final E expression;
 
-        private Item(O operation, E expression) {
+        protected Item(O operation, E expression) {
             this.operation = operation;
             this.expression = expression;
         }
@@ -59,6 +76,20 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
 
         public E getExpression() {
             return expression;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Item<?, ?> item = (Item<?, ?>) o;
+            return Objects.equals(operation, item.operation) &&
+                    Objects.equals(expression, item.expression);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(operation, expression);
         }
     }
 
@@ -98,6 +129,7 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
         }
 
         protected MultiExpressionBuilder<O, E> addExpression(O operator, Expression expression) {
+            expression = expression.simplify();
             MultiExpression<O, E> associate = associate(expression);
             if (associate == null) {
                 addItem(createItem(operator, toElement(expression)));
@@ -135,7 +167,7 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
             items.add(newItem);
         }
 
-        public MultiExpressionBuilder<O, E> addItems(List<Item<O, E>> items) {
+        public MultiExpressionBuilder<O, E> addItems(Collection<Item<O, E>> items) {
             for (Item<O, E> item : items) {
                 this.addItem(item);
             }
@@ -146,7 +178,9 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
             return null;
         }
 
-        protected abstract Expression one();
+        protected Expression one() {
+            return null;
+        }
 
         protected boolean nullifyEverything(Item<O, E> item) {
             return item.operation == defaultOperator() && item.expression.equals(zero);
@@ -170,7 +204,11 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
 
         @SuppressWarnings("unchecked")
         protected Item<O, E> consumeItem(Item<O, E> item, Item<O, E> newItem) {
-            return ((ConsumeSupported<O, E>) this).consume(item, newItem);
+            Item<O, E> consumed = ((ConsumeSupported<O, E>) this).consume(item, newItem);
+            if (consumed==null) {
+                return ((ConsumeSupported<O, E>) this).consume(newItem, item); // TODO get rid of me once symmetry is supported
+            }
+            return consumed;
         }
 
         @SuppressWarnings("unchecked")
@@ -185,7 +223,9 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
             return null;
         }
 
-        protected abstract Expression singleItemExpression(Item<O, E> item);
+        protected Expression singleItemExpression(Item<O, E> item) {
+            return item.getExpression();
+        }
 
         @NotNull
         protected abstract O[] operators();
@@ -251,13 +291,14 @@ public abstract class MultiExpression<O extends Enum<O> & MultiExpression.Op, E 
         }
 
         public Expression createExpression() {
+            List<Item<O, E>> items = createItems();
             if (items.isEmpty()) {
                 return one();
             }
             if (items.size() == 1) {
                 return singleItemExpression(items.get(0));
             }
-            return createExpression(createItems());
+            return createExpression(items);
         }
 
         protected abstract MultiExpression<O, E> createExpression(List<Item<O, E>> items);

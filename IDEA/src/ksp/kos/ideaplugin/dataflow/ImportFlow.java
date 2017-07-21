@@ -1,6 +1,11 @@
 package ksp.kos.ideaplugin.dataflow;
 
-import ksp.kos.ideaplugin.KerboScriptFile;
+import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
+import ksp.kos.ideaplugin.reference.ReferableType;
+import ksp.kos.ideaplugin.reference.context.Duality;
+import ksp.kos.ideaplugin.reference.context.FileContext;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -9,15 +14,27 @@ import java.util.Objects;
  *
  * @author ptasha
  */
-public class ImportFlow extends BaseFlow<ImportFlow> implements NamedFlow<ImportFlow>, Comparable<ImportFlow> {
+public class ImportFlow extends BaseFlow<ImportFlow>
+        implements NamedFlow<ImportFlow>, Comparable<ImportFlow>,
+        ReferenceFlow, Duality<KerboScriptNamedElement, ImportFlow> {
     private final String name;
 
     public ImportFlow(String name) {
         this.name = name;
     }
 
-    public ImportFlow(KerboScriptFile file) {
-        this(file.getPureName());
+    public ImportFlow(FileContext file) {
+        this(file.getName());
+    }
+
+    @Override
+    public LocalContext getKingdom() {
+        return null; // TODO implement
+    }
+
+    @Override
+    public ReferableType getReferableType() {
+        return ReferableType.FILE;
     }
 
     @Override
@@ -26,7 +43,7 @@ public class ImportFlow extends BaseFlow<ImportFlow> implements NamedFlow<Import
     }
 
     @Override
-    public ImportFlow differentiate() {
+    public ImportFlow differentiate(LocalContext context) {
         if (name.endsWith("_")) {
             return this;
         }
@@ -52,7 +69,17 @@ public class ImportFlow extends BaseFlow<ImportFlow> implements NamedFlow<Import
     }
 
     @Override
-    public int compareTo(ImportFlow o) {
+    public int compareTo(@NotNull ImportFlow o) {
         return getName().compareTo(o.getName());
+    }
+
+    @Override
+    public KerboScriptNamedElement getSyntax() {
+        return null; // TODO implement
+    }
+
+    @Override
+    public ImportFlow getSemantics() {
+        return this;
     }
 }

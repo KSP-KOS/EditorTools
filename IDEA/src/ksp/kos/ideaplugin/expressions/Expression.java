@@ -2,6 +2,8 @@ package ksp.kos.ideaplugin.expressions;
 
 import com.intellij.lang.ASTNode;
 import ksp.kos.ideaplugin.psi.*;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,12 +24,14 @@ public abstract class Expression {
             return new Addition((KerboScriptArithExpr) psiExpression);
         } else if (psiExpression instanceof KerboScriptMultdivExpr) {
             return new Multiplication((KerboScriptMultdivExpr) psiExpression);
+        } else if (psiExpression instanceof KerboScriptCompareExpr) {
+            return new Compare((KerboScriptCompareExpr) psiExpression);
         } else if (psiExpression instanceof KerboScriptNumber) {
             return new Number((KerboScriptNumber) psiExpression);
         } else if (psiExpression instanceof KerboScriptSciNumber) {
             return new Number((KerboScriptSciNumber) psiExpression);
         } else if (psiExpression instanceof KerboScriptSuffix) {
-            return new Constant(psiExpression);
+            return new Constant((KerboScriptSuffix) psiExpression);
         } else if (psiExpression instanceof KerboScriptSuffixterm) {
             KerboScriptSuffixterm suffixterm = (KerboScriptSuffixterm) psiExpression;
             int tailSize = suffixterm.getSuffixtermTrailerList().size();
@@ -59,17 +63,31 @@ public abstract class Expression {
 
     public abstract String getText();
 
-    public abstract Expression differentiate();
+    public abstract Expression differentiate(LocalContext context);
 
     public Expression minus() {
         return Element.create(-1, Atom.toAtom(this));
     }
 
+    public Expression simplePlus(Expression expression) {
+        if (this.equals(expression)) {
+            return this.multiply(Number.create(2));
+        }
+        return null;
+    }
+
     public Expression plus(Expression expression) {
+        Expression result = simplePlus(expression);
+        if (result!=null) {
+            return result;
+        }
         return new Addition(this).plus(expression);
     }
 
     public Expression minus(Expression expression) {
+        if (this.equals(expression)) {
+            return Number.ZERO;
+        }
         return new Addition(this).minus(expression);
     }
 
@@ -77,9 +95,21 @@ public abstract class Expression {
         return false;
     }
 
-    public Expression multiply(Expression expression) {
+    public Expression simpleMultiply(Expression expression) {
         if (this.equals(expression)) {
             return Element.create(1, this, new Number(2));
+        }
+        return null;
+    }
+
+    public Expression multiply(Expression expression) {
+        Expression result = simpleMultiply(expression);
+        if (result!=null) {
+            return result;
+        }
+        result = expression.simpleMultiply(this);
+        if (result!=null) {
+            return result;
         }
         return new Multiplication(this).multiply(expression);
     }
@@ -89,18 +119,29 @@ public abstract class Expression {
     }
 
     public Expression divide(Expression expression) {
-        if (canMultiply(expression)) {
-            return Number.ONE;
-        }
+        Expression result = simpleDivide(expression);
+        if (result != null) return result;
         return new Multiplication(this).divide(expression);
     }
 
-    public boolean canMultiply(Expression expression) {
+    public boolean canMultiply(Expression expression) { // TODO symmetry for this and multiply and plus
         return this.equals(expression);
     }
 
     public Expression power(Expression expression) {
         return Element.create(1, Atom.toAtom(this), Atom.toAtom(expression));
+    }
+
+    @Nullable
+    public Expression simpleDivide(Expression expression) {
+        if (this.equals(expression)) {
+            return Number.ONE;
+        }
+        return expression.simpleDivideBackward(this);
+    }
+
+    protected Expression simpleDivideBackward(Expression expression) {
+        return null;
     }
 
     public abstract Expression inline(HashMap<String, Expression> args);
@@ -122,5 +163,43 @@ public abstract class Expression {
     }
 
     public void acceptChildren(ExpressionVisitor visitor) {
+    }
+
+    public boolean isNumber() {
+        return false;
+    }
+
+    public Expression normalize() {
+        return this;
+    }
+
+    public Expression distribute() {
+        return this;
+    }
+
+    public Expression root(Expression expression) {
+        return this.divide(expression.divide(this).divisor());
+    }
+
+    public Expression divisor() {
+        return Number.ONE;
+    }
+
+    public Expression distribute(Expression expression) {
+        if (expression instanceof Addition) {
+            return expression.distribute(this);
+        }
+        return this.multiply(expression);
+    }
+
+    public Expression distribute(Multiplication.Op operation, Expression expression) {
+        if (operation==Multiplication.Op.MUL) {
+            return distribute(expression);
+        }
+        return operation.apply(this, expression);
+    }
+
+    public String toString() {
+        return getClass().getSimpleName()+"="+getText();
     }
 }

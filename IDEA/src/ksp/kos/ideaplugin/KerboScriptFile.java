@@ -12,6 +12,8 @@ import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
 import ksp.kos.ideaplugin.psi.KerboScriptPsiWalker;
 import ksp.kos.ideaplugin.psi.KerboScriptScope;
 import ksp.kos.ideaplugin.reference.*;
+import ksp.kos.ideaplugin.reference.context.FileContext;
+import ksp.kos.ideaplugin.reference.context.FileDuality;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,9 +24,9 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author ptasha
  */
-public class KerboScriptFile extends PsiFileBase implements KerboScriptScope, KerboScriptNamedElement {
+public class KerboScriptFile extends PsiFileBase implements KerboScriptScope, KerboScriptNamedElement, FileDuality {
     private static final ReferenceType TYPE = new ReferenceType(ReferableType.FILE, OccurrenceType.GLOBAL);
-    private final Cache<FileScope> cache = new Cache<>(this, new FileScope(this));
+    private final Cache<PsiFileContext> cache = new Cache<>(this, new PsiFileContext(this));
 
     public KerboScriptFile(@NotNull FileViewProvider viewProvider) {
         super(viewProvider, KerboScriptLanguage.INSTANCE);
@@ -41,14 +43,6 @@ public class KerboScriptFile extends PsiFileBase implements KerboScriptScope, Ke
     @Override
     public FileType getFileType() {
         return KerboScriptFileType.INSTANCE;
-    }
-
-    public KerboScriptNamedElement findFunction(String name) {
-        return getCachedScope().findDeclaration(Reference.function(this, name));
-    }
-
-    public KerboScriptNamedElement findVariable(String name) {
-        return getCachedScope().findDeclaration(Reference.variable(this, name));
     }
 
     public KerboScriptFile resolveFile(String name) {
@@ -100,7 +94,7 @@ public class KerboScriptFile extends PsiFileBase implements KerboScriptScope, Ke
     }
 
     @Override
-    public FileScope getCachedScope() {
+    public PsiFileContext getCachedScope() {
         return cache.getScope();
     }
 
@@ -135,5 +129,15 @@ public class KerboScriptFile extends PsiFileBase implements KerboScriptScope, Ke
 
     @Override
     public void setType(ReferenceType type) {
+    }
+
+    @Override
+    public KerboScriptFile getSyntax() {
+        return this;
+    }
+
+    @Override
+    public FileContext getSemantics() {
+        return getCachedScope();
     }
 }

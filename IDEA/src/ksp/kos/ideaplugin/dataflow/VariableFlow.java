@@ -4,9 +4,8 @@ import ksp.kos.ideaplugin.expressions.Expression;
 import ksp.kos.ideaplugin.expressions.SyntaxException;
 import ksp.kos.ideaplugin.psi.*;
 import ksp.kos.ideaplugin.reference.ReferableType;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashMap;
 
 /**
  * Created on 12/03/16.
@@ -24,9 +23,20 @@ public class VariableFlow extends ExpressionFlow<VariableFlow> implements NamedF
     }
 
     @Override
-    public void addContext(HashMap<String, NamedFlow<?>> context) {
+    public VariableFlow differentiate(LocalContext context, ContextBuilder contextBuilder) {
+        contextBuilder.add(new VariableFlow(declare, name, getExpression()));
+        VariableFlow diff = differentiate(context);
+        contextBuilder.add(diff);
+        return diff;
+    }
+
+    @Override
+    public boolean addContext(ContextBuilder context) {
         super.addContext(context);
-        context.put(getName(), this);
+        if (!declare || context.getFlow(name) == null) {
+            context.getMap().put(getName(), this);
+        }
+        return true;
     }
 
     @NotNull

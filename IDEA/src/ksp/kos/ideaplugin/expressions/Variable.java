@@ -1,5 +1,7 @@
 package ksp.kos.ideaplugin.expressions;
 
+import ksp.kos.ideaplugin.reference.context.LocalContext;
+
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -25,7 +27,7 @@ public class Variable extends Atom {
     }
 
     @Override
-    public Expression differentiate() {
+    public Expression differentiate(LocalContext context) {
         return new Variable(name+"_");
     }
 

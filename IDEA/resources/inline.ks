@@ -1,6 +1,6 @@
 function sqrt_ {
     parameter x.
-    return 0.5/sqrt(x).
+    return 1/2/sqrt(x).
 }
 
 function log_ {
@@ -16,4 +16,8 @@ function sin_ {
 function cos_ {
     parameter x.
     return -sin(x)*constant:degtorad.
+}
+
+function vang_ { // TODO it should understand it by itself
+    return 0.
 }

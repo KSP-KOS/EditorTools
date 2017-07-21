@@ -1,36 +1,33 @@
 package ksp.kos.ideaplugin.reference;
 
-import ksp.kos.ideaplugin.psi.KerboScriptScope;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
 
 import java.util.Objects;
 
 /**
- * Created on 10/04/16.
+ * Created on 22/10/16.
  *
  * @author ptasha
  */
-public class ReferenceImpl implements Reference {
-    private final KerboScriptScope kingdom;
-    private final ReferableType referableType;
-    private final String name;
+public class ReferenceImpl {
+    protected final LocalContext kingdom;
+    protected final ReferableType referableType;
+    protected final String name;
 
-    public ReferenceImpl(KerboScriptScope kingdom,  ReferableType referableType, String name) {
+    public ReferenceImpl(LocalContext kingdom, ReferableType referableType, String name) {
+        this.name = name;
         this.kingdom = kingdom;
         this.referableType = referableType;
-        this.name = name;
     }
 
-    @Override
-    public KerboScriptScope getKingdom() {
+    public LocalContext getKingdom() {
         return kingdom;
     }
 
-    @Override
     public ReferableType getReferableType() {
         return referableType;
     }
 
-    @Override
     public String getName() {
         return name;
     }
@@ -38,10 +35,10 @@ public class ReferenceImpl implements Reference {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ReferenceImpl reference = (ReferenceImpl) o;
-        return referableType == reference.referableType &&
-                Objects.equals(name, reference.name);
+        if (o == null || !(o instanceof Reference)) return false;
+        Reference reference = (Reference) o;
+        return referableType == reference.getReferableType() &&
+                Objects.equals(name, reference.getName());
     }
 
     @Override

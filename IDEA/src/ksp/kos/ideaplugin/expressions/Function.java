@@ -1,10 +1,17 @@
 package ksp.kos.ideaplugin.expressions;
 
+import ksp.kos.ideaplugin.dataflow.FunctionFlow;
+import ksp.kos.ideaplugin.dataflow.ParameterFlow;
+import ksp.kos.ideaplugin.expressions.inline.InlineFunction;
 import ksp.kos.ideaplugin.expressions.inline.InlineFunctions;
 import ksp.kos.ideaplugin.psi.KerboScriptExpr;
+import ksp.kos.ideaplugin.reference.FlowSelfResolvable;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created on 30/01/16.
@@ -53,19 +60,50 @@ public class Function extends Atom {
     }
 
     @Override
-    public Expression differentiate() {
+    public Expression differentiate(LocalContext context) {
         if (args.length==0) {
             return Number.ZERO;
         }
+        String name = this.name + "_";
+        // TODO diff function here
+        FunctionFlow diff = (FunctionFlow) FlowSelfResolvable.function(context, name).resolve();
         if (args.length==1) {
-            return new Function(name+"_", args).inline().multiply(args[0].differentiate());
+            return new Function(name, args).inline(context).multiply(args[0].differentiate(context));
         }
+        FunctionFlow original = (FunctionFlow) FlowSelfResolvable.function(context, this.name).resolve();
+        if (original!=null && diff!=null) {
+            int j = 0;
+            List<ParameterFlow> origParams = original.getParameters();
+            List<ParameterFlow> diffParams = diff.getParameters();
+            Expression[] diffArgs = new Expression[diffParams.size()];
+            for (ParameterFlow diffParam : diffParams) {
+                int i = origParams.indexOf(diffParam);
+                if (i>=0) {
+                    diffArgs[j] = args[i];
+                } else if (diffParam.getName().endsWith("_")) {
+                    String paramName = diffParam.getName();
+                    paramName = paramName.substring(0, paramName.length() - 1);
+                    i = origParams.indexOf(new ParameterFlow(paramName));
+                    if (i < 0) {
+                        break;
+                    }
+                    diffArgs[j] = args[i].differentiate(context);
+                } else {
+                    break;
+                }
+                j++;
+            }
+            if (j==diffArgs.length) {
+                return new Function(name, diffArgs).inline(context);
+            }
+        }
+
         Expression[] diffArgs = new Expression[args.length*2];
         for (int i = 0; i < args.length; i++) {
-            diffArgs[i] = args[i];
-            diffArgs[i + args.length] = args[i].differentiate();
+            diffArgs[2*i] = args[i];
+            diffArgs[2*i + 1] = args[i].differentiate(context);
         }
-        return new Function(name+"_", diffArgs).inline();
+        return new Function(name, diffArgs).inline(context);
     }
 
     @Override
@@ -87,7 +125,25 @@ public class Function extends Atom {
     }
 
     private Expression inline() {
-        return InlineFunctions.getInstance().inline(this);
+        return inline((LocalContext)null);
+    }
+
+    private Expression inline(LocalContext context) {
+        Expression inlined = InlineFunctions.getInstance().inline(this);
+        if (inlined == null) {
+            if (context != null) { // TODO pass context to simplify
+                FlowSelfResolvable ref = FlowSelfResolvable.function(context, name);
+                FunctionFlow flow = (FunctionFlow) ref.resolve(); // TODO shouldn't parse all functions here for speed sake
+                if (flow!=null) {
+                    InlineFunction inlineFunction = flow.getInlineFunction();
+                    if (inlineFunction!=null) {
+                        return inlineFunction.inline(args);
+                    }
+                }
+            }
+            return this;
+        }
+        return inlined;
     }
 
     @Override
@@ -104,5 +160,19 @@ public class Function extends Atom {
 
     public static Expression log(Expression arg) {
         return new Function("log", arg);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Function function = (Function) o;
+        return Objects.equals(name, function.name) &&
+                Arrays.equals(args, function.args);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, args);
     }
 }

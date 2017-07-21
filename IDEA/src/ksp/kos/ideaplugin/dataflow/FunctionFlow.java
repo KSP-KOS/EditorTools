@@ -1,124 +1,104 @@
 package ksp.kos.ideaplugin.dataflow;
 
-import ksp.kos.ideaplugin.KerboScriptFile;
+import ksp.kos.ideaplugin.actions.differentiate.DiffContext;
 import ksp.kos.ideaplugin.expressions.*;
 import ksp.kos.ideaplugin.expressions.Number;
+import ksp.kos.ideaplugin.expressions.inline.InlineFunction;
 import ksp.kos.ideaplugin.psi.*;
+import ksp.kos.ideaplugin.reference.DualitySelfResolvable;
+import ksp.kos.ideaplugin.reference.FlowSelfResolvable;
+import ksp.kos.ideaplugin.reference.ReferableType;
 import ksp.kos.ideaplugin.reference.Reference;
-import org.jetbrains.annotations.Nullable;
+import ksp.kos.ideaplugin.reference.context.Duality;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
+import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created on 12/03/16.
  *
  * @author ptasha
  */
-public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<FunctionFlow> {
-    private final KerboScriptFile file;
+public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<FunctionFlow>,
+        ReferenceFlow<FunctionFlow>, Duality<KerboScriptNamedElement, FunctionFlow> {
+    private final LocalContext context;
     private final String name;
 
-    private final List<ParameterFlow> parameters;
-    private final List<VariableFlow> variables;
-    private final ReturnFlow returnFlow;
+    private final ContextBuilder<ParameterFlow> parameters;
+    private final ContextBuilder instructions;
 
-    public FunctionFlow(KerboScriptFile file, String name, List<ParameterFlow> parameters, List<VariableFlow> variables, ReturnFlow returnFlow) {
-        this.file = file;
+    public FunctionFlow(LocalContext context, String name, ContextBuilder<ParameterFlow> parameters, ContextBuilder instructions) {
+        this.context = context;
         this.name = name;
         this.parameters = parameters;
-        this.variables = variables;
-        this.returnFlow = returnFlow;
+        parameters.buildMap();
+        this.instructions = instructions;
+        buildInstructionsMap();
+    }
+
+    private void buildInstructionsMap() {
+        instructions.buildMap();
+        instructions.getReturn().addDependee(this);
     }
 
     public static FunctionFlow parse(KerboScriptDeclareFunctionClause function) throws SyntaxException {
+        FunctionParser parser = new FunctionParser();
         String name = function.getName();
-        List<ParameterFlow> parameters = new ArrayList<>();
-        List<VariableFlow> variables = new ArrayList<>();
-        List<KerboScriptInstruction> instructions = function.getInstructionBlock().getInstructionList();
-        for (KerboScriptInstruction instruction : instructions) {
-            if (instruction instanceof KerboScriptSetStmt) {
-                VariableFlow flow = VariableFlow.parse((KerboScriptSetStmt) instruction);
-                if (flow != null) {
-                    variables.add(flow);
-                }
-            } else if (instruction instanceof KerboScriptDeclareStmt) {
-                KerboScriptDeclareStmt declareStmt = (KerboScriptDeclareStmt) instruction;
-                if (declareStmt.getDeclareParameterClause() != null) {
-                    parameters.add(ParameterFlow.parse(declareStmt.getDeclareParameterClause()));
-                } else if (declareStmt.getDeclareIdentifierClause() != null) {
-                    variables.add(VariableFlow.parse(declareStmt.getDeclareIdentifierClause()));
-                }
-            } else if (instruction instanceof KerboScriptReturnStmt) {
-                return new FunctionFlow(function.getKerboScriptFile(), name, parameters, variables, ReturnFlow.parse((KerboScriptReturnStmt) instruction));
-            }
-        }
-        throw new SyntaxException("Return statement is not found for function " + name);
+        parser.parseInstructions(function.getInstructionBlock().getInstructionList());
+        return new FunctionFlow(function.getKerboScriptFile().getCachedScope(), name, parser.getContext(), parser.getFlowContext());
+        // throw new SyntaxException("Return statement is not found for function " + name); // TODO check for return statement
     }
 
     @Override
-    public FunctionFlow differentiate() {
-        HashMap<String, NamedFlow<?>> context = new HashMap<>();
-        List<ParameterFlow> diffParameters = new LinkedList<>();
-        for (ParameterFlow parameter : parameters) {
-            add(diffParameters, parameter, context);
-            ParameterFlow diff = parameter.differentiate();
-            if (parameters.size()==1) {
-                new VariableFlow(true, diff.getName(), Number.ONE).addContext(context);
-            } else {
-                add(diffParameters, diff, context);
-            }
+    public FunctionFlow differentiate(LocalContext context) {
+        ContextBuilder<ParameterFlow> parameters = new ContextBuilder<>();
+        ContextBuilder flows = new ContextBuilder(parameters);
+        if (this.parameters.getList().size()==1) {
+            String name = this.parameters.getList().get(0).getName();
+            parameters.add(new ParameterFlow(name));
+            flows.add(new VariableFlow(false, name+"_", Number.ONE));
+        } else {
+            this.parameters.differentiate(context, parameters);
         }
-        List<VariableFlow> diffVariables = new LinkedList<>();
-        for (VariableFlow variable : variables) {
-            VariableFlow diff = variable.differentiate();
-            add(diffVariables, variable, context);
-            add(diffVariables, diff, context);
-        }
-        ReturnFlow diffRet = returnFlow.differentiate();
-        diffRet.addContext(context);
 
-        for (ListIterator<VariableFlow> iterator = diffVariables.listIterator(diffVariables.size()); iterator.hasPrevious(); ) {
-            VariableFlow variable = iterator.previous();
-            if (!variable.hasDependees()) {
-                iterator.remove();
-            }
-        }
-        /* TODO Uncomment me when functions can deal with it
-        int i = 0;
-        for (Iterator<ParameterFlow> iterator = diffParameters.iterator(); iterator.hasNext(); ) {
-            ParameterFlow diffParameter = iterator.next();
-            if (i >= parameters.size()) {
-                if (!diffParameter.hasDependees()) {
-                    iterator.remove();
-                }
-            }
-            i++;
-        }
-        */
+        FunctionFlow diff = new FunctionFlow(context, name + "_", parameters, flows);
+        context.register(diff);
 
-        return new FunctionFlow(file, name + "_", diffParameters, diffVariables, diffRet);
+        this.instructions.differentiate(context, flows);
+        diff.buildInstructionsMap();
+        diff.simplify();
+        return diff;
     }
 
-    private <F extends NamedFlow<F>> void add(List<F> list, F flow, HashMap<String, NamedFlow<?>> context) {
-        list.add(flow);
-        flow.addContext(context);
+    private FunctionFlow simplify() {
+        instructions.simplify();
+        parameters.simplify();
+        instructions.sort();
+
+        return this;
     }
 
     @Override
     public String getText() {
         String text = "";
         text += "function " + name + " {\n";
-        for (ParameterFlow parameter : parameters) {
-            text += parameter.getText() + "\n";
-        }
-        text += "\n";
-        for (VariableFlow variable : variables) {
-            text += variable.getText() + "\n";
-        }
-        text += returnFlow.getText() + "\n";
+        text += parameters.getText() + "\n";
+        if (!parameters.getList().isEmpty()) text += "\n";
+        text += instructions.getText() + "\n";
         text += "}";
         return text;
+    }
+
+    @Override
+    public LocalContext getKingdom() {
+        return context;
+    }
+
+    @Override
+    public ReferableType getReferableType() {
+        return ReferableType.FUNCTION;
     }
 
     @Override
@@ -126,100 +106,137 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
         return name;
     }
 
-    public Set<ImportFlow> getImports(KerboScriptFile newFile) {
-        HashSet<ImportFlow> imports = new HashSet<>();
-        HashSet<String> context = new HashSet<>();
-        for (ParameterFlow parameter : parameters) {
-            context.add(parameter.getName());
+    public void visitExpresssions(ExpressionVisitor visitor) {
+        parameters.visit(visitor);
+        instructions.visit(visitor);
+    }
+
+    public InlineFunction getInlineFunction() {
+        MixedDependency dependency = instructions.getReturn();
+        ReturnFlow flow = dependency.getReturnFlow();
+        if (flow != null) {
+            Expression expression = flow.getExpression();
+            if (isSimple(expression)) {
+                return createInlineFunction(expression);
+            }
         }
+        return null;
+    }
+
+    private boolean isSimple(Expression expression) {
+        if (ExpressionFlow.isSimple(expression)) {
+            return true;
+        } else if (expression instanceof Constant) {
+            return true;
+        } else if (expression instanceof Function) {
+            Function function = (Function) expression;
+            if (function.getArgs().length == 0) {
+                return true;
+            } else if (function.getArgs().length == 1) {
+                Expression arg = function.getArgs()[0];
+                if (arg instanceof Variable) {
+                    Variable variable = (Variable) arg;
+                    if (parameters.getFlow(variable.getName()) != null) {
+                        return true;
+                    }
+                }
+            }
+        } else if (expression instanceof Element) {
+            Element element = (Element) expression;
+            if (element.getPower().equals(Number.ONE)) {
+                return isSimple(element.getAtom());
+            }
+        }
+        return false;
+    }
+
+    @NotNull
+    private InlineFunction createInlineFunction(Expression expression) {
+        return new InlineFunction(name, getArgNames(), expression);
+    }
+
+    private String[] getArgNames() {
+        ArrayList<String> names = new ArrayList<>();
+        for (Flow parameter : parameters.getList()) {
+            names.add(((ParameterFlow)parameter).getName());
+        }
+        return names.toArray(new String[names.size()]);
+    }
+
+    @Override
+    public KerboScriptNamedElement getSyntax() {
+        return null; // TODO implement
+    }
+
+    @Override
+    public FunctionFlow getSemantics() {
+        return this;
+    }
+
+    public List<ParameterFlow> getParameters() {
+        return parameters.getList();
+    }
+
+    public void checkUsages() {
+        // TODO more elegant?
         visitExpresssions(new ExpressionVisitor() {
             @Override
             public void visitFunction(Function function) {
-                Reference ref = Reference.function(file, function.getName());
-                addImport(findFunction(ref));
+                FunctionFlow functionFlow = FlowSelfResolvable.function(context, function.getName()).findDeclaration();
+                if (functionFlow!=null) {
+                    if (functionFlow.getKingdom() instanceof DiffContext) {
+                        functionFlow.addDependee(FunctionFlow.this);
+                    }
+                }
+                addImport(functionFlow);
                 super.visitFunction(function);
             }
 
             @Override
             public void visitVariable(Variable variable) {
-                String name = variable.getName();
-                if (!context.contains(name)) {
-                    addImport(file.findVariable(name));
-                }
-                context.add(name);
+                addImport(DualitySelfResolvable.variable(context, variable.getName()).findDeclaration());
                 super.visitVariable(variable);
             }
 
-            private void addImport(KerboScriptNamedElement resolved) {
-                if (resolved != null && resolved.isReal()) {
-                    KerboScriptFile dependency = resolved.getKerboScriptFile();
-                    if (dependency != newFile) {
-                        imports.add(new ImportFlow(dependency));
+            private void addImport(Reference declaration) {
+                if (declaration!=null) {
+                    LocalContext context = declaration.getKingdom();
+                    Duality duality = FunctionFlow.this.context.getDeclarations(ReferableType.FILE).get(context.getFileContext().getName());
+                    if (duality != null) {
+                        ImportFlow importFlow = (ImportFlow) duality.getSemantics();
+                        importFlow.addDependee(FunctionFlow.this);
                     }
                 }
             }
         });
-        return imports;
     }
 
-    public void visitExpresssions(ExpressionVisitor visitor) {
-        for (VariableFlow variable : variables) {
-            variable.getExpression().accept(visitor);
+    private static class FunctionParser extends InstructionsParser {
+        private final InstructionsParser parser = new InstructionsParser(getContext());
+        private boolean parametersParsed = false;
+
+        @Override
+        public boolean parseInstruction(KerboScriptInstruction instruction) throws SyntaxException {
+            if (parametersParsed) {
+                return parser.parseInstruction(instruction);
+            } else if (instruction instanceof KerboScriptDeclareStmt) {
+                KerboScriptDeclareStmt declareStmt = (KerboScriptDeclareStmt) instruction;
+                KerboScriptDeclareParameterClause declareParameterClause = declareStmt.getDeclareParameterClause();
+                if (declareParameterClause != null) {
+                    addFlow(ParameterFlow.parse(declareParameterClause));
+                } else if (declareStmt.getDeclareIdentifierClause() != null) {
+                    parametersParsed = true;
+                    return parser.parseInstruction(instruction);
+                }
+            } else {
+                parametersParsed = true;
+                return parser.parseInstruction(instruction);
+            }
+            return true;
         }
-        returnFlow.getExpression().accept(visitor);
-    }
 
-    private KerboScriptNamedElement findFunction(Reference ref) {
-        return ref.findDeclaration();
-    }
-
-    public Reference getNextToDiff(Map<Reference, FunctionFlow> context) {
-        AtomicReference<Reference> reference = new AtomicReference<>();
-        visitExpresssions(new ExpressionVisitor() {
-            @Override
-            public void visitFunction(Function function) {
-                if (reference.get() == null) {
-                    String name = function.getName();
-                    Reference ref = Reference.function(file, name);
-                    KerboScriptNamedElement declaration = findFunction(ref);
-                    if (declaration == null || !declaration.isReal()) {
-                        reference.set(undiff(ref));
-                    } else {
-                        super.visitFunction(function);
-                    }
-                }
-            }
-
-            @Nullable
-            private Reference undiff(Reference reference) {
-                String name = reference.getName();
-                Reference undiff = null;
-                if (name.endsWith("_")) {
-                    name = name.substring(0, name.length() - 1);
-                    undiff = Reference.function(reference.getKingdom(), name);
-                    if (!context.containsKey(undiff)) {
-                        KerboScriptNamedElement resolved = findFunction(undiff);
-                        if (resolved != null) {
-                            if (resolved.isReal()) {
-                                return resolved;
-                            }
-                        } else {
-                            return undiff(undiff);
-                        }
-                    } else {
-                        return null;
-                    }
-                }
-                return undiff;
-            }
-
-            @Override
-            public void visit(Expression expression) {
-                if (reference.get() == null) {
-                    super.visit(expression);
-                }
-            }
-        });
-        return reference.get();
+        public ContextBuilder getFlowContext() {
+            return parser.getContext();
+        }
     }
 }

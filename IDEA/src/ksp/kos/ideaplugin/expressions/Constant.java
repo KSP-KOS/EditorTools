@@ -4,7 +4,10 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.impl.source.tree.LeafPsiElement;
 import com.intellij.psi.util.PsiTreeUtil;
+import ksp.kos.ideaplugin.psi.*;
+import ksp.kos.ideaplugin.reference.context.LocalContext;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Objects;
@@ -16,11 +19,38 @@ import java.util.Objects;
  */
 public class Constant extends Atom {
     private final String key;
+    private final Collection<Expression> expressions = new ArrayList<>();
     private final PsiElement psi;
 
-    public Constant(PsiElement psi) {
+    public Constant(KerboScriptSuffix psi) throws SyntaxException {
         this.psi = psi;
         this.key = getKey(psi);
+        expressions.add(Expression.parse(psi.getSuffixterm()));
+        for (KerboScriptSuffixTrailer trailer : psi.getSuffixTrailerList()) {
+            parseSuffixtermTrailer(trailer.getSuffixterm());
+        }
+    }
+
+    public Constant(KerboScriptSuffixterm psi) throws SyntaxException {
+        this.psi = psi;
+        this.key = getKey(psi);
+        expressions.add(Atom.parse(psi.getAtom()));
+        parseSuffixtermTrailer(psi);
+    }
+
+    private void parseSuffixtermTrailer(KerboScriptSuffixterm psi) throws SyntaxException {
+        for (KerboScriptSuffixtermTrailer trailer : psi.getSuffixtermTrailerList()) {
+            if (trailer instanceof KerboScriptFunctionTrailer) {
+                KerboScriptArglist arglist = ((KerboScriptFunctionTrailer) trailer).getArglist();
+                if (arglist!=null) {
+                    for (KerboScriptExpr expr : arglist.getExprList()) {
+                        expressions.add(Expression.parse(expr));
+                    }
+                }
+            } else if (trailer instanceof KerboScriptArrayTrailer) {
+                expressions.add(Expression.parse(((KerboScriptArrayTrailer) trailer).getExpr()));
+            }
+        }
     }
 
     private static String getKey(PsiElement psi) {
@@ -40,13 +70,20 @@ public class Constant extends Atom {
     }
 
     @Override
-    public Expression differentiate() {
+    public Expression differentiate(LocalContext context) {
         return Number.ZERO;
     }
 
     @Override
     public Expression inline(HashMap<String, Expression> args) {
         return this;
+    }
+
+    @Override
+    public void acceptChildren(ExpressionVisitor visitor) {
+        for (Expression expression : expressions) {
+            expression.accept(visitor);
+        }
     }
 
     @Override

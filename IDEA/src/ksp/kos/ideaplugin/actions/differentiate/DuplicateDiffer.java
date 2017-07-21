@@ -15,7 +15,7 @@ import ksp.kos.ideaplugin.psi.KerboScriptInstruction;
  *
  * @author ptasha
  */
-public abstract class DuplicateDiffer<P extends PsiElement> implements Differ {
+public abstract class DuplicateDiffer<P extends KerboScriptBase> implements Differ {
     private final Class<P> clazz;
 
     public DuplicateDiffer(Class<P> clazz) {
@@ -44,7 +44,7 @@ public abstract class DuplicateDiffer<P extends PsiElement> implements Differ {
 
     protected String diff(P variable) throws ActionFailedException {
         try {
-            return parse(variable).differentiate().getText();
+            return parse(variable).differentiate(variable.getScope().getCachedScope()).getText();
         } catch (SyntaxException e) {
             throw new ActionFailedException(e);
         }
