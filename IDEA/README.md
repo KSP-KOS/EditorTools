@@ -3,11 +3,11 @@ This plugin enables support for kOS KerboScript in [IntelliJ IDEA](https://www.j
 
 Current kOS version supported: 1.1.2
 
-###INSTALL
+### INSTALL
 0. Install Intellij IDEA
 1. Install [KerboScript(kOS)](https://www.jetbrains.com/idea/help/installing-updating-and-uninstalling-repository-plugins.html)
 
-###COMPILE###
+### COMPILE
 0. Follow [prerequisites steps](http://www.jetbrains.org/intellij/sdk/docs/tutorials/custom_language_support/prerequisites.html)
 1. Choose IDEA folder for the new project folder
 2. Open KerboScript.bnf file and generate grammar parser (Ctrl + Shift + G)
@@ -18,7 +18,7 @@ JFlex libraries. Choose any directory, e.g. project directory.
 
 REFACTORING
 -----------
-###Inline (Ctrl+Alt+N)###
+### Inline (Ctrl+Alt+N)
 **Variable usage**
 
     local b to a^2.
@@ -57,7 +57,7 @@ will become
 
     local a to ((b)^2 + (c)).
 
-###Differentiate (Ctrl+Alt+D)###
+### Differentiate (Ctrl+Alt+D)
 **Variable**
 
     local y to x^2.
@@ -87,7 +87,7 @@ will become
 
 > Please note that all derivative functions are created in separate file
 
-###Simplify (Shift+Ctrl+S)###
+### Simplify (Shift+Ctrl+S)
 
     local x to (a/b) + c + c + a*a + b/b.
 
@@ -95,7 +95,7 @@ will become
 
     local x to a/b + 2*c + a^2 + 1.
 
-###Normalize (Shift+Ctrl+O)###
+### Normalize (Shift+Ctrl+O)
 
     local x to (a/b) + c + c + a*a + b/b.
 
