@@ -3,7 +3,7 @@ This plugin enables support for kOS KerboScript in [IntelliJ IDEA](https://www.j
 
 Current kOS version supported: 1.1.2
 
-###INSTALL###
+###INSTALL
 0. Install Intellij IDEA
 1. Install [KerboScript(kOS)](https://www.jetbrains.com/idea/help/installing-updating-and-uninstalling-repository-plugins.html)
 
