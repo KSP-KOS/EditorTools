@@ -176,15 +176,18 @@
 		<string>char</string>
 		<string>clearscreen</string>
 		<string>cos</string>
+		<string>declare</string>
 		<string>else</string>
 		<string>floor</string>
 		<string>for</string>
+		<string>function</string>
 		<string>hasnode</string>
 		<string>hastarget</string>
 		<string>hsv</string>
 		<string>hsva</string>
 		<string>if</string>
 		<string>in</string>
+		<string>is</string>
 		<string>ln</string>
 		<string>local</string>
 		<string>lock</string>
