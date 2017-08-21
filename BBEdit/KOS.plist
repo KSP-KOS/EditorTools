@@ -213,11 +213,6 @@
 		<string>(?x:
     (&quot;(\\&quot;|[^&quot;\r]|\\\r)*&quot;) |  (?# Double-quote)
     (&apos;(\\&apos;|[^&apos;\r]|\\\r)*&apos;) |  (?# Single-quote)
-    (?s:                      (?# Here-document)
-        &lt;&lt;-?(?P&lt;delim&gt;\w+)
-        .*?
-        (?P=delim)
-    )
 )</string>
 		<key>Comment Pattern</key>
 		<string>(?:\/\/.*$)</string>
