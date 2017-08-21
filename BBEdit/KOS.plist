@@ -33,6 +33,7 @@
 		<string>chutes</string>
 		<string>chutessafe</string>
 		<string>config</string>
+		<string>constant</string>
 		<string>controlconnection</string>
 		<string>core</string>
 		<string>deltav</string>
@@ -164,10 +165,19 @@
 	</array>
 	<key>BBLMKeywordList</key>
 	<array>
+		<string>abs</string>
 		<string>and</string>
+		<string>arccos</string>
+		<string>arcsin</string>
+		<string>arctan</string>
+		<string>arctan2</string>
 		<string>at</string>
+		<string>ceiling</string>
+		<string>char</string>
 		<string>clearscreen</string>
+		<string>cos</string>
 		<string>else</string>
+		<string>floor</string>
 		<string>for</string>
 		<string>hasnode</string>
 		<string>hastarget</string>
@@ -175,9 +185,13 @@
 		<string>hsva</string>
 		<string>if</string>
 		<string>in</string>
+		<string>ln</string>
+		<string>local</string>
 		<string>lock</string>
+		<string>log10</string>
 		<string>max</string>
 		<string>min</string>
+		<string>mod</string>
 		<string>nextnode</string>
 		<string>not</string>
 		<string>off</string>
@@ -185,6 +199,7 @@
 		<string>or</string>
 		<string>parameter</string>
 		<string>print</string>
+		<string>random</string>
 		<string>remove</string>
 		<string>return</string>
 		<string>rgb</string>
@@ -192,8 +207,12 @@
 		<string>round</string>
 		<string>run</string>
 		<string>set</string>
+		<string>sin</string>
+		<string>sqrt</string>
 		<string>stage</string>
+		<string>tan</string>
 		<string>to</string>
+		<string>unchar</string>
 		<string>unlock</string>
 		<string>until</string>
 		<string>usesas</string>
