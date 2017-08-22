@@ -233,11 +233,11 @@
 		<string>}</string>
 		<key>String Pattern</key>
 		<string>(?x:
-    (&quot;(\\&quot;|[^&quot;\r]|\\\r)*&quot;) |  (?# Double-quote)
-    (&apos;(\\&apos;|[^&apos;\r]|\\\r)*&apos;) |  (?# Single-quote)
+    (&quot;(\\&quot;|[^&quot;\r])*&quot;) |  (?# Double-quote)
+    (&apos;(\\&apos;|[^&apos;\r])*&apos;)  (?# Single-quote)
 )</string>
 		<key>Comment Pattern</key>
-		<string>(?:\/\/.*$)</string>
+		<string>(//.*$)</string>
 		<key>Identifier and Keyword Character Class</key>
 		<string>[:alnum:]_-</string>
 	</dict>
