@@ -25,25 +25,18 @@
 		<string>angularvelocity</string>
 		<string>apoapsis</string>
 		<string>archive</string>
-		<string>argumentofperiapsis</string>
 		<string>bays</string>
 		<string>body</string>
 		<string>brakes</string>
-		<string>burnvector</string>
 		<string>chutes</string>
 		<string>chutessafe</string>
 		<string>config</string>
 		<string>constant</string>
 		<string>controlconnection</string>
 		<string>core</string>
-		<string>deltav</string>
 		<string>deploydrills</string>
-		<string>direction</string>
 		<string>drills</string>
-		<string>eccentricity</string>
-		<string>electriccharge</string>
 		<string>encounter</string>
-		<string>epoch</string>
 		<string>eta</string>
 		<string>facing</string>
 		<string>false</string>
@@ -51,81 +44,49 @@
 		<string>gear</string>
 		<string>geoposition</string>
 		<string>groundspeed</string>
-		<string>hasnextpatch</string>
 		<string>heading</string>
 		<string>homeconnection</string>
-		<string>inclination</string>
-		<string>intakeair</string>
 		<string>intakes</string>
 		<string>isru</string>
 		<string>kUniverse</string>
 		<string>ladders</string>
-		<string>lan</string>
 		<string>latitude</string>
 		<string>legs</string>
 		<string>lights</string>
-		<string>liquidfuel</string>
 		<string>loaddistance</string>
 		<string>longitude</string>
-		<string>longitudeofascendingnode</string>
-		<string>mag</string>
 		<string>mapview</string>
 		<string>mass</string>
 		<string>maxthrust</string>
-		<string>meananomalyatepoch</string>
 		<string>missiontime</string>
-		<string>monopropellant</string>
-		<string>name</string>
 		<string>navmode</string>
-		<string>nextpatch</string>
-		<string>nextpatcheta</string>
-		<string>normal</string>
-		<string>normalized</string>
 		<string>north</string>
 		<string>obt</string>
 		<string>orbit</string>
-		<string>oxidizer</string>
 		<string>panels</string>
-		<string>partsdubbed</string>
-		<string>partsnamed</string>
-		<string>partstitled</string>
 		<string>periapsis</string>
-		<string>period</string>
-		<string>pi</string>
-		<string>position</string>
 		<string>prograde</string>
-		<string>radialout</string>
 		<string>radiators</string>
 		<string>rcs</string>
 		<string>remove</string>
 		<string>retrograde</string>
 		<string>sas</string>
 		<string>sasmode</string>
-		<string>seconds</string>
-		<string>semimajoraxis</string>
-		<string>semiminoraxis</string>
 		<string>sensors</string>
 		<string>sessiontime</string>
 		<string>ship</string>
 		<string>shipname</string>
 		<string>solarprimevector</string>
-		<string>solidfuel</string>
-		<string>sqrmagnitude</string>
 		<string>srfprograde</string>
 		<string>srfretrograde</string>
 		<string>status</string>
 		<string>steering</string>
-		<string>surface</string>
-		<string>surfacespeed</string>
 		<string>target</string>
 		<string>terminal</string>
-		<string>transition</string>
 		<string>throttle</string>
 		<string>time</string>
 		<string>true</string>
-		<string>trueanomaly</string>
 		<string>up</string>
-		<string>vec</string>
 		<string>velocity</string>
 		<string>version</string>
 		<string>verticalspeed</string>
@@ -133,9 +94,6 @@
 		<string>warpmode</string>
 		<string>wheelsteering</string>
 		<string>wheelthrottle</string>
-		<string>x</string>
-		<string>y</string>
-		<string>z</string>
 		<string>red</string>
 		<string>green</string>
 		<string>blue</string>
@@ -173,11 +131,17 @@
 		<string>arctan2</string>
 		<string>at</string>
 		<string>ceiling</string>
+		<string>cd</string>
 		<string>char</string>
 		<string>clearscreen</string>
+		<string>copypath</string>
 		<string>cos</string>
+		<string>create</string>
+		<string>createdir</string>
 		<string>declare</string>
+		<string>deletepath</string>
 		<string>else</string>
+		<string>exists</string>
 		<string>floor</string>
 		<string>for</string>
 		<string>function</string>
@@ -191,18 +155,22 @@
 		<string>ln</string>
 		<string>local</string>
 		<string>lock</string>
+		<string>log</string>
 		<string>log10</string>
 		<string>max</string>
 		<string>min</string>
 		<string>mod</string>
+		<string>movepath</string>
 		<string>nextnode</string>
 		<string>not</string>
 		<string>off</string>
 		<string>on</string>
+		<string>open</string>
 		<string>or</string>
 		<string>parameter</string>
 		<string>print</string>
 		<string>random</string>
+		<string>readjson</string>
 		<string>remove</string>
 		<string>return</string>
 		<string>rgb</string>
@@ -220,6 +188,7 @@
 		<string>until</string>
 		<string>usesas</string>
 		<string>wait</string>
+		<string>writejson</string>
 	</array>
 	<key>Language Features</key>
 	<dict>
