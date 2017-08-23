@@ -1,6 +1,6 @@
 # BBEdit Syntax Highlighting
 
-This Codeless Language Module for BBEdit provide basic syntax highlighting for KOS. At this stage it covers:
+This Codeless Language Module for BBEdit provides basic syntax highlighting for KOS:
 
  - commands & built in functions show as predefined symbols
  - bound variables show as language keywords
@@ -23,3 +23,7 @@ If you use a modified installation for syncing preferences between machines (e.g
 ## Screenshot
 
 ![BBEdit KOS Syntax Highlighting](BBEditKOSSyntaxHighlighting.png "Screenshot showing syntax highlighting, block folding and function list populated")
+
+## Maintainer
+
+Please tag @MaraRinn on any BBEdit CLM issues.
