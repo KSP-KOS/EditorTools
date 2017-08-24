@@ -11,6 +11,12 @@ This Codeless Language Module for BBEdit provides basic syntax highlighting for 
 
 Suffixes are not covered (so ship:altitude will be coloured because altitude is a bound variable, but ship:orbit:longitudeofascendingnode will not be coloured).
 
+## Pre-Release
+
+**This CLM is currently a pre-release**. It should work just fine, but be prepared to find some things don't quite work like you want. Please contact the maintainer regarding any issues.
+
+Note that BBEdit CLMs can not do context-aware colouring such as recognising suffixes. Only reserved words are highlighted — both function and variable names.
+
 ## Installation
 
 For a normal BBEdit install:
