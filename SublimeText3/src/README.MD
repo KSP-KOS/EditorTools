@@ -1,9 +1,9 @@
-## Source YAML 
+## Source YAML
 
-This directory contains the source `.YAML-tmLanguage` file used to build the final `.tmlLanguage` file.  
+This directory contains the source `.YAML-tmLanguage` file used to build the final `.tmlLanguage` file.
 
 ---
 
-## BaseConversion
+## OriginalPort
 
-The subdirectory BaseConversion contains the `.YAML-tmLanguage` and resulting `.tmLanguage` file dervied from xeger's original CSON grammer file. While 2 minor syntax changes were implemented, the functionality remains unchanged.      
+You can find [Alexical's](https://github.com/Alexical) original port of xeger's Atom package (along with additional information about that port) in the `OriginalPort` directory.
