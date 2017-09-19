@@ -17,24 +17,20 @@
 			<string>constant.numeric.kos</string>
 		</dict>
 		<dict>
-			<key>begin</key>
-			<string>\"</string>
 			<key>comment</key>
-			<string>string literal</string>
-			<key>end</key>
-			<string>\"</string>
+			<string>strings</string>
+			<key>match</key>
+			<string>(["])(?:(?=(\\?))\2.)*?\1</string>
 			<key>name</key>
-			<string>string.quoted.double.kos</string>
+			<string>string.quoted.double.ks</string>
 		</dict>
 		<dict>
-			<key>begin</key>
-			<string>//</string>
 			<key>comment</key>
-			<string>comment line</string>
-			<key>end</key>
-			<string>\n</string>
+			<string>comments</string>
+			<key>match</key>
+			<string>\/\/(.*)</string>
 			<key>name</key>
-			<string>comment.line.double-slash.kos</string>
+			<string>comment.line.kos</string>
 		</dict>
 		<dict>
 			<key>match</key>
@@ -434,7 +430,7 @@
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>other keywords</string>
+			<string>other keywords...</string>
 			<key>match</key>
 			<string>\b(?i:(print|at|from|volume|in|all))\b</string>
 			<key>name</key>
@@ -443,5 +439,7 @@
 	</array>
 	<key>scopeName</key>
 	<string>source.kos</string>
+	<key>uuid</key>
+	<string>1cb673ae-c225-4679-82a4-be7553ac0769</string>
 </dict>
 </plist>
