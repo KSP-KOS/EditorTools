@@ -2,7 +2,7 @@
 
 This syntax definition is a fork of [xeger's Atom package](https://github.com/KSP-KOS/EditorTools/tree/develop/Atom).  This is not a direct port, but an updated syntax definition to reflect changes since the original release of the Atom package two years ago.
 
-In addition to general updates, various features have been added to bring syntax highlighting in line with Sublime defaults.  xeger provided an excellent foundation that made adding new updates and functionality much easier, and my thanks goes out to him for sharing his work.  Additional thanks goes to Alexical[https://github.com/Alexical], who created the original Sublime Text 3 port of of xeger's module.  Those looking to use or build off of a functionally similar version of xeger's work can find Alexical's package [here](https://github.com/KSP-KOS/EditorTools/tree/develop/SublimeText3/src/OriginalPort).
+In addition to general updates, various features have been added to bring syntax highlighting in line with Sublime defaults.  xeger provided an excellent foundation that made adding new updates and functionality much easier, and my thanks goes out to him for sharing his work.  Additional thanks goes to [Alexical](https://github.com/Alexical), who created the original Sublime Text 3 port of of xeger's module.  Those looking to use or build off of a functionally similar version of xeger's work can find Alexical's package [here](https://github.com/KSP-KOS/EditorTools/tree/develop/SublimeText3/src/OriginalPort).
 
 ## Installation
 
