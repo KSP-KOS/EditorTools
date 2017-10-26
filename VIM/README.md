@@ -17,7 +17,7 @@ In ~/.vim/bundle download the VIM subdirectory with svn
 
 Add VIM/vim-kerboscript to your `.vimrc`
 
-    Plugin 'VIM/vim-kerboscript'
+    Plugin 'KSP-KOS/EditorTools', {'rtp': 'VIM/vim-kerboscript'}
 
 Launch `vim` and run `:PluginInstall`
 
