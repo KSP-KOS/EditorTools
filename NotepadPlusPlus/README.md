@@ -15,6 +15,9 @@ Current kOS version supported: 0.18.2
 **Style: Monokai**
 ![Kerboscript - Monokai](https://github.com/KSP-KOS/EditorTools/blob/develop/NotepadPlusPlus/preview/kerboscript_monokai.png)
 
+**Style: Bright**
+![Kerboscript - Bright](https://github.com/HiltiRaceteam/EditorTools/blob/develop/NotepadPlusPlus/preview/kerboscript_bright.png)
+
 *****
 
 ### Installation
