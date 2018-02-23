@@ -6,7 +6,7 @@ In addition to general updates, various features have been added to bring syntax
 
 ## Installation
 
-Download the `kOS.tmlLanguage` and `kOS.tmlPreferences` files, and place them in the your `User` package directory, which can be found by opening Sublime Text and selecting the following:
+Download the `kOS.tmLanguage` and `kOS.tmPreferences` files, and place them in the your `User` package directory, which can be found by opening Sublime Text and selecting the following:
 
 > Preferences > Browse Packages > User
 
