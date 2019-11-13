@@ -6,13 +6,15 @@ In addition to general updates, various features have been added to bring syntax
 
 ## Installation
 
-Download the `kOS.tmLanguage` and `kOS.tmPreferences` files, and place them in the your `User` package directory, which can be found by opening Sublime Text and selecting the following:
+Download `kOS.sublime-syntax` (provided by [dimir29](https://github.com/dimir29)) or `kOS.tmLanguage`, and `kOS.tmPreferences` and place them in the your `User` package directory, which can be found by opening Sublime Text and selecting the following:
 
 > Preferences > Browse Packages > User
 
 If you just want the path information, you can find the default Packages directory for Windows, Linux, and OSX [here](https://www.sublimetext.com/docs/3/revert.html)
 
 Those looking to modify the syntax definition to suit their preferences can find more information in the [Customization](https://github.com/KSP-KOS/EditorTools/tree/develop/SublimeText3#customizations) section.
+
+NOTE: Only `kOS.sublime-syntax` or `kOS.tmLanguage` should be added to your `User` folder, not both. 
 
 ## Supported Features
 
@@ -80,7 +82,9 @@ The following items in this section represent support for structures, parameters
 
 ### Customization
 
-If you wish to make alternations or additions to the definition, you can use [PackageDev](https://github.com/SublimeText/PackageDev) along with the `kOS.YAML-tmlLanguage` file in the [src directory](https://github.com/KSP-KOS/EditorTools/blob/develop/SublimeText3/src) to create your own version. While you can edit the `.tmlLanguage` file directly and skip the PackageDev route, the `.YAML-tmlLanguage` file is more readable, and easier to manipulate.
+If you wish to make alternations or additions to the definition, you can use [PackageDev](https://github.com/SublimeText/PackageDev) along with the `kOS.YAML-tmlLanguage` file in the [src directory](https://github.com/KSP-KOS/EditorTools/blob/develop/SublimeText3/src) to create your own version. If using `kOS.sublime-syntax`, PackageDev is not required as the syntax file can be edited directly. 
+
+While both methods work, `.sublime-syntax` files are much easier to read and work with.  
 
 An overview of creating syntax definitions in Sublime Text can be [found here](http://docs.sublimetext.info/en/latest/extensibility/syntaxdefs.html).
 
