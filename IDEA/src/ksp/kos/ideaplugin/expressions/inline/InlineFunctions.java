@@ -1,17 +1,17 @@
 package ksp.kos.ideaplugin.expressions.inline;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.util.containers.HashMap;
 import ksp.kos.ideaplugin.KerboScriptFile;
 import ksp.kos.ideaplugin.expressions.Expression;
 import ksp.kos.ideaplugin.expressions.Function;
 import ksp.kos.ideaplugin.expressions.SyntaxException;
 import ksp.kos.ideaplugin.psi.*;
-import org.apache.sanselan.util.IOUtils;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -37,7 +37,7 @@ public class InlineFunctions {
         try {
             InputStream stream = this.getClass().getResourceAsStream("/inline.ks");
             if (stream != null) {
-                String inline = new String(IOUtils.getInputStreamBytes(stream));
+                String inline = new String(FileUtil.loadBytes(stream));
                 KerboScriptFile file = KerboScriptElementFactory.file(inline);
                 for (PsiElement child : file.getChildren()) {
                     if (child instanceof KerboScriptDeclareStmt) {
@@ -87,7 +87,7 @@ public class InlineFunctions {
             LOG.warn("Failed to parse inline function " + name + ": return statement is not found");
             return null;
         }
-        return new InlineFunction(name, names.toArray(new String[names.size()]), expression);
+        return new InlineFunction(name, names.toArray(new String[0]), expression);
     }
 
     public Expression inline(Function function) {

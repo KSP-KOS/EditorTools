@@ -82,6 +82,7 @@ REBOOT       = reboot
 SHUTDOWN     = shutdown
 FOR          = for
 UNSET        = unset
+CHOOSE       = choose
 
 //Generic
 BRACKETOPEN  = \(
@@ -179,6 +180,7 @@ COMMENTLINE  = \/\/[^\n]*
 {SHUTDOWN}    {return KerboScriptTypes.SHUTDOWN;}
 {FOR}    {return KerboScriptTypes.FOR;}
 {UNSET}    {return KerboScriptTypes.UNSET;}
+{CHOOSE}    {return KerboScriptTypes.CHOOSE;}
 
 //Generic
 {BRACKETOPEN}    {return KerboScriptTypes.BRACKETOPEN;}

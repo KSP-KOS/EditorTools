@@ -1,7 +1,8 @@
 package ksp.kos.ideaplugin.expressions.inline;
 
-import com.intellij.util.containers.HashMap;
 import ksp.kos.ideaplugin.expressions.Expression;
+
+import java.util.HashMap;
 
 /**
  * Created on 07/03/16.

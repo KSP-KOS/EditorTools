@@ -1,16 +1,22 @@
 <idea-plugin url="https://github.com/KSP-KOS/EditorTools/tree/develop/IDEA">
     <id>kos-ksp.idea-plugin</id>
     <name>KerboScript(kOS)</name>
-    <version>1.1.2</version>
+    <version>1.2.1</version>
     <vendor email="ynicorn@gmail.com" url="https://github.com/valery-labuzhsky">Valery Labuzhsky
     </vendor>
 
     <description><![CDATA[
 This plugin enables support for kOS KerboScript in IntelliJ IDEA IDE.<br/>
-kOS version supported: 1.1.2
+kOS version supported: 1.2.1
     ]]></description>
 
     <change-notes><![CDATA[
+  <strong>Changes in version 1.2.1:</strong>
+<ul>
+    <li>Bugfix</li>
+    <li>Support of kOS 1.2.1</li>
+</ul>
+
   <strong>Changes in version 1.1.2:</strong>
 <ul>
     <li>Differentiate function</li>
@@ -59,16 +65,14 @@ kOS version supported: 1.1.2
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="162.0"/>
+    <idea-version since-build="193"/>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
-    <!-- uncomment to enable plugin in all products
     <depends>com.intellij.modules.java</depends>
-    -->
 
     <extensions defaultExtensionNs="com.intellij">
-        <fileTypeFactory implementation="ksp.kos.ideaplugin.KerboScriptFileTypeFactory"/>
+        <fileType name="KerboScript" extensions="ks" language="KerboScript" implementationClass="ksp.kos.ideaplugin.KerboScriptFileType"/>
         <lang.parserDefinition language="KerboScript"
                                implementationClass="ksp.kos.ideaplugin.parser.KerboScriptParserDefinition"/>
         <lang.syntaxHighlighterFactory language="KerboScript"

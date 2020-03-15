@@ -79,6 +79,7 @@ public class KerboScriptSyntaxHighlighter extends SyntaxHighlighterBase {
                     KerboScriptTypes.SHUTDOWN,
                     KerboScriptTypes.FOR,
                     KerboScriptTypes.UNSET,
+                    KerboScriptTypes.CHOOSE,
                     KerboScriptTypes.ATSIGN,
                     KerboScriptTypes.LAZYGLOBAL
             )
