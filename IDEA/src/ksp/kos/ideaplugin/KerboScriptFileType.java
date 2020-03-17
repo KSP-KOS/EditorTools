@@ -1,7 +1,6 @@
 package ksp.kos.ideaplugin;
 
 import com.intellij.icons.AllIcons;
-import com.intellij.lang.Language;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -14,15 +13,10 @@ import javax.swing.*;
  * @author ptasha
  */
 public class KerboScriptFileType extends LanguageFileType {
-    public static final KerboScriptFileType INSTANCE = new KerboScriptFileType(KerboScriptLanguage.INSTANCE);
+    public static final KerboScriptFileType INSTANCE = new KerboScriptFileType();
 
-    /**
-     * Creates a language file type for the specified language.
-     *
-     * @param language The language used in the files of the type.
-     */
-    public KerboScriptFileType(@NotNull Language language) {
-        super(language);
+    public KerboScriptFileType() {
+        super(KerboScriptLanguage.INSTANCE);
     }
 
     @NotNull

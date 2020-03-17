@@ -119,8 +119,8 @@ declare_stmt   ::= // declare|global|local are all optional for function and par
                           (
                               declare_parameter_clause |
                               declare_function_clause |
-                              declare_identifier_clause |
-                              declare_lock_clause
+                              declare_lock_clause |
+                              declare_identifier_clause
                           )
                       )
                   )
@@ -144,7 +144,8 @@ unset_stmt     ::= UNSET (IDENTIFIER | ALL) EOI
 // ---------- expressions ---------------------------
 
 arglist            ::= expr (COMMA expr)*
-expr               ::= (or_expr|instruction_block)
+expr               ::= (ternary_expr|or_expr|instruction_block)
+ternary_expr       ::= CHOOSE expr IF expr ELSE expr
 or_expr            ::= and_expr (OR and_expr)*
 and_expr           ::= compare_expr (AND compare_expr)*
 compare_expr       ::= arith_expr (COMPARATOR arith_expr)*
