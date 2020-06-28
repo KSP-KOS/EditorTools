@@ -30,10 +30,14 @@ class NewKerboScriptFileAction : CreateElementActionBase("KerboScript File", "Cr
     }
 
     inner class KerboScriptFileCreator(val project: Project, val directory: PsiDirectory) : CreateFileFromTemplateDialog.FileCreator<PsiElement?> {
+        private fun getFileName(fileName: String): String {
+            val extension = ".${KerboScriptFileType.INSTANCE.defaultExtension}"
+            return if (fileName.endsWith(extension)) fileName else fileName + extension
+        }
+
         override fun createFile(fileName: String, option: String): PsiElement? {
-            val fileType = KerboScriptFileType.INSTANCE
             val fileFactory = PsiFileFactory.getInstance(project)
-            val file = fileFactory.createFileFromText("$fileName.${fileType.defaultExtension}", fileType, "")
+            val file = fileFactory.createFileFromText(getFileName(fileName), KerboScriptFileType.INSTANCE, "")
             val psiFile = directory.add(file) as PsiFile
             // Open the file we just created.
             FileEditorManager.getInstance(project).openFile(psiFile.virtualFile, true)
