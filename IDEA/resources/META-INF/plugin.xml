@@ -72,7 +72,7 @@ kOS version supported: 1.2.1
     <depends>com.intellij.modules.java</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <fileType name="KerboScript" extensions="ks" language="KerboScript" implementationClass="ksp.kos.ideaplugin.KerboScriptFileType"/>
+        <fileType name="KerboScript" extensions="ks" language="KerboScript" implementationClass="ksp.kos.ideaplugin.KerboScriptFileType" fieldName="INSTANCE"/>
         <lang.parserDefinition language="KerboScript"
                                implementationClass="ksp.kos.ideaplugin.parser.KerboScriptParserDefinition"/>
         <lang.syntaxHighlighterFactory language="KerboScript"
@@ -89,7 +89,9 @@ kOS version supported: 1.2.1
     </extensions>
 
     <actions>
-        <!-- Add your actions here -->
+        <action id="ksp.kos.ideaplugin.actions.NewKerboScriptFileAction" class="ksp.kos.ideaplugin.actions.NewKerboScriptFileAction">
+            <add-to-group group-id="NewGroup" anchor="after" relative-to-action="NewFile"/>
+        </action>
         <action id="ksp.kos.ideaplugin.actions.differentiate.Differentiate" class="ksp.kos.ideaplugin.actions.differentiate.Differentiate"
                 text="Differentiate..." description="Compute a derivative">
             <add-to-group group-id="RefactoringMenu4" anchor="last"/>
