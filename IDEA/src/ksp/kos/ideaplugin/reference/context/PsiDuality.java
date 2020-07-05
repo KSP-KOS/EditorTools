@@ -1,10 +1,6 @@
 package ksp.kos.ideaplugin.reference.context;
 
-import ksp.kos.ideaplugin.KerboScriptFile;
-import ksp.kos.ideaplugin.dataflow.FunctionFlow;
 import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
-import ksp.kos.ideaplugin.expressions.SyntaxException;
-import ksp.kos.ideaplugin.psi.KerboScriptDeclareFunctionClause;
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
 import ksp.kos.ideaplugin.reference.ReferableType;
 
