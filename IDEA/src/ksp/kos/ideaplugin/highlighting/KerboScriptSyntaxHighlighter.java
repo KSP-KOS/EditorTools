@@ -1,4 +1,4 @@
-package ksp.kos.ideaplugin;
+package ksp.kos.ideaplugin.highlighting;
 
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;

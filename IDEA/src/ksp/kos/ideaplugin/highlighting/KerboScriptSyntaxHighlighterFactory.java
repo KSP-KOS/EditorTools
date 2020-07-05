@@ -1,4 +1,4 @@
-package ksp.kos.ideaplugin;
+package ksp.kos.ideaplugin.highlighting;
 
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory;
