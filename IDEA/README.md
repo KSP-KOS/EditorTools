@@ -10,7 +10,9 @@ Current kOS version supported: 1.1.2
 ### COMPILE
 0. Download IntelliJ and install the plugins recommended in the [prerequisites steps](http://www.jetbrains.org/intellij/sdk/docs/tutorials/custom_language_support/prerequisites.html) (no need to check out community source files or create a project)
 1. Run `./gradlew buildPlugin` (or `gradlew.bat` on Windows) to build the plugin
-2. Run the plugin
+2. Either install the plugin from `build/distributions/KerboScript(kOS).zip` or run `./gradlew runIde` to start up a sandboxed copy of the IDE with the plugin installed in it
+
+Note that Gradle tasks such as `buildPlugin` or `runIde` can also be run from within the Gradle tab in IntelliJ.
 
 REFACTORING
 -----------
