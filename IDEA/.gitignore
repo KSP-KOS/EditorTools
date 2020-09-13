@@ -1,8 +1,10 @@
-out
-gen
+out/
+gen/
 *~
-.idea
+.idea/
 *.iml
 IDEA.jar
 .directory
-KerboScriptLexer.java
+
+.gradle/
+build/
