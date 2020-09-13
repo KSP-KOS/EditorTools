@@ -18,16 +18,8 @@ java {
 }
 
 sourceSets {
-    // Specify source directories per language
     main {
-        java.srcDir("src/")
-        java.srcDir("gen/")
-        resources.srcDir("resources/")
-    }
-
-    // Specify test directories
-    test {
-        java.srcDir("test/")
+        java.srcDir("src/gen")
     }
 }
 
@@ -62,15 +54,15 @@ intellij {
 
 project(":") {
     val generateLexer = task<GenerateLexer>("generateLexer") {
-        source = "src/ksp/kos/ideaplugin/parser/KerboScript.flex"
-        targetDir = "gen/ksp/kos/ideaplugin/parser"
+        source = "src/main/grammar/KerboScript.flex"
+        targetDir = "src/gen/ksp/kos/ideaplugin/parser"
         targetClass = "KerboScriptLexer"
         purgeOldFiles = true
     }
 
     val generateParser = task<GenerateParser>("generateParser") {
-        source = "src/ksp/kos/ideaplugin/parser/KerboScript.bnf"
-        targetRoot = "gen"
+        source = "src/main/grammar/KerboScript.bnf"
+        targetRoot = "src/gen"
         pathToParser = "/ksp/kos/ideaplugin/parser/KerboScriptParser.java"
         pathToPsiRoot = "/ksp/kos/ideaplugin/psi"
         purgeOldFiles = true

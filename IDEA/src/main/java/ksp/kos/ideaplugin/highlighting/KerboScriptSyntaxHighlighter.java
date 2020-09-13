@@ -5,7 +5,6 @@ import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.tree.IElementType;
-import ksp.kos.ideaplugin.Magic;
 import ksp.kos.ideaplugin.parser.KerboScriptLexerAdapter;
 import ksp.kos.ideaplugin.psi.KerboScriptTypes;
 import org.jetbrains.annotations.NotNull;
@@ -101,7 +100,7 @@ public class KerboScriptSyntaxHighlighter extends SyntaxHighlighterBase {
             return createKeys(COMMENT);
         } else if (tokenType.equals(KerboScriptTypes.STRING)) {
             return createKeys(STRING);
-        } else if (Magic.INSTANCE.getKeywords().contains(tokenType)) {
+        } else if (KEYWORDS.contains(tokenType)) {
             return createKeys(KEYWORD);
         } else if (tokenType.equals(KerboScriptTypes.E) || tokenType.equals(KerboScriptTypes.INTEGER) || tokenType.equals(KerboScriptTypes.DOUBLE)) {
             return createKeys(NUMBER);
