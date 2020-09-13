@@ -70,6 +70,7 @@ kOS version supported: 1.2.1
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
     <depends>com.intellij.modules.java</depends>
+    <depends>com.intellij.modules.lang</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <fileType name="KerboScript" extensions="ks" language="KerboScript" implementationClass="ksp.kos.ideaplugin.KerboScriptFileType" fieldName="INSTANCE"/>
@@ -83,7 +84,6 @@ kOS version supported: 1.2.1
         <lang.findUsagesProvider language="KerboScript" implementationClass="ksp.kos.ideaplugin.KerboScriptFindUsagesProvider"/>
         <lang.formatter language="KerboScript" implementationClass="ksp.kos.ideaplugin.format.KerboScriptFormattingModelBuilder"/>
         <lang.commenter language="KerboScript" implementationClass="ksp.kos.ideaplugin.KerboScriptCommenter"/>
-        <problemFileHighlightFilter implementation="ksp.kos.ideaplugin.KerboScriptHighlightFilter"/>
         <typedHandler implementation="ksp.kos.ideaplugin.completion.KerboScriptTypedHandler"/>
         <completion.contributor language="KerboScript" implementationClass="ksp.kos.ideaplugin.completion.KerboScriptCompletionContributor"/>
         <problemFileHighlightFilter implementation="ksp.kos.ideaplugin.highlighting.KerboScriptHighlightFilter"/>
