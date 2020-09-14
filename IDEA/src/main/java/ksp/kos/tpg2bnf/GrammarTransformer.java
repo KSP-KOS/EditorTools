@@ -10,9 +10,9 @@ import java.nio.file.Paths;
  * @author ptasha
  */
 public class GrammarTransformer {
-    private static final String TPG_PATH = "grammar/kRISC.tpg";
-    private static final String FLEX_PATH = "grammar/KerboScript.flex";
-    private static final String BNF_PATH = "grammar/KerboScript.bnf";
+    private static final String TPG_PATH = "src/main/grammar/kRISC.tpg";
+    private static final String FLEX_PATH = "src/main/grammar/KerboScript.flex";
+    private static final String BNF_PATH = "src/main/grammar/KerboScript.bnf";
     private String tpg;
     private String flex;
     private String bnf;
