@@ -11,7 +11,7 @@ import java.util.List;
  * @author ptasha
  */
 public class InstructionsParser {
-    private ContextBuilder context;
+    private final ContextBuilder context;
 
     public InstructionsParser() {
         this(null);

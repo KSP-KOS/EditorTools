@@ -56,7 +56,7 @@ public class PsiFileContext extends FileContext {
         }
         try {
             KerboScriptInstruction instruction = KerboScriptElementFactory.instruction(kerboScriptFile.getProject(), String.format(text, reference.getName()));
-            PsiDuality<?, ?> declaration = new PsiDuality<>(instruction.downTill(KerboScriptNamedElement.class));
+            PsiDuality declaration = new PsiDuality(instruction.downTill(KerboScriptNamedElement.class));
             getParent().register(declaration);
             return declaration;
         } catch (IllegalArgumentException e) {

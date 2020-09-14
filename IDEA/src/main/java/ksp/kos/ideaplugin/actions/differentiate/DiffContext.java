@@ -36,7 +36,7 @@ public class DiffContext extends FileContext {
             if (createAllowed && reference.getName().endsWith("_")) {
                 String name1 = reference.getName();
                 name1 = name1.substring(0, name1.length()-1);
-                FunctionFlow original = FlowSelfResolvable.function(context, name1).findDeclaration();
+                FunctionFlow original = (FunctionFlow) FlowSelfResolvable.function(context, name1).findDeclaration();
                 if (original!=null) {
                     String fileName = original.getKingdom().getFileContext().getName();
                     FileDuality diffFile = fileResolver.resolveFile(fileName + "_");
@@ -59,8 +59,8 @@ public class DiffContext extends FileContext {
     }
 
     public void importFlows() {
-        for (Duality<?, FunctionFlow> duality : getDeclarations(ReferableType.FUNCTION).values()) {
-            importFlow(duality.getSemantics());
+        for (Duality duality : getDeclarations(ReferableType.FUNCTION).values()) {
+            importFlow((FunctionFlow) duality.getSemantics());
         }
         ensureImports();
     }
@@ -96,8 +96,8 @@ public class DiffContext extends FileContext {
     }
 
     public void checkUsage() {
-        for (Duality<?, FunctionFlow> duality : getDeclarations(ReferableType.FUNCTION).values()) {
-            duality.getSemantics().checkUsages();
+        for (Duality duality : getDeclarations(ReferableType.FUNCTION).values()) {
+            ((FunctionFlow) duality.getSemantics()).checkUsages();
         }
     }
 }

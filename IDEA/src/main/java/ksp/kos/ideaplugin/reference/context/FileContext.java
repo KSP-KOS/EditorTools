@@ -14,7 +14,7 @@ import java.util.Map;
  *
  * @author ptasha
  */
-public abstract class FileContext extends LocalContext implements ReferenceFlow, FileDuality {
+public abstract class FileContext extends LocalContext implements ReferenceFlow<FileContext>, FileDuality {
     private final String name;
 
     public FileContext(LocalContext parent, String name, FileContextResolver fileResolver) {
