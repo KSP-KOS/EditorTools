@@ -27,7 +27,7 @@ public interface Flow<F extends Flow<F>> extends Dependency {
 
     boolean hasDependees();
 
-    default boolean isDependee(Flow flow) {
+    default boolean isDependee(Flow<?> flow) {
         if (getDependees().contains(flow)) {
             return true;
         }

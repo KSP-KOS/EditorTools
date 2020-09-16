@@ -1,10 +1,6 @@
 package ksp.kos.ideaplugin.reference;
 
-import ksp.kos.ideaplugin.KerboScriptFile;
-import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
-import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
 import ksp.kos.ideaplugin.reference.context.Duality;
-import ksp.kos.ideaplugin.reference.context.FileContext;
 import ksp.kos.ideaplugin.reference.context.LocalContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author ptasha
  */
-public interface DualitySelfResolvable<P extends KerboScriptNamedElement, F extends ReferenceFlow> extends Reference {
+public interface DualitySelfResolvable extends Reference {
     static DualitySelfResolvable variable(LocalContext kingdom, String name) {
         return reference(kingdom, ReferableType.VARIABLE, name);
     }
@@ -22,7 +18,7 @@ public interface DualitySelfResolvable<P extends KerboScriptNamedElement, F exte
         return reference(kingdom, ReferableType.FUNCTION, name);
     }
 
-    static DualitySelfResolvable<KerboScriptFile, FileContext> file(LocalContext kingdom, String name) {
+    static DualitySelfResolvable file(LocalContext kingdom, String name) {
         return reference(kingdom, ReferableType.FILE, name);
     }
 
@@ -31,11 +27,11 @@ public interface DualitySelfResolvable<P extends KerboScriptNamedElement, F exte
         return new DualityReferenceImpl(kingdom, type, name);
     }
 
-    default Duality<P, F> resolve() {
+    default Duality resolve() {
         return getKingdom().resolve(this);
     }
 
-    default Duality<P, F> findDeclaration() {
+    default Duality findDeclaration() {
         return getKingdom().findDeclaration(this);
     }
 }

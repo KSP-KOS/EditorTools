@@ -7,5 +7,7 @@ import ksp.kos.ideaplugin.KerboScriptFile;
  *
  * @author ptasha
  */
-public interface FileDuality extends Duality<KerboScriptFile, FileContext> {
+public interface FileDuality extends Duality {
+    KerboScriptFile getSyntax();
+    FileContext getSemantics();
 }

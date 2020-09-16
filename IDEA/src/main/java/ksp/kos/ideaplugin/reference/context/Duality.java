@@ -9,7 +9,7 @@ import ksp.kos.ideaplugin.reference.Reference;
  *
  * @author ptasha
  */
-public interface Duality<P extends KerboScriptNamedElement, F extends ReferenceFlow> extends Reference {
+public interface Duality extends Reference {
     // TODO simplify duality tree
 
     static KerboScriptNamedElement getSyntax(Duality duality) {
@@ -19,6 +19,6 @@ public interface Duality<P extends KerboScriptNamedElement, F extends ReferenceF
         return null;
     }
 
-    P getSyntax();
-    F getSemantics();
+    KerboScriptNamedElement getSyntax();
+    ReferenceFlow<?> getSemantics();
 }

@@ -34,7 +34,6 @@ public abstract class BaseFlow<F extends BaseFlow<F>> implements Flow<F> {
         return !dependees.isEmpty();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public boolean addContext(ContextBuilder context) {
         return true;

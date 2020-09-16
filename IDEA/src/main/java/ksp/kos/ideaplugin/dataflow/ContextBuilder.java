@@ -10,9 +10,9 @@ import java.util.*;
  *
  * @author ptasha
  */
-public class ContextBuilder<F extends Flow<F>> { // TODO combine into diff context?
+public class ContextBuilder { // TODO combine into diff context?
     private ContextBuilder parent;
-    private final List<F> list = new LinkedList<>();
+    private final List<Flow<?>> list = new LinkedList<>();
     private final HashMap<String, Dependency> map = new HashMap<>();
     private final MixedDependency returnFlow = new MixedDependency();
 
@@ -25,14 +25,14 @@ public class ContextBuilder<F extends Flow<F>> { // TODO combine into diff conte
     }
 
     public void visit(ExpressionVisitor visitor) {
-        for (Flow flow : getList()) {
+        for (Flow<?> flow : getList()) {
             flow.accept(visitor);
         }
     }
 
     public String getText() {
         String text = "";
-        for (Flow flow : getList()) {
+        for (Flow<?> flow : getList()) {
             if (!text.isEmpty()) text += "\n";
             text += flow.getText();
         }
@@ -46,8 +46,8 @@ public class ContextBuilder<F extends Flow<F>> { // TODO combine into diff conte
     }
 
     public void simplify() {
-        for (ListIterator<F> iterator = list.listIterator(list.size()); iterator.hasPrevious(); ) {
-            Flow variable = iterator.previous();
+        for (ListIterator<Flow<?>> iterator = list.listIterator(list.size()); iterator.hasPrevious(); ) {
+            Flow<?> variable = iterator.previous();
             // TODO simplify
             if (!variable.hasDependees()) {
                 iterator.remove();
@@ -55,12 +55,12 @@ public class ContextBuilder<F extends Flow<F>> { // TODO combine into diff conte
         }
     }
 
-    public void add(F flow) {
+    public void add(Flow<?> flow) {
         list.add(flow);
     }
 
     public boolean buildMap() {
-        for (Flow flow : list) {
+        for (Flow<?> flow : list) {
             if (!flow.addContext(this)) {
                 return false;
             }
@@ -88,12 +88,8 @@ public class ContextBuilder<F extends Flow<F>> { // TODO combine into diff conte
         this.returnFlow.addDependency(returnFlow); // TODO optimize?
     }
 
-    public List<F> getList() {
+    public List<Flow<?>> getList() {
         return list;
-    }
-
-    public ContextBuilder getParent() {
-        return parent;
     }
 
     public void setParent(ContextBuilder parent) {
@@ -101,7 +97,7 @@ public class ContextBuilder<F extends Flow<F>> { // TODO combine into diff conte
     }
 
     public void sort() {
-        TreeSet<F> sorted = new TreeSet<>((o1, o2) -> {
+        TreeSet<Flow<?>> sorted = new TreeSet<>((o1, o2) -> {
             if (o1 instanceof ReturnFlow) {
                 return 1;
             } else if (o2 instanceof ReferenceFlow) {

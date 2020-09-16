@@ -3,7 +3,6 @@ package ksp.kos.ideaplugin.dataflow;
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
 import ksp.kos.ideaplugin.reference.ReferableType;
 import ksp.kos.ideaplugin.reference.context.Duality;
-import ksp.kos.ideaplugin.reference.context.FileContext;
 import ksp.kos.ideaplugin.reference.context.LocalContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,15 +15,11 @@ import java.util.Objects;
  */
 public class ImportFlow extends BaseFlow<ImportFlow>
         implements NamedFlow<ImportFlow>, Comparable<ImportFlow>,
-        ReferenceFlow, Duality<KerboScriptNamedElement, ImportFlow> {
+        ReferenceFlow<ImportFlow>, Duality {
     private final String name;
 
     public ImportFlow(String name) {
         this.name = name;
-    }
-
-    public ImportFlow(FileContext file) {
-        this(file.getName());
     }
 
     @Override

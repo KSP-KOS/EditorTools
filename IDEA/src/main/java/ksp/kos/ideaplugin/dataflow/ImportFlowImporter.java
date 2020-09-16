@@ -46,7 +46,7 @@ public class ImportFlowImporter extends FlowImporter<ImportFlow> {
     protected KerboScriptInstruction importFlow(KerboScriptFile file, ImportFlow flow, Map<String, Duality> map) {
         KerboScriptInstruction instruction = super.importFlow(file, flow, map);
         KerboScriptRunStmt runStmt = instruction.getRunStmt();
-        map.put(runStmt.getName(), new PsiDuality<>(runStmt));
+        map.put(runStmt.getName(), new PsiDuality(runStmt));
         return instruction;
     }
 }

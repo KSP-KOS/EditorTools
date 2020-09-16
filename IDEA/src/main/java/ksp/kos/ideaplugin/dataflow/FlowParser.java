@@ -12,11 +12,11 @@ import java.util.function.Function;
  *
  * @author ptasha
  */
-public class FlowParser implements Function<KerboScriptNamedElement, ReferenceFlow> {
+public class FlowParser implements Function<KerboScriptNamedElement, ReferenceFlow<?>> {
     public static final FlowParser INSTANCE = new FlowParser();
 
     @Override
-    public ReferenceFlow apply(KerboScriptNamedElement psi) {
+    public ReferenceFlow<?> apply(KerboScriptNamedElement psi) {
         if (psi instanceof KerboScriptDeclareFunctionClause) {
             try {
                 return FunctionFlow.parse((KerboScriptDeclareFunctionClause) psi);

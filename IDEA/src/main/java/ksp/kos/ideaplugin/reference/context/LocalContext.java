@@ -1,6 +1,5 @@
 package ksp.kos.ideaplugin.reference.context;
 
-import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
 import ksp.kos.ideaplugin.reference.ReferableType;
 import ksp.kos.ideaplugin.reference.Reference;
@@ -40,13 +39,12 @@ public class LocalContext {
         return parent;
     }
 
-    @SuppressWarnings("unchecked")
     @NotNull
     public Map<String, Duality> getFunctions() {
         return getDeclarations(ReferableType.FUNCTION);
     }
 
-    public <K extends KerboScriptNamedElement, F extends ReferenceFlow> Duality<K, F> findDeclaration(Reference reference) {
+    public Duality findDeclaration(Reference reference) {
         return resolve(reference, false);
     }
 
@@ -59,7 +57,7 @@ public class LocalContext {
         return null;
     }
 
-    public <K extends KerboScriptNamedElement, F extends ReferenceFlow> Duality<K, F> resolve(Reference reference) {
+    public Duality resolve(Reference reference) {
         return resolve(reference, true);
     }
 
@@ -103,20 +101,14 @@ public class LocalContext {
         getDeclarations(type).put(name, element);
     }
 
-    @SuppressWarnings("unchecked")
     @NotNull
     public Map<String, Duality> getDeclarations(ReferableType type) {
         Map<String, Duality> map = declarations.get(type);
         if (map==null) {
-            map = createMap(type);
+            map = new ScopeMap<>();
             declarations.put(type, map);
         }
         return map;
-    }
-
-    @NotNull
-    public Map<String, Duality> createMap(ReferableType type) {
-        return new ScopeMap<>();
     }
 
     public FileContext getFileContext() {
