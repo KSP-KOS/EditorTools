@@ -20,6 +20,7 @@ jobs:
       with:
         arguments: test buildPlugin
         build-root-directory: IDEA/
+        wrapper-directory: IDEA/
     - uses: actions/upload-artifact@v2
       with:
         name: KerboScript(kOS).zip
