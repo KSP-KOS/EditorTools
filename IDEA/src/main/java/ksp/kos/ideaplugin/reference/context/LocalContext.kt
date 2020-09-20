@@ -1,142 +1,70 @@
-package ksp.kos.ideaplugin.reference.context;
+package ksp.kos.ideaplugin.reference.context
 
-import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
-import ksp.kos.ideaplugin.reference.ReferableType;
-import ksp.kos.ideaplugin.reference.Reference;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.*;
+import ksp.kos.ideaplugin.psi.KerboScriptNamedElement
+import ksp.kos.ideaplugin.reference.ReferableType
+import ksp.kos.ideaplugin.reference.Reference
+import java.util.*
+import kotlin.collections.HashMap
 
 /**
  * Created on 04/10/16.
  *
  * @author ptasha
  */
-public class LocalContext {
-    protected final LocalContext parent;
-    private final Map<ReferableType, Map<String, Duality>> declarations = new HashMap<>();
+open class LocalContext protected constructor(
+    val parent: LocalContext?,
+    private val resolvers: List<ReferenceResolver<LocalContext>>,
+) {
+    private val declarations: MutableMap<ReferableType, MutableMap<String, Duality>> = HashMap()
 
-    private final List<ReferenceResolver<LocalContext>> resolvers;
+    constructor(parent: LocalContext?) : this(parent, createResolvers())
 
-    public LocalContext(LocalContext parent) {
-        this(parent, createResolvers());
-    }
+    val functions: Map<String, Duality>
+        get() = getDeclarations(ReferableType.FUNCTION)
 
-    protected LocalContext(LocalContext parent, List<ReferenceResolver<LocalContext>> resolvers) {
-        this.parent = parent;
-        this.resolvers = resolvers;
-    }
+    fun findDeclaration(reference: Reference): Duality? = resolve(reference, false)
 
-    public static List<ReferenceResolver<LocalContext>> createResolvers() {
-        List<ReferenceResolver<LocalContext>> resolvers = new ArrayList<>();
-        resolvers.add(new LocalResolver());
-        resolvers.add(new ParentResolver());
-        return resolvers;
-    }
-
-    public LocalContext getParent() {
-        return parent;
-    }
-
-    @NotNull
-    public Map<String, Duality> getFunctions() {
-        return getDeclarations(ReferableType.FUNCTION);
-    }
-
-    public Duality findDeclaration(Reference reference) {
-        return resolve(reference, false);
-    }
-
-    @Nullable
-    public Duality findLocalDeclaration(Reference reference) {
-        Duality declaration = getDeclarations(reference.getReferableType()).get(reference.getName());
-        if (declaration!=null && reference.matches(declaration)) {
-            return declaration;
+    open fun findLocalDeclaration(reference: Reference): Duality? =
+        getDeclarations(reference.referableType)[reference.name]?.let { declaration ->
+            if (reference.matches(declaration)) declaration else null
         }
-        return null;
-    }
 
-    public Duality resolve(Reference reference) {
-        return resolve(reference, true);
-    }
+    fun resolve(reference: Reference): Duality? = resolve(reference, true)
 
-    protected Duality resolve(Reference reference, boolean createAllowed) {
-        for (ReferenceResolver<LocalContext> resolver : resolvers) {
-            Duality resolved = resolver.resolve(this, reference, createAllowed);
-            if (resolved!=null) {
-                return resolved;
-            }
-        }
-        return null;
-    }
+    protected open fun resolve(reference: Reference, createAllowed: Boolean): Duality? =
+        resolvers.mapNotNull { resolver -> resolver.resolve(this, reference, createAllowed) }.firstOrNull()
 
-    public void clear() {
-        declarations.clear();
-    }
+    open fun clear() = declarations.clear()
 
-    public void register(Duality element) {
-        String name = element.getName();
-        if (name!=null) {
-            ReferableType type = element.getReferableType();
-            switch (type) {
-                case FUNCTION:
-                case VARIABLE:
-                    addDefinition(type, name, element);
-                    break;
-                default:
-                    registerUnknown(type, name, element);
+    fun register(element: Duality) {
+        val name = element.name
+        if (name != null) {
+            when (val type = element.referableType) {
+                ReferableType.FUNCTION, ReferableType.VARIABLE -> addDefinition(type, name, element)
+                else -> registerUnknown(type, name, element)
             }
         }
     }
 
-    public void register(KerboScriptNamedElement psi) {
-        register(new PsiDuality(psi));
+    fun register(psi: KerboScriptNamedElement) = register(PsiDuality(psi))
+
+    protected open fun registerUnknown(type: ReferableType, name: String, element: Duality) {}
+
+    protected fun addDefinition(type: ReferableType, name: String, element: Duality) {
+        getDeclarations(type)[name] = element
     }
 
-    protected void registerUnknown(ReferableType type, String name, Duality element) {
-    }
+    fun getDeclarations(type: ReferableType): MutableMap<String, Duality> = declarations.getOrPut(type, ::ScopeMap)
 
-    protected void addDefinition(ReferableType type, String name, Duality element) {
-        getDeclarations(type).put(name, element);
-    }
+    val fileContext: FileContext?
+        get() = (this as? FileContext) ?: parent?.fileContext
 
-    @NotNull
-    public Map<String, Duality> getDeclarations(ReferableType type) {
-        Map<String, Duality> map = declarations.get(type);
-        if (map==null) {
-            map = new ScopeMap<>();
-            declarations.put(type, map);
-        }
-        return map;
-    }
+    class ScopeMap<T> : LinkedHashMap<String, T>() {
+        private fun String.normalize(): String = this.toLowerCase()
 
-    public FileContext getFileContext() {
-        if (this instanceof FileContext) {
-            return (FileContext) this;
-        } else if (parent!=null) {
-            return parent.getFileContext();
-        }
-        return null;
-    }
+        override fun put(key: String, value: T): T? = super.put(key.normalize(), value)
 
-    public static class ScopeMap<T> extends LinkedHashMap<String, T> {
-        @Override
-        public T put(String key, T value) {
-            if (!containsKey(key)) {
-                super.put(key.toLowerCase(), value);
-            }
-            return null;
-        }
-
-        @Override
-        public T get(Object key) {
-            return get((String)key);
-        }
-
-        public T get(String key) {
-            return super.get(key.toLowerCase());
-        }
+        override fun get(key: String): T? = super.get(key.normalize())
     }
 
     /**
@@ -144,11 +72,9 @@ public class LocalContext {
      *
      * @author ptasha
      */
-    public static class LocalResolver implements ReferenceResolver<LocalContext> {
-        @Override
-        public Duality resolve(LocalContext context, Reference reference, boolean createAllowed) {
-            return context.findLocalDeclaration(reference);
-        }
+    class LocalResolver : ReferenceResolver<LocalContext> {
+        override fun resolve(context: LocalContext, reference: Reference, createAllowed: Boolean): Duality? =
+            context.findLocalDeclaration(reference)
     }
 
     /**
@@ -156,14 +82,16 @@ public class LocalContext {
      *
      * @author ptasha
      */
-    public static class ParentResolver implements ReferenceResolver<LocalContext> {
-        @Override
-        public Duality resolve(LocalContext context, Reference reference, boolean createAllowed) {
-            LocalContext parent = context.getParent();
-            if (parent!=null) {
-                return parent.resolve(reference, createAllowed);
-            }
-            return null;
-        }
+    open class ParentResolver : ReferenceResolver<LocalContext> {
+        override fun resolve(context: LocalContext, reference: Reference, createAllowed: Boolean): Duality? =
+            context.parent?.resolve(reference, createAllowed)
+    }
+
+    companion object {
+        fun createResolvers(): List<ReferenceResolver<LocalContext>> =
+            listOf(
+                LocalResolver(),
+                ParentResolver(),
+            )
     }
 }

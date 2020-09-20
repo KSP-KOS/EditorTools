@@ -1,93 +1,71 @@
-package ksp.kos.ideaplugin.psi;
+package ksp.kos.ideaplugin.psi
 
-import com.intellij.psi.PsiElement;
-import ksp.kos.ideaplugin.reference.ReferenceType;
-import ksp.kos.ideaplugin.reference.OccurrenceType;
-import ksp.kos.ideaplugin.reference.ReferableType;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
+import com.intellij.psi.PsiElement
+import ksp.kos.ideaplugin.reference.OccurrenceType
+import ksp.kos.ideaplugin.reference.ReferableType
+import ksp.kos.ideaplugin.reference.ReferenceType
 
 /**
  * Created on 07/01/16.
  *
  * @author ptasha
  */
-public class KerboScriptPsiWalker extends KerboScriptVisitor {
-    @Override
-    public void visitScope(@NotNull KerboScriptScope o) {
-        o.getCachedScope().clear();
-        super.visitScope(o);
+class KerboScriptPsiWalker : KerboScriptVisitor() {
+    override fun visitScope(o: KerboScriptScope) {
+        o.cachedScope.clear()
+        super.visitScope(o)
     }
 
-    @Override
-    public void visitRunStmt(@NotNull KerboScriptRunStmt o) {
-        o.setType(new ReferenceType(ReferableType.FILE, OccurrenceType.REFERENCE));
-        super.visitRunStmt(o);
+    override fun visitRunStmt(o: KerboScriptRunStmt) {
+        o.type = ReferenceType(ReferableType.FILE, OccurrenceType.REFERENCE)
+        super.visitRunStmt(o)
     }
 
-    @Override
-    public void visitDeclareFunctionClause(@NotNull KerboScriptDeclareFunctionClause o) {
-        o.setType(new ReferenceType(ReferableType.FUNCTION, OccurrenceType.LOCAL));
-        super.visitDeclareFunctionClause(o);
+    override fun visitDeclareFunctionClause(o: KerboScriptDeclareFunctionClause) {
+        o.type = ReferenceType(ReferableType.FUNCTION, OccurrenceType.LOCAL)
+        super.visitDeclareFunctionClause(o)
     }
 
-    @Override
-    public void visitDeclareIdentifierClause(@NotNull KerboScriptDeclareIdentifierClause o) {
-        o.setType(new ReferenceType(ReferableType.VARIABLE, OccurrenceType.LOCAL));
-        super.visitDeclareIdentifierClause(o);
+    override fun visitDeclareIdentifierClause(o: KerboScriptDeclareIdentifierClause) {
+        o.type = ReferenceType(ReferableType.VARIABLE, OccurrenceType.LOCAL)
+        super.visitDeclareIdentifierClause(o)
     }
 
-    @Override
-    public void visitDeclareParameterClause(@NotNull KerboScriptDeclareParameterClause o) {
-        o.setType(new ReferenceType(ReferableType.VARIABLE, OccurrenceType.LOCAL));
-        super.visitDeclareParameterClause(o);
+    override fun visitDeclareParameterClause(o: KerboScriptDeclareParameterClause) {
+        o.type = ReferenceType(ReferableType.VARIABLE, OccurrenceType.LOCAL)
+        super.visitDeclareParameterClause(o)
     }
 
-    @Override
-    public void visitAtom(@NotNull KerboScriptAtom o) {
-        if (o.getNode().findChildByType(KerboScriptTypes.IDENTIFIER) == null) {
-            o.setType(new ReferenceType(ReferableType.OTHER, OccurrenceType.NONE));
+    override fun visitAtom(o: KerboScriptAtom) {
+        if (o.node.findChildByType(KerboScriptTypes.IDENTIFIER) == null) {
+            o.type = ReferenceType(ReferableType.OTHER, OccurrenceType.NONE)
         } else {
-            PsiElement parent = o.getParent();
-            if (parent instanceof KerboScriptSuffixterm) { // function, array, method
-                if (parent.getParent() instanceof KerboScriptSuffixTrailer) { // method or array-field
-                    o.setType(new ReferenceType(
-                            isFunction((KerboScriptSuffixterm) parent) ? ReferableType.METHOD : ReferableType.FIELD,
-                            OccurrenceType.REFERENCE));
+            val parent = o.parent
+            // Series of nested if's to determine the referable type. It's always a reference (hard coded below).
+            val referableType = if (parent is KerboScriptSuffixterm) { // function, array, method
+                if (parent.getParent() is KerboScriptSuffixTrailer) { // method or array-field
+                    if (isFunction(parent)) ReferableType.METHOD else ReferableType.FIELD
                 } else { // function or array
-                    o.setType(new ReferenceType(
-                            isFunction((KerboScriptSuffixterm) parent) ? ReferableType.FUNCTION : ReferableType.VARIABLE,
-                            OccurrenceType.REFERENCE));
+                    if (isFunction(parent)) ReferableType.FUNCTION else ReferableType.VARIABLE
                 }
             } else { // variable or field
-                if (parent instanceof KerboScriptSuffixTrailer) { // field
-                    o.setType(new ReferenceType(ReferableType.FIELD, OccurrenceType.REFERENCE));
+                if (parent is KerboScriptSuffixTrailer) { // field
+                    ReferableType.FIELD
                 } else { // variable
-                    o.setType(new ReferenceType(ReferableType.VARIABLE, OccurrenceType.REFERENCE));
+                    ReferableType.VARIABLE
                 }
             }
+
+            o.type = ReferenceType(referableType, OccurrenceType.REFERENCE)
         }
-        super.visitAtom(o);
+        super.visitAtom(o)
     }
 
-    private boolean isFunction(KerboScriptSuffixterm suffixterm) {
-        List<KerboScriptSuffixtermTrailer> list = suffixterm.getSuffixtermTrailerList();
-        if (list.isEmpty()) { // impossible, but it must be variable
-            return false;
-        } else {
-            KerboScriptSuffixtermTrailer first = list.get(0);
-            if (first instanceof KerboScriptFunctionTrailer) { // function
-                return true;
-            } else { // array
-                return false;
-            }
-        }
-    }
+    private fun isFunction(suffixterm: KerboScriptSuffixterm): Boolean =
+        suffixterm.suffixtermTrailerList.firstOrNull() is KerboScriptFunctionTrailer
 
-    @Override
-    public void visitElement(PsiElement element) {
-        super.visitElement(element);
-        element.acceptChildren(this);
+    override fun visitElement(element: PsiElement) {
+        super.visitElement(element)
+        element.acceptChildren(this)
     }
 }

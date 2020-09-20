@@ -1,120 +1,75 @@
-package ksp.kos.ideaplugin.reference.context;
+package ksp.kos.ideaplugin.reference.context
 
-import ksp.kos.ideaplugin.KerboScriptFile;
-import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
-import ksp.kos.ideaplugin.reference.ReferableType;
-import ksp.kos.ideaplugin.reference.Reference;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import ksp.kos.ideaplugin.KerboScriptFile
+import ksp.kos.ideaplugin.dataflow.ReferenceFlow
+import ksp.kos.ideaplugin.reference.ReferableType
+import ksp.kos.ideaplugin.reference.Reference
 
 /**
  * Created on 08/10/16.
  *
  * @author ptasha
  */
-public abstract class FileContext extends LocalContext implements ReferenceFlow<FileContext>, FileDuality {
-    private final String name;
+abstract class FileContext protected constructor(
+    parent: LocalContext?,
+    private val name: String,
+    resolvers: List<ReferenceResolver<LocalContext>>,
+) : LocalContext(parent, resolvers), ReferenceFlow<FileContext>, FileDuality {
 
-    public FileContext(LocalContext parent, String name, FileContextResolver fileResolver) {
-        this(parent, name, createResolvers(fileResolver));
-    }
+    constructor(parent: LocalContext?, name: String, fileResolver: FileContextResolver)
+            : this(parent, name, createResolvers(fileResolver))
 
-    protected FileContext(LocalContext parent, String name, List<ReferenceResolver<LocalContext>> resolvers) {
-        super(parent, resolvers);
-        this.name = name;
-    }
+    override fun getKingdom(): LocalContext = this
 
-    public static List<ReferenceResolver<LocalContext>> createResolvers(FileContextResolver fileResolver) {
-        ArrayList<ReferenceResolver<LocalContext>> resolvers = new ArrayList<>();
-        resolvers.add(new FileResolver(fileResolver));
-        resolvers.add(new LocalResolver());
-        resolvers.add(new VirtualResolver());
-        resolvers.add(new ImportsResolver(fileResolver));
-        return resolvers;
-    }
+    override fun getReferableType(): ReferableType = ReferableType.FILE
 
-    @Override
-    public LocalContext getKingdom() {
-        return this;
-    }
+    override fun getName(): String = name
 
-    @Override
-    public ReferableType getReferableType() {
-        return ReferableType.FILE;
-    }
+    val imports: Map<String, Duality>
+        get() = getDeclarations(ReferableType.FILE)
 
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    public Map<String, Duality> getImports() {
-        return getDeclarations(ReferableType.FILE);
-    }
-
-    @Override
-    protected void registerUnknown(ReferableType type, String name, Duality element) {
-        if (type==ReferableType.FILE) {
-            addDefinition(type, KerboScriptFile.stripExtension(name), element);
+    override fun registerUnknown(type: ReferableType, name: String, element: Duality) {
+        if (type == ReferableType.FILE) {
+            addDefinition(type, KerboScriptFile.stripExtension(name), element)
         } else {
-            super.registerUnknown(type, name, element);
+            super.registerUnknown(type, name, element)
         }
     }
 
-    public static class FileResolver implements ReferenceResolver<LocalContext> {
-
-        private final FileContextResolver fileContextResolver;
-
-        public FileResolver(FileContextResolver fileContextResolver) {
-            this.fileContextResolver = fileContextResolver;
-        }
-
-        @Override
-        public Duality resolve(LocalContext context, Reference reference, boolean createAllowed) {
-            if (reference.getReferableType()==ReferableType.FILE) {
-                return fileContextResolver.resolveFile(reference.getName());
+    class FileResolver(private val fileContextResolver: FileContextResolver) : ReferenceResolver<LocalContext> {
+        override fun resolve(context: LocalContext, reference: Reference, createAllowed: Boolean): Duality? =
+            if (reference.referableType == ReferableType.FILE) {
+                fileContextResolver.resolveFile(reference.name)
+            } else {
+                null
             }
-            return null;
-        }
     }
 
-    @Override
-    public FileContext getSemantics() {
-        return this;
-    }
+    override fun getSemantics(): FileContext = this
 
-    public static class ImportsResolver implements ReferenceResolver<LocalContext> {
-
-        private final FileContextResolver fileContextResolver;
-
-        public ImportsResolver(FileContextResolver fileContextResolver) {
-            this.fileContextResolver = fileContextResolver;
-        }
-
-        @Override
-        public Duality resolve(LocalContext context, Reference reference, boolean createAllowed) {
-            for (Duality run : context.getDeclarations(ReferableType.FILE).values()) {
-                FileDuality dependency = fileContextResolver.resolveFile(run.getName());
-                if (dependency != null) {
-                    Duality resolved = dependency.getSemantics().findLocalDeclaration(reference);
-                    if (resolved != null) {
-                        return resolved;
-                    }
+    class ImportsResolver(private val fileContextResolver: FileContextResolver) : ReferenceResolver<LocalContext> {
+        override fun resolve(context: LocalContext, reference: Reference, createAllowed: Boolean): Duality? =
+            context.getDeclarations(ReferableType.FILE)
+                .values
+                .mapNotNull { run ->
+                    fileContextResolver.resolveFile(run.name)?.semantics?.findLocalDeclaration(reference)
                 }
-            }
-            return null;
-        }
+                .firstOrNull()
     }
 
-    private static class VirtualResolver extends ParentResolver {
-        @Override
-        public Duality resolve(LocalContext context, Reference reference, boolean createAllowed) {
-            if (!createAllowed) {
-                return null;
-            }
-            return super.resolve(context, reference, createAllowed);
-        }
+    private class VirtualResolver : ParentResolver() {
+        override fun resolve(context: LocalContext, reference: Reference, createAllowed: Boolean): Duality? =
+            if (!createAllowed) null else super.resolve(context, reference, createAllowed)
+    }
+
+    companion object {
+        @JvmStatic
+        fun createResolvers(fileResolver: FileContextResolver): MutableList<ReferenceResolver<LocalContext>> =
+            mutableListOf(
+                FileResolver(fileResolver),
+                LocalResolver(),
+                VirtualResolver(),
+                ImportsResolver(fileResolver),
+            )
     }
 }

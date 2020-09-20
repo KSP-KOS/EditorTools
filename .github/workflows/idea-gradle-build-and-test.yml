@@ -3,10 +3,10 @@ name: Build IDEA plugin and run tests
 on:
   push:
     paths:
-      - 'IDEA/'
+      - 'IDEA/**'
   pull_request:
     paths:
-      - 'IDEA/'
+      - 'IDEA/**'
 jobs:
   gradle:
     # Note: if we wanted, we could expand this to test on multiple OS's

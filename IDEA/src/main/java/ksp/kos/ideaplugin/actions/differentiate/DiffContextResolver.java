@@ -3,6 +3,7 @@ package ksp.kos.ideaplugin.actions.differentiate;
 import ksp.kos.ideaplugin.reference.PsiFileResolver;
 import ksp.kos.ideaplugin.reference.context.FileContextResolver;
 import ksp.kos.ideaplugin.reference.context.FileDuality;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
@@ -29,7 +30,7 @@ public class DiffContextResolver implements FileContextResolver {
     }
 
     @Override
-    public FileDuality ensureFile(String name) {
+    public @NotNull FileDuality ensureFile(String name) {
         return fileResolver.ensureFile(name);
     }
 
