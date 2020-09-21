@@ -3,6 +3,7 @@ package ksp.kos.ideaplugin.reference.context;
 import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
 import ksp.kos.ideaplugin.reference.Reference;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Created on 22/10/16.
@@ -19,6 +20,6 @@ public interface Duality extends Reference {
         return null;
     }
 
-    KerboScriptNamedElement getSyntax();
+    @Nullable KerboScriptNamedElement getSyntax();
     ReferenceFlow<?> getSemantics();
 }

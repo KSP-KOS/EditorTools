@@ -1,10 +1,10 @@
 package ksp.kos.ideaplugin.reference.context
 
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement
+import ksp.kos.ideaplugin.reference.OccurrenceType
 import ksp.kos.ideaplugin.reference.ReferableType
 import ksp.kos.ideaplugin.reference.Reference
 import java.util.*
-import kotlin.collections.HashMap
 
 /**
  * Created on 04/10/16.
@@ -15,19 +15,30 @@ open class LocalContext @JvmOverloads constructor(
     val parent: LocalContext?,
     private val resolvers: List<ReferenceResolver<LocalContext>> = createResolvers(),
 ) {
-    private val declarations: MutableMap<ReferableType, MutableMap<String, Duality>> = HashMap()
+    private val declarations: MutableMap<ReferableType, ScopeMap<Duality>> =
+        EnumMap(ksp.kos.ideaplugin.reference.ReferableType::class.java)
 
     val functions: Map<String, Duality>
         get() = getDeclarations(ReferableType.FUNCTION)
 
-    fun findDeclaration(reference: Reference): Duality? = resolve(reference, false)
+    fun findDeclaration(reference: Reference): Duality? = resolve(reference, createAllowed = false)
 
-    open fun findLocalDeclaration(reference: Reference): Duality? =
-        getDeclarations(reference.referableType)[reference.name]?.let { declaration ->
-            if (reference.matches(declaration)) declaration else null
+    @JvmOverloads
+    open fun findLocalDeclaration(reference: Reference, occurrenceTypeFilter: OccurrenceType? = null): Duality? {
+        val referableTypes = mutableListOf(reference.referableType)
+        // Functions can look like variables (eg parameters)
+        if (reference.referableType == ReferableType.FUNCTION) {
+            referableTypes.add(ReferableType.VARIABLE)
         }
+        return referableTypes
+            .mapNotNull { referableType -> getDeclarations(referableType)[reference.name] }
+            .firstOrNull { declaration ->
+                (occurrenceTypeFilter == null || declaration.syntax?.type?.occurrenceType == occurrenceTypeFilter)
+                        && reference.matches(declaration)
+            }
+    }
 
-    fun resolve(reference: Reference): Duality? = resolve(reference, true)
+    fun resolve(reference: Reference): Duality? = resolve(reference, createAllowed = true)
 
     protected open fun resolve(reference: Reference, createAllowed: Boolean): Duality? =
         resolvers.mapNotNull { resolver -> resolver.resolve(this, reference, createAllowed) }.firstOrNull()
@@ -38,7 +49,7 @@ open class LocalContext @JvmOverloads constructor(
         val name = element.name
         if (name != null) {
             when (val type = element.referableType) {
-                ReferableType.FUNCTION, ReferableType.VARIABLE -> addDefinition(type, name, element)
+                ReferableType.FUNCTION, ReferableType.VARIABLE, ReferableType.FILE -> addDefinition(type, name, element)
                 else -> registerUnknown(type, name, element)
             }
         }
@@ -49,10 +60,20 @@ open class LocalContext @JvmOverloads constructor(
     protected open fun registerUnknown(type: ReferableType, name: String, element: Duality) {}
 
     protected fun addDefinition(type: ReferableType, name: String, element: Duality) {
-        getDeclarations(type)[name] = element
+        declarations.getOrPut(type, ::ScopeMap)[name] = element
+        // Make sure we can refer back to functions when they're used later in situations that work with variables.
+        if (type == ReferableType.FUNCTION) {
+            declarations.getOrPut(ReferableType.VARIABLE, ::ScopeMap)[name] = element
+        }
+        // Propagate globals back up so parent scopes can see them. Since the only way that imports can affect the
+        // current file's scope is via globals, we also pass those up.
+        // TODO - Maybe just put these on the file context?
+        if (element.syntax?.type?.occurrenceType == OccurrenceType.GLOBAL || type == ReferableType.FILE) {
+            parent?.addDefinition(type, name, element)
+        }
     }
 
-    fun getDeclarations(type: ReferableType): MutableMap<String, Duality> = declarations.getOrPut(type, ::ScopeMap)
+    fun getDeclarations(type: ReferableType): Map<String, Duality> = declarations.getOrPut(type, ::ScopeMap)
 
     val fileContext: FileContext?
         get() = (this as? FileContext) ?: parent?.fileContext

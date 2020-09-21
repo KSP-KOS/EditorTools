@@ -1,6 +1,8 @@
 package ksp.kos.ideaplugin.psi
 
 import com.intellij.psi.PsiElement
+import com.intellij.psi.util.parentOfType
+import ksp.kos.ideaplugin.KerboScriptFile
 import ksp.kos.ideaplugin.reference.OccurrenceType
 import ksp.kos.ideaplugin.reference.ReferableType
 import ksp.kos.ideaplugin.reference.ReferenceType
@@ -22,18 +24,43 @@ class KerboScriptPsiWalker : KerboScriptVisitor() {
     }
 
     override fun visitDeclareFunctionClause(o: KerboScriptDeclareFunctionClause) {
-        o.type = ReferenceType(ReferableType.FUNCTION, OccurrenceType.LOCAL)
+        // Defaults to global at top-level (if not inside a scope), anywhere else defaults to local
+        val isTopLevel = o.parentOfType<KerboScriptScope>() is KerboScriptFile
+        o.type = ReferenceType(ReferableType.FUNCTION, calculateOccurrenceType(o, defaultLocal = !isTopLevel))
         super.visitDeclareFunctionClause(o)
     }
 
     override fun visitDeclareIdentifierClause(o: KerboScriptDeclareIdentifierClause) {
-        o.type = ReferenceType(ReferableType.VARIABLE, OccurrenceType.LOCAL)
+        o.type = ReferenceType(ReferableType.VARIABLE, calculateOccurrenceType(o, defaultLocal = true))
         super.visitDeclareIdentifierClause(o)
     }
 
     override fun visitDeclareParameterClause(o: KerboScriptDeclareParameterClause) {
-        o.type = ReferenceType(ReferableType.VARIABLE, OccurrenceType.LOCAL)
+        o.type = ReferenceType(ReferableType.VARIABLE, OccurrenceType.LOCAL) // Must be local
         super.visitDeclareParameterClause(o)
+    }
+
+    override fun visitDeclareLockClause(o: KerboScriptDeclareLockClause) {
+        o.type = ReferenceType(ReferableType.VARIABLE, calculateOccurrenceType(o, defaultLocal = false))
+        super.visitDeclareLockClause(o)
+    }
+
+    override fun visitDeclareForClause(o: KerboScriptDeclareForClause) {
+        o.type = ReferenceType(ReferableType.VARIABLE, OccurrenceType.LOCAL) // Must be local
+        super.visitDeclareForClause(o)
+    }
+
+    private fun calculateOccurrenceType(o: KerboScriptNamedElement, defaultLocal: Boolean): OccurrenceType {
+        val parentDeclare = o.parent as KerboScriptDeclareStmt
+        val isLocal = if (defaultLocal) {
+            // As long as not explicitly global (eg global is null) then we're local
+            parentDeclare.node.findChildByType(KerboScriptTypes.GLOBAL) == null
+        } else {
+            // Only local if explicitly so (eg local is not null)
+            parentDeclare.node.findChildByType(KerboScriptTypes.LOCAL) != null
+        }
+
+        return if (isLocal) OccurrenceType.LOCAL else OccurrenceType.GLOBAL
     }
 
     override fun visitAtom(o: KerboScriptAtom) {
@@ -63,6 +90,15 @@ class KerboScriptPsiWalker : KerboScriptVisitor() {
 
     private fun isFunction(suffixterm: KerboScriptSuffixterm): Boolean =
         suffixterm.suffixtermTrailerList.firstOrNull() is KerboScriptFunctionTrailer
+
+    override fun visitFromloopStmt(o: KerboScriptFromloopStmt) {
+        super.visitFromloopStmt(o)
+        // Once children have their types set, go ahead and copy locals into the parent scope (eg this from loop)
+        // so the blocks can see declarations in earlier blocks.
+        o.instructionBlockList
+            .flatMap { instructionBlock -> instructionBlock.cachedScope.getDeclarations(ReferableType.VARIABLE).values }
+            .forEach { variableDuality -> o.cachedScope.register(variableDuality) }
+    }
 
     override fun visitElement(element: PsiElement) {
         super.visitElement(element)

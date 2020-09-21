@@ -6,13 +6,13 @@
 
     implements("declare_identifier_clause") = ["ksp.kos.ideaplugin.psi.ExpressionHolder" "ksp.kos.ideaplugin.psi.KerboScriptNamedElement"]
 
-    extends("atom|declare_identifier_clause|declare_parameter_clause|declare_function_clause|run_stmt")="ksp.kos.ideaplugin.psi.impl.KerboScriptNamedElementImpl"
-    implements("atom|declare_parameter_clause|declare_function_clause|run_stmt")="ksp.kos.ideaplugin.psi.KerboScriptNamedElement"
+    extends("atom|declare_identifier_clause|declare_parameter_clause|declare_function_clause|declare_lock_clause|declare_for_clause|run_stmt")="ksp.kos.ideaplugin.psi.impl.KerboScriptNamedElementImpl"
+    implements("atom|declare_parameter_clause|declare_function_clause|declare_lock_clause|declare_for_clause|run_stmt")="ksp.kos.ideaplugin.psi.KerboScriptNamedElement"
 
     implements("set_stmt|return_stmt")="ksp.kos.ideaplugin.psi.ExpressionHolder"
 
-    extends("instruction_block")="ksp.kos.ideaplugin.psi.impl.KerboScriptScopeImpl"
-    implements("instruction_block")="ksp.kos.ideaplugin.psi.KerboScriptScope"
+    extends("instruction_block|fromloop_stmt|for_stmt")="ksp.kos.ideaplugin.psi.impl.KerboScriptScopeImpl"
+    implements("instruction_block|fromloop_stmt|for_stmt")="ksp.kos.ideaplugin.psi.KerboScriptScope"
 
     psiClassPrefix="KerboScript"
     psiImplClassSuffix="Impl"
@@ -238,7 +238,8 @@ compile_stmt   ::= COMPILE expr (TO expr)? EOI
 list_stmt      ::= LIST (ident (IN ident)?)? EOI
 reboot_stmt    ::= REBOOT EOI
 shutdown_stmt  ::= SHUTDOWN EOI
-for_stmt       ::= FOR ident IN varidentifier instruction EOI?
+for_stmt       ::= FOR declare_for_clause IN varidentifier instruction EOI?
+declare_for_clause ::= ident
 unset_stmt     ::= UNSET (ident | ALL) EOI
 
 

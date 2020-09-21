@@ -4,7 +4,9 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import org.intellij.lang.annotations.Language
 
 abstract class KerboScriptPlatformTestBase : BasePlatformTestCase() {
-    override fun getTestDataPath(): String = "src/test/testData"
+    open val subdir = ""
+
+    override fun getTestDataPath(): String = "src/test/testData/$subdir"
 
     protected open fun checkEditorAction(
             @Language("KerboScript") before: String,
