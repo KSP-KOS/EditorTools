@@ -11,13 +11,11 @@ import kotlin.collections.HashMap
  *
  * @author ptasha
  */
-open class LocalContext protected constructor(
+open class LocalContext @JvmOverloads constructor(
     val parent: LocalContext?,
-    private val resolvers: List<ReferenceResolver<LocalContext>>,
+    private val resolvers: List<ReferenceResolver<LocalContext>> = createResolvers(),
 ) {
     private val declarations: MutableMap<ReferableType, MutableMap<String, Duality>> = HashMap()
-
-    constructor(parent: LocalContext?) : this(parent, createResolvers())
 
     val functions: Map<String, Duality>
         get() = getDeclarations(ReferableType.FUNCTION)
