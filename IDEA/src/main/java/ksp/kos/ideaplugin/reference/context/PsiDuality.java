@@ -1,12 +1,9 @@
 package ksp.kos.ideaplugin.reference.context;
 
-import ksp.kos.ideaplugin.KerboScriptFile;
-import ksp.kos.ideaplugin.dataflow.FunctionFlow;
 import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
-import ksp.kos.ideaplugin.expressions.SyntaxException;
-import ksp.kos.ideaplugin.psi.KerboScriptDeclareFunctionClause;
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
 import ksp.kos.ideaplugin.reference.ReferableType;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created on 22/10/16.
@@ -16,7 +13,7 @@ import ksp.kos.ideaplugin.reference.ReferableType;
 public class PsiDuality implements Duality {
     private final KerboScriptNamedElement psi;
 
-    public PsiDuality(KerboScriptNamedElement psi) {
+    public PsiDuality(@NotNull KerboScriptNamedElement psi) {
         this.psi = psi;
     }
 
