@@ -31,7 +31,7 @@ public class KerboScriptFile extends PsiFileBase implements KerboScriptScope, Ke
     public KerboScriptFile(@NotNull FileViewProvider viewProvider) {
         super(viewProvider, KerboScriptLanguage.INSTANCE);
         // Check is needed for tests
-        if (!getProject().isDefault()) {
+        if (!getProject().isDefault() && getProject().getService(DumbService.class) != null) {
             DumbService.getInstance(getProject()).runWhenSmart(() -> {
                 VirtualFile virtualFile = getVirtualFile();
                 if (virtualFile != null) {

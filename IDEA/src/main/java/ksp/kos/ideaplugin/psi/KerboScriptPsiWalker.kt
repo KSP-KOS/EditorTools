@@ -37,7 +37,7 @@ class KerboScriptPsiWalker : KerboScriptVisitor() {
     }
 
     override fun visitAtom(o: KerboScriptAtom) {
-        if (o.node.findChildByType(KerboScriptTypes.IDENTIFIER) == null) {
+        if (o.name == null) {
             o.type = ReferenceType(ReferableType.OTHER, OccurrenceType.NONE)
         } else {
             val parent = o.parent

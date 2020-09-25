@@ -1,48 +1,40 @@
-package ksp.kos.ideaplugin.expressions;
+package ksp.kos.ideaplugin.expressions
 
-import com.intellij.lang.ASTNode;
-import ksp.kos.ideaplugin.psi.*;
-
-import java.util.Collections;
-import java.util.Set;
+import ksp.kos.ideaplugin.psi.*
 
 /**
  * Created on 28/01/16.
  *
  * @author ptasha
  */
-public abstract class Atom extends Expression {
-    public static Atom parse(KerboScriptExpr expr) throws SyntaxException {
-        Expression atom = Expression.parse(expr);
-        if (atom instanceof Atom) {
-            return (Atom) atom;
-        }
-        throw new SyntaxException("Atom is expected: found "+expr+": "+expr.getText());
-    }
+abstract class Atom : Expression() {
+    open val isAddition: Boolean
+        get() = false
 
-    public static Atom parse(KerboScriptAtom atom) throws SyntaxException {
-        ASTNode identifier = atom.getNode().findChildByType(KerboScriptTypes.IDENTIFIER);
-        if (identifier!=null) {
-            return new Variable(identifier.getText());
-        } else if (atom.getNode().findChildByType(KerboScriptTypes.BRACKETOPEN)!=null) {
-            return new Escaped(Expression.parse(atom.getExpr()));
-        } else if (atom.getExpr() instanceof KerboScriptNumber) {
-            return new Number((KerboScriptNumber) atom.getExpr());
-        } else if (atom.getExpr() instanceof KerboScriptSciNumber) {
-            return new Number((KerboScriptSciNumber) atom.getExpr());
-        }
-        throw new SyntaxException("Invalid atom: "+atom.getText());
-    }
+    companion object {
+        @Throws(SyntaxException::class)
+        fun parse(expr: KerboScriptExpr): Atom =
+            Expression.parse(expr) as? Atom
+                ?: throw SyntaxException("Atom is expected: found " + expr + ": " + expr.text)
 
-    public static Atom toAtom(Expression expression) {
-        if (expression instanceof Atom) {
-            return (Atom) expression;
-        } else {
-            return new Escaped(expression);
-        }
-    }
+        @JvmStatic
+        @Throws(SyntaxException::class)
+        fun parse(atom: KerboScriptAtom): Atom {
+            val identifier = atom.children.firstOrNull { it is KerboScriptIdent }
+            val expr = atom.expr
+            return when {
+                identifier != null -> Variable(identifier.text)
+                atom.node.findChildByType(KerboScriptTypes.BRACKETOPEN) != null -> {
+                    Escaped(parse(expr))
+                }
+                expr is KerboScriptNumber -> Number(expr)
+                expr is KerboScriptSciNumber -> Number(expr)
+                else -> throw SyntaxException("Invalid atom: " + atom.text)
+            }
 
-    public boolean isAddition() {
-        return false;
+        }
+
+        @JvmStatic
+        fun toAtom(expression: Expression?): Atom = expression as? Atom ?: Escaped(expression)
     }
 }
