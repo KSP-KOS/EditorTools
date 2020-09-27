@@ -1,8 +1,8 @@
 package ksp.kos.ideaplugin.dataflow;
 
 import ksp.kos.ideaplugin.actions.differentiate.DiffContext;
-import ksp.kos.ideaplugin.expressions.*;
 import ksp.kos.ideaplugin.expressions.Number;
+import ksp.kos.ideaplugin.expressions.*;
 import ksp.kos.ideaplugin.expressions.inline.InlineFunction;
 import ksp.kos.ideaplugin.psi.*;
 import ksp.kos.ideaplugin.reference.DualitySelfResolvable;
@@ -12,6 +12,7 @@ import ksp.kos.ideaplugin.reference.Reference;
 import ksp.kos.ideaplugin.reference.context.Duality;
 import ksp.kos.ideaplugin.reference.context.LocalContext;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -160,7 +161,7 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
     }
 
     @Override
-    public KerboScriptNamedElement getSyntax() {
+    public @Nullable KerboScriptNamedElement getSyntax() {
         return null; // TODO implement
     }
 

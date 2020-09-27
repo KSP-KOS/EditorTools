@@ -87,6 +87,7 @@ kOS version supported: 1.2.1
         <refactoring.inlineHandler language="KerboScript" implementationClass="ksp.kos.ideaplugin.refactoring.VariableInlineHandler"/>
         <refactoring.inlineHandler language="KerboScript" implementationClass="ksp.kos.ideaplugin.refactoring.FunctionInlineHandler"/>
         <refactoring.inlineHandler language="KerboScript" implementationClass="ksp.kos.ideaplugin.refactoring.NotSupportedInlineHandler"/>
+        <annotator language="KerboScript" implementationClass="ksp.kos.ideaplugin.annotator.KerboScriptAnnotator"/>
     </extensions>
 
     <actions>

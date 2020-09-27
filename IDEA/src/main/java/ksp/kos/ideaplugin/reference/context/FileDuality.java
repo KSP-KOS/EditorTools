@@ -1,6 +1,7 @@
 package ksp.kos.ideaplugin.reference.context;
 
 import ksp.kos.ideaplugin.KerboScriptFile;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created on 22/10/16.
@@ -8,6 +9,6 @@ import ksp.kos.ideaplugin.KerboScriptFile;
  * @author ptasha
  */
 public interface FileDuality extends Duality {
-    KerboScriptFile getSyntax();
+    @NotNull KerboScriptFile getSyntax();
     FileContext getSemantics();
 }

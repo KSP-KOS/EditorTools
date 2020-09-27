@@ -5,6 +5,7 @@ import ksp.kos.ideaplugin.reference.ReferableType;
 import ksp.kos.ideaplugin.reference.context.Duality;
 import ksp.kos.ideaplugin.reference.context.LocalContext;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -69,7 +70,7 @@ public class ImportFlow extends BaseFlow<ImportFlow>
     }
 
     @Override
-    public KerboScriptNamedElement getSyntax() {
+    public @Nullable KerboScriptNamedElement getSyntax() {
         return null; // TODO implement
     }
 

@@ -135,7 +135,7 @@ public class KerboScriptFile extends PsiFileBase implements KerboScriptScope, Ke
     }
 
     @Override
-    public KerboScriptFile getSyntax() {
+    public @NotNull KerboScriptFile getSyntax() {
         return this;
     }
 
