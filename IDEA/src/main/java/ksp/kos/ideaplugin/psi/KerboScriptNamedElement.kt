@@ -73,6 +73,10 @@ private fun isDeclarationVisibleToUsage(usage: PsiElement, declaration: KerboScr
         return true
     }
 
+    // If the declaration is in a generated file (always named generated.ks, see KerboScriptElementFactory) but the
+    // usage is in another file, assume that the declaration is not visible.
+    if (declaration.containingFile.name == "generated.ks" && usage.containingFile.name != "generated.ks") return false
+
     // If usage is inside a function declaration (relative to the common ancestor) then all bets on ordering are
     // off, and we'll let this fly.
     val hasFunctionBetweenUsageAndDeclaration =
