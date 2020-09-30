@@ -132,8 +132,8 @@ public class Function extends Atom {
         Expression inlined = InlineFunctions.getInstance().inline(this);
         if (inlined == null) {
             if (context != null) { // TODO pass context to simplify
-                FlowSelfResolvable ref = FlowSelfResolvable.function(context, name);
-                FunctionFlow flow = (FunctionFlow) ref.resolve(); // TODO shouldn't parse all functions here for speed sake
+                // TODO shouldn't parse all functions here for speed sake
+                FunctionFlow flow = (FunctionFlow) FlowSelfResolvable.function(context, name).resolve();
                 if (flow!=null) {
                     InlineFunction inlineFunction = flow.getInlineFunction();
                     if (inlineFunction!=null) {

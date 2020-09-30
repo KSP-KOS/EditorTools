@@ -39,15 +39,15 @@ public abstract class Expression {
                 return Atom.parse(suffixterm.getAtom());
             } else if (tailSize == 1) {
                 KerboScriptAtom atom = suffixterm.getAtom();
-                ASTNode identifier = atom.getNode().findChildByType(KerboScriptTypes.IDENTIFIER);
-                if (identifier !=null) {
+                String identifierName = atom.getName();
+                if (identifierName !=null) {
                     KerboScriptSuffixtermTrailer trailer = suffixterm.getSuffixtermTrailerList().get(0);
                     if (trailer instanceof KerboScriptFunctionTrailer) {
                         KerboScriptArglist arglist = ((KerboScriptFunctionTrailer) trailer).getArglist();
                         if (arglist==null) {
-                            return new Function(identifier.getText());
+                            return new Function(identifierName);
                         }
-                        return new Function(identifier.getText(), arglist.getExprList());
+                        return new Function(identifierName, arglist.getExprList());
                     }
                 }
             }

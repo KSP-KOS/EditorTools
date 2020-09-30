@@ -3,16 +3,17 @@ package ksp.kos.ideaplugin.reference.context;
 import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
 import ksp.kos.ideaplugin.psi.KerboScriptNamedElement;
 import ksp.kos.ideaplugin.reference.ReferableType;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created on 22/10/16.
  *
  * @author ptasha
  */
-public class PsiDuality<P extends KerboScriptNamedElement, F extends ReferenceFlow> implements Duality<P, F> {
-    private final P psi;
+public class PsiDuality implements Duality {
+    private final KerboScriptNamedElement psi;
 
-    public PsiDuality(P psi) {
+    public PsiDuality(@NotNull KerboScriptNamedElement psi) {
         this.psi = psi;
     }
 
@@ -32,13 +33,12 @@ public class PsiDuality<P extends KerboScriptNamedElement, F extends ReferenceFl
     }
 
     @Override
-    public P getSyntax() {
+    public KerboScriptNamedElement getSyntax() {
         return psi;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public F getSemantics() {
-        return (F) psi.getCachedFlow();
+    public ReferenceFlow<?> getSemantics() {
+        return psi.getCachedFlow();
     }
 }

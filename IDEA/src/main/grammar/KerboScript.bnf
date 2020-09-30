@@ -6,13 +6,13 @@
 
     implements("declare_identifier_clause") = ["ksp.kos.ideaplugin.psi.ExpressionHolder" "ksp.kos.ideaplugin.psi.KerboScriptNamedElement"]
 
-    extends("atom|declare_identifier_clause|declare_parameter_clause|declare_function_clause|run_stmt")="ksp.kos.ideaplugin.psi.impl.KerboScriptNamedElementImpl"
-    implements("atom|declare_parameter_clause|declare_function_clause|run_stmt")="ksp.kos.ideaplugin.psi.KerboScriptNamedElement"
+    extends("atom|declare_identifier_clause|declare_parameter_clause|declare_function_clause|declare_lock_clause|declare_for_clause|run_stmt")="ksp.kos.ideaplugin.psi.impl.KerboScriptNamedElementImpl"
+    implements("atom|declare_parameter_clause|declare_function_clause|declare_lock_clause|declare_for_clause|run_stmt")="ksp.kos.ideaplugin.psi.KerboScriptNamedElement"
 
     implements("set_stmt|return_stmt")="ksp.kos.ideaplugin.psi.ExpressionHolder"
 
-    extends("instruction_block")="ksp.kos.ideaplugin.psi.impl.KerboScriptScopeImpl"
-    implements("instruction_block")="ksp.kos.ideaplugin.psi.KerboScriptScope"
+    extends("instruction_block|fromloop_stmt|for_stmt")="ksp.kos.ideaplugin.psi.impl.KerboScriptScopeImpl"
+    implements("instruction_block|fromloop_stmt|for_stmt")="ksp.kos.ideaplugin.psi.KerboScriptScope"
 
     psiClassPrefix="KerboScript"
     psiImplClassSuffix="Impl"
@@ -28,14 +28,116 @@
     extends("function_trailer|array_trailer")=suffixterm_trailer
     extends("[a-z]*_expr|factor|suffix|suffixterm|atom|.*number")=expr
 
-    tokens=[COMMENTLINE="COMMENTLINE"]
+    // Tokens here are just for Live Preview when developing the grammar, not used to lex in the actual plugin.
+    tokens=[
+        PLUSMINUS    = 'regexp:[+\-]'
+        MULT         = '*'
+        DIV          = '/'
+        POWER        = '^'
+        E            = 'e'
+        //Logic
+        NOT          = 'regexp:(?i)not'
+        AND          = 'regexp:(?i)and'
+        OR           = 'regexp:(?i)or'
+        TRUEFALSE    = 'regexp:(?i)true|false'
+        COMPARATOR   = 'regexp:<>|>=|<=|=|>|<'
+        //Instructions tokens
+        SET          = 'regexp:(?i)set'
+        TO           = 'regexp:(?i)to'
+        IS           = 'regexp:(?i)is'
+        IF           = 'regexp:(?i)if'
+        ELSE         = 'regexp:(?i)else'
+        UNTIL        = 'regexp:(?i)until'
+        STEP         = 'regexp:(?i)step'
+        DO           = 'regexp:(?i)do'
+        LOCK         = 'regexp:(?i)lock'
+        UNLOCK       = 'regexp:(?i)unlock'
+        PRINT        = 'regexp:(?i)print'
+        AT           = 'regexp:(?i)at'
+        ON           = 'regexp:(?i)on'
+        TOGGLE       = 'regexp:(?i)toggle'
+        WAIT         = 'regexp:(?i)wait'
+        WHEN         = 'regexp:(?i)when'
+        THEN         = 'regexp:(?i)then'
+        OFF          = 'regexp:(?i)off'
+        STAGE        = 'regexp:(?i)stage'
+        CLEARSCREEN  = 'regexp:(?i)clearscreen'
+        ADD          = 'regexp:(?i)add'
+        REMOVE       = 'regexp:(?i)remove'
+        LOG          = 'regexp:(?i)log'
+        BREAK        = 'regexp:(?i)break'
+        PRESERVE     = 'regexp:(?i)preserve'
+        DECLARE      = 'regexp:(?i)declare'
+        DEFINED      = 'regexp:(?i)defined'
+        LOCAL        = 'regexp:(?i)local'
+        GLOBAL       = 'regexp:(?i)global'
+        PARAMETER    = 'regexp:(?i)parameter'
+        FUNCTION     = 'regexp:(?i)function'
+        RETURN       = 'regexp:(?i)return'
+        SWITCH       = 'regexp:(?i)switch'
+        COPY         = 'regexp:(?i)copy'
+        FROM         = 'regexp:(?i)from'
+        RENAME       = 'regexp:(?i)rename'
+        VOLUME       = 'regexp:(?i)volume'
+        FILE         = 'regexp:(?i)file'
+        DELETE       = 'regexp:(?i)delete'
+        EDIT         = 'regexp:(?i)edit'
+        RUN          = 'regexp:(?i)run'
+        RUNPATH      = 'regexp:(?i)runpath'
+        RUNONCEPATH  = 'regexp:(?i)runoncepath'
+        ONCE         = 'regexp:(?i)once'
+        COMPILE      = 'regexp:(?i)compile'
+        LIST         = 'regexp:(?i)list'
+        REBOOT       = 'regexp:(?i)reboot'
+        SHUTDOWN     = 'regexp:(?i)shutdown'
+        FOR          = 'regexp:(?i)for'
+        UNSET        = 'regexp:(?i)unset'
+        CHOOSE       = 'regexp:(?i)choose'
+
+        //Generic
+        BRACKETOPEN  = '('
+        BRACKETCLOSE = ')'
+        CURLYOPEN    = '{'
+        CURLYCLOSE   = '}'
+        SQUAREOPEN   = '['
+        SQUARECLOSE  = ']'
+        COMMA        = ','
+        COLON        = ':'
+        IN           = 'regexp:(?i)in'
+        ARRAYINDEX   = '#'
+        ALL          = 'regexp:(?i)all'
+        IDENTIFIER   = 'regexp:[a-zA-Z_][a-zA-Z0-9_]*'
+        FILEIDENT    = 'regexp:[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z0-9_][a-zA-Z0-9_]*)*'
+        INTEGER      = 'regexp:[0-9]+'
+        DOUBLE       = 'regexp:[0-9]*\.[0-9]+'
+        STRING       = 'regexp:@?"(""|[^"])*"'
+        EOI          = '.'
+        //Compiler Directives
+        ATSIGN       = '@'
+        LAZYGLOBAL   = 'regexp:(?i)lazyglobal'
+        //Special
+        //EOF          = '$'
+        //[Skip]
+        WHITESPACE   = 'regexp:[ \n\r\t]+'
+        //[Skip]
+        COMMENTLINE  = 'regexp://[^\n]*'
+    ]
 }
 
 // Rules
 // ===================================================
 Start ::= (instruction)*
 instruction_block ::= CURLYOPEN instruction* CURLYCLOSE
-instruction ::= empty_stmt |
+instruction ::= !(CURLYCLOSE | <<eof>>) instruction_inner {
+  pin = 1
+  recoverWhile = instruction_recover
+}
+private instruction_first ::= ADD | BREAK | CLEARSCREEN | COMPILE | COPY | DECLARE | DELETE | EDIT | FOR | FROM
+    | FUNCTION | GLOBAL | IF | LIST | LOCAL | LOCK | LOG | ON | PARAMETER | PRESERVE | PRINT | REBOOT | REMOVE | RENAME
+    | RETURN | RUN | RUNONCEPATH | RUNPATH | SET | SHUTDOWN | STAGE | SWITCH | TOGGLE | UNLOCK | UNSET | UNTIL | WAIT
+    | WHEN | COMMENTLINE | ident
+private instruction_recover ::= !(EOI | CURLYCLOSE | instruction_first)
+private instruction_inner ::= empty_stmt |
                set_stmt |
                if_stmt |
                until_stmt |
@@ -84,13 +186,12 @@ set_stmt       ::= SET varidentifier TO expr EOI
 if_stmt        ::= IF expr instruction EOI? (ELSE instruction EOI?)?
 until_stmt     ::= UNTIL expr instruction EOI?
 fromloop_stmt  ::= FROM instruction_block UNTIL expr STEP instruction_block DO instruction EOI?
-unlock_stmt    ::= UNLOCK (IDENTIFIER | ALL) EOI
+unlock_stmt    ::= UNLOCK (ident | ALL) EOI
 print_stmt     ::= PRINT expr (AT BRACKETOPEN expr COMMA expr BRACKETCLOSE)? EOI
 on_stmt        ::= ON varidentifier instruction EOI?
 toggle_stmt    ::= TOGGLE varidentifier EOI
 wait_stmt      ::= WAIT UNTIL? expr EOI
 when_stmt      ::= WHEN expr THEN instruction EOI?
-onoff_stmt     ::= varidentifier onoff_trailer EOI
 onoff_trailer  ::= (ON | OFF)
 stage_stmt     ::= STAGE EOI
 clear_stmt     ::= CLEARSCREEN EOI
@@ -99,10 +200,10 @@ remove_stmt    ::= REMOVE expr EOI
 log_stmt       ::= LOG expr TO expr EOI
 break_stmt     ::= BREAK EOI
 preserve_stmt  ::= PRESERVE EOI
-declare_identifier_clause ::= IDENTIFIER (TO|IS) expr EOI
-declare_parameter_clause  ::= PARAMETER IDENTIFIER ((TO|IS) expr)? (COMMA IDENTIFIER ((TO|IS) expr)?)* EOI
-declare_function_clause   ::= FUNCTION IDENTIFIER instruction_block EOI?
-declare_lock_clause       ::= LOCK IDENTIFIER TO expr EOI
+declare_identifier_clause ::= ident (TO|IS) expr EOI
+declare_parameter_clause  ::= PARAMETER ident ((TO|IS) expr)? (COMMA ident ((TO|IS) expr)?)* EOI
+declare_function_clause   ::= FUNCTION ident instruction_block EOI?
+declare_lock_clause       ::= LOCK ident TO expr EOI
 declare_stmt   ::= // declare|global|local are all optional for function and parameter,
                   // but mandatory for declaring an identifier.  This was the only
                   // way to get the LL(1) parser to understand that without barfing on
@@ -130,15 +231,16 @@ copy_stmt      ::= COPY expr (FROM | TO) expr EOI
 rename_stmt    ::= RENAME (VOLUME | FILE)? expr TO expr EOI
 delete_stmt    ::= DELETE expr (FROM expr)? EOI
 edit_stmt      ::= EDIT expr EOI
-run_stmt       ::= RUN (ONCE)? (FILEIDENT|STRING) (BRACKETOPEN arglist BRACKETCLOSE)? (ON expr)? EOI
+run_stmt       ::= RUN (ONCE)? (file_ident|STRING) (BRACKETOPEN arglist BRACKETCLOSE)? (ON expr)? EOI
 runpath_stmt   ::= RUNPATH BRACKETOPEN expr (COMMA arglist)? BRACKETCLOSE EOI
 runoncepath_stmt ::= RUNONCEPATH BRACKETOPEN expr (COMMA arglist)? BRACKETCLOSE EOI
 compile_stmt   ::= COMPILE expr (TO expr)? EOI
-list_stmt      ::= LIST (IDENTIFIER (IN IDENTIFIER)?)? EOI
+list_stmt      ::= LIST (ident (IN ident)?)? EOI
 reboot_stmt    ::= REBOOT EOI
 shutdown_stmt  ::= SHUTDOWN EOI
-for_stmt       ::= FOR IDENTIFIER IN varidentifier instruction EOI?
-unset_stmt     ::= UNSET (IDENTIFIER | ALL) EOI
+for_stmt       ::= FOR declare_for_clause IN varidentifier instruction EOI?
+declare_for_clause ::= ident
+unset_stmt     ::= UNSET (ident | ALL) EOI
 
 
 // ---------- expressions ---------------------------
@@ -160,12 +262,12 @@ suffixterm         ::= atom suffixterm_trailer*
 suffixterm_trailer ::= (function_trailer | array_trailer)
 
 function_trailer   ::= (BRACKETOPEN arglist? BRACKETCLOSE) | ATSIGN
-array_trailer      ::= ( (ARRAYINDEX (IDENTIFIER | INTEGER)) | (SQUAREOPEN expr SQUARECLOSE) )
+array_trailer      ::= ( (ARRAYINDEX (ident | INTEGER)) | (SQUAREOPEN expr SQUARECLOSE) )
 
 atom               ::= ( sci_number |
                         TRUEFALSE |
-                        IDENTIFIER |
-                        FILEIDENT |
+                        ident |
+                        file_ident |
                         BRACKETOPEN expr BRACKETCLOSE
                       ) | STRING
 sci_number         ::= number (E PLUSMINUS? INTEGER)?
@@ -194,3 +296,11 @@ varidentifier  ::= suffix
 // after the identifier - parens, colons, etc:
 identifier_led_stmt ::= identifier_led_expr EOI
 identifier_led_expr ::= suffix (onoff_trailer)?
+
+ident ::= IDENTIFIER | keyword_ident
+file_ident ::= FILEIDENT | IDENTIFIER | keyword_ident
+private keyword_ident ::= NOT | AND | OR | FALSE | SET | TO | IS | IF | ELSE | UNTIL | STEP | DO | LOCK | UNLOCK | PRINT
+    | AT | ON | TOGGLE | WAIT | WHEN | THEN | OFF | STAGE | CLEARSCREEN | ADD | REMOVE | LOG | BREAK | PRESERVE
+    | DECLARE | DEFINED | LOCAL | GLOBAL | PARAMETER | FUNCTION | RETURN | SWITCH | COPY | FROM | RENAME | VOLUME | FILE
+    | DELETE | EDIT | RUN | RUNPATH | RUNONCEPATH | ONCE | COMPILE | LIST | REBOOT | SHUTDOWN | FOR | UNSET | CHOOSE
+    | ALL | IN

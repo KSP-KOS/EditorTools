@@ -6,6 +6,7 @@ import ksp.kos.ideaplugin.KerboScriptLanguage;
 import ksp.kos.ideaplugin.reference.context.FileContextResolver;
 import ksp.kos.ideaplugin.reference.context.FileDuality;
 import ksp.kos.ideaplugin.reference.context.PsiFileDuality;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Created on 08/10/16.
@@ -20,7 +21,7 @@ public class PsiFileResolver implements FileContextResolver {
     }
 
     @Override
-    public FileDuality ensureFile(String name) {
+    public @NotNull FileDuality ensureFile(String name) {
         KerboScriptFile file = anyFile.findFile(name);
         if (file == null) {
             file = (KerboScriptFile) PsiFileFactory.getInstance(anyFile.getProject()).createFileFromText(

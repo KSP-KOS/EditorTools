@@ -4,7 +4,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     id("org.jetbrains.intellij") version "0.4.21"
-    id("org.jetbrains.kotlin.jvm") version "1.3.72"
+    id("org.jetbrains.kotlin.jvm") version "1.4.10"
     id("org.jetbrains.grammarkit") version "2020.2.1"
 }
 
@@ -80,8 +80,21 @@ project(":") {
         }
         listOf("compileKotlin", "compileTestKotlin").forEach {
             getByName<KotlinCompile>(it) {
-                kotlinOptions.jvmTarget = "1.8"
+                kotlinOptions {
+                    jvmTarget = "1.8"
+                    freeCompilerArgs = listOf("-Xjvm-default=enable")
+                }
             }
+        }
+    }
+}
+
+allprojects {
+    gradle.projectsEvaluated {
+        tasks.withType<JavaCompile> {
+            options.compilerArgs.add("-Werror")
+            options.compilerArgs.add("-Xlint:all")
+            options.compilerArgs.add("-Xlint:-serial")
         }
     }
 }

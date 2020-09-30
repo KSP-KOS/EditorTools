@@ -50,5 +50,5 @@ public abstract class DuplicateDiffer<P extends KerboScriptBase> implements Diff
         }
     }
 
-    protected abstract Flow parse(P variable) throws SyntaxException;
+    protected abstract Flow<?> parse(P variable) throws SyntaxException;
 }

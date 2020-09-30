@@ -10,6 +10,7 @@ import ksp.kos.ideaplugin.reference.context.FileContext;
 import ksp.kos.ideaplugin.reference.context.LocalContext;
 import ksp.kos.ideaplugin.reference.context.PsiDuality;
 import ksp.kos.utils.MapBuilder;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +57,7 @@ public class PsiFileContext extends FileContext {
         }
         try {
             KerboScriptInstruction instruction = KerboScriptElementFactory.instruction(kerboScriptFile.getProject(), String.format(text, reference.getName()));
-            PsiDuality<?, ?> declaration = new PsiDuality<>(instruction.downTill(KerboScriptNamedElement.class));
+            PsiDuality declaration = new PsiDuality(instruction.downTill(KerboScriptNamedElement.class));
             getParent().register(declaration);
             return declaration;
         } catch (IllegalArgumentException e) {
@@ -66,7 +67,7 @@ public class PsiFileContext extends FileContext {
     }
 
     @Override
-    public KerboScriptFile getSyntax() {
+    public @NotNull KerboScriptFile getSyntax() {
         return kerboScriptFile;
     }
 }

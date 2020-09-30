@@ -1,12 +1,15 @@
 package ksp.kos.ideaplugin.reference.context;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Created on 08/10/16.
  *
  * @author ptasha
  */
 public interface FileContextResolver {
-    FileDuality ensureFile(String name);
+    @NotNull FileDuality ensureFile(String name);
 
-    FileDuality resolveFile(String name);
+    @Nullable FileDuality resolveFile(String name);
 }

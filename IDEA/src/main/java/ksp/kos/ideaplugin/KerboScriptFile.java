@@ -30,13 +30,16 @@ public class KerboScriptFile extends PsiFileBase implements KerboScriptScope, Ke
 
     public KerboScriptFile(@NotNull FileViewProvider viewProvider) {
         super(viewProvider, KerboScriptLanguage.INSTANCE);
-        DumbService.getInstance(getProject()).runWhenSmart(() -> {
-            VirtualFile virtualFile = getVirtualFile();
-            if (virtualFile != null) {
-                WolfTheProblemSolver wolf = WolfTheProblemSolver.getInstance(getProject());
-                wolf.queue(virtualFile);
-            }
-        });
+        // Check is needed for tests
+        if (!getProject().isDefault() && getProject().getService(DumbService.class) != null) {
+            DumbService.getInstance(getProject()).runWhenSmart(() -> {
+                VirtualFile virtualFile = getVirtualFile();
+                if (virtualFile != null) {
+                    WolfTheProblemSolver wolf = WolfTheProblemSolver.getInstance(getProject());
+                    wolf.queue(virtualFile);
+                }
+            });
+        }
     }
 
     @NotNull
@@ -132,7 +135,7 @@ public class KerboScriptFile extends PsiFileBase implements KerboScriptScope, Ke
     }
 
     @Override
-    public KerboScriptFile getSyntax() {
+    public @NotNull KerboScriptFile getSyntax() {
         return this;
     }
 

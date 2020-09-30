@@ -94,6 +94,7 @@ public class KerboScriptSyntaxHighlighter extends SyntaxHighlighterBase {
     @NotNull
     @Override
     public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
+        // TODO - Ideally syntax highlight based off of parser, not lexer, to handle keywords used as variables.
         if (tokenType.equals(KerboScriptTypes.IDENTIFIER)) {
             return createKeys(IDENTIFIER);
         } else if (tokenType.equals(KerboScriptTypes.COMMENTLINE)) {

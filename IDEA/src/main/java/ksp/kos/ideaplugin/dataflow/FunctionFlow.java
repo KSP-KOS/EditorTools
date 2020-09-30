@@ -1,8 +1,8 @@
 package ksp.kos.ideaplugin.dataflow;
 
 import ksp.kos.ideaplugin.actions.differentiate.DiffContext;
-import ksp.kos.ideaplugin.expressions.*;
 import ksp.kos.ideaplugin.expressions.Number;
+import ksp.kos.ideaplugin.expressions.*;
 import ksp.kos.ideaplugin.expressions.inline.InlineFunction;
 import ksp.kos.ideaplugin.psi.*;
 import ksp.kos.ideaplugin.reference.DualitySelfResolvable;
@@ -12,6 +12,7 @@ import ksp.kos.ideaplugin.reference.Reference;
 import ksp.kos.ideaplugin.reference.context.Duality;
 import ksp.kos.ideaplugin.reference.context.LocalContext;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,14 +23,14 @@ import java.util.List;
  * @author ptasha
  */
 public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<FunctionFlow>,
-        ReferenceFlow<FunctionFlow>, Duality<KerboScriptNamedElement, FunctionFlow> {
+        ReferenceFlow<FunctionFlow>, Duality {
     private final LocalContext context;
     private final String name;
 
-    private final ContextBuilder<ParameterFlow> parameters;
+    private final ContextBuilder parameters;
     private final ContextBuilder instructions;
 
-    public FunctionFlow(LocalContext context, String name, ContextBuilder<ParameterFlow> parameters, ContextBuilder instructions) {
+    public FunctionFlow(LocalContext context, String name, ContextBuilder parameters, ContextBuilder instructions) {
         this.context = context;
         this.name = name;
         this.parameters = parameters;
@@ -53,10 +54,10 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
 
     @Override
     public FunctionFlow differentiate(LocalContext context) {
-        ContextBuilder<ParameterFlow> parameters = new ContextBuilder<>();
+        ContextBuilder parameters = new ContextBuilder();
         ContextBuilder flows = new ContextBuilder(parameters);
         if (this.parameters.getList().size()==1) {
-            String name = this.parameters.getList().get(0).getName();
+            String name = getParameters().get(0).getName();
             parameters.add(new ParameterFlow(name));
             flows.add(new VariableFlow(false, name+"_", Number.ONE));
         } else {
@@ -72,12 +73,10 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
         return diff;
     }
 
-    private FunctionFlow simplify() {
+    private void simplify() {
         instructions.simplify();
         parameters.simplify();
         instructions.sort();
-
-        return this;
     }
 
     @Override
@@ -136,9 +135,7 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
                 Expression arg = function.getArgs()[0];
                 if (arg instanceof Variable) {
                     Variable variable = (Variable) arg;
-                    if (parameters.getFlow(variable.getName()) != null) {
-                        return true;
-                    }
+                    return parameters.getFlow(variable.getName()) != null;
                 }
             }
         } else if (expression instanceof Element) {
@@ -157,14 +154,14 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
 
     private String[] getArgNames() {
         ArrayList<String> names = new ArrayList<>();
-        for (Flow parameter : parameters.getList()) {
+        for (Flow<?> parameter : parameters.getList()) {
             names.add(((ParameterFlow)parameter).getName());
         }
-        return names.toArray(new String[names.size()]);
+        return names.toArray(new String[0]);
     }
 
     @Override
-    public KerboScriptNamedElement getSyntax() {
+    public @Nullable KerboScriptNamedElement getSyntax() {
         return null; // TODO implement
     }
 
@@ -174,7 +171,11 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
     }
 
     public List<ParameterFlow> getParameters() {
-        return parameters.getList();
+        List<ParameterFlow> rtn = new ArrayList<>(parameters.getList().size());
+        for (Flow<?> parameter : parameters.getList()) {
+            rtn.add((ParameterFlow) parameter);
+        }
+        return rtn;
     }
 
     public void checkUsages() {
@@ -182,7 +183,7 @@ public class FunctionFlow extends BaseFlow<FunctionFlow> implements NamedFlow<Fu
         visitExpresssions(new ExpressionVisitor() {
             @Override
             public void visitFunction(Function function) {
-                FunctionFlow functionFlow = FlowSelfResolvable.function(context, function.getName()).findDeclaration();
+                FunctionFlow functionFlow = (FunctionFlow) FlowSelfResolvable.function(context, function.getName()).findDeclaration();
                 if (functionFlow!=null) {
                     if (functionFlow.getKingdom() instanceof DiffContext) {
                         functionFlow.addDependee(FunctionFlow.this);

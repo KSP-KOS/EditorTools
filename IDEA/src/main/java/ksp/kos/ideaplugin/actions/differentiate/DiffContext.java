@@ -1,11 +1,16 @@
 package ksp.kos.ideaplugin.actions.differentiate;
 
 import ksp.kos.ideaplugin.KerboScriptFile;
-import ksp.kos.ideaplugin.dataflow.*;
+import ksp.kos.ideaplugin.dataflow.FunctionFlow;
+import ksp.kos.ideaplugin.dataflow.FunctionFlowImporter;
+import ksp.kos.ideaplugin.dataflow.ImportFlow;
+import ksp.kos.ideaplugin.dataflow.ImportFlowImporter;
 import ksp.kos.ideaplugin.reference.FlowSelfResolvable;
+import ksp.kos.ideaplugin.reference.OccurrenceType;
 import ksp.kos.ideaplugin.reference.ReferableType;
 import ksp.kos.ideaplugin.reference.Reference;
 import ksp.kos.ideaplugin.reference.context.*;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -36,7 +41,7 @@ public class DiffContext extends FileContext {
             if (createAllowed && reference.getName().endsWith("_")) {
                 String name1 = reference.getName();
                 name1 = name1.substring(0, name1.length()-1);
-                FunctionFlow original = FlowSelfResolvable.function(context, name1).findDeclaration();
+                FunctionFlow original = (FunctionFlow) FlowSelfResolvable.function(context, name1).findDeclaration();
                 if (original!=null) {
                     String fileName = original.getKingdom().getFileContext().getName();
                     FileDuality diffFile = fileResolver.resolveFile(fileName + "_");
@@ -50,17 +55,17 @@ public class DiffContext extends FileContext {
 
     @Nullable
     @Override
-    public Duality findLocalDeclaration(Reference reference) {
-        Duality declaration = super.findLocalDeclaration(reference);
+    public Duality findLocalDeclaration(@NotNull Reference reference, @Nullable OccurrenceType occurrenceTypeFilter) {
+        Duality declaration = super.findLocalDeclaration(reference, occurrenceTypeFilter);
         if (declaration==null && file!=null) {
-            return file.getSemantics().findLocalDeclaration(reference);
+            return file.getSemantics().findLocalDeclaration(reference, occurrenceTypeFilter);
         }
         return declaration;
     }
 
     public void importFlows() {
-        for (Duality<?, FunctionFlow> duality : getDeclarations(ReferableType.FUNCTION).values()) {
-            importFlow(duality.getSemantics());
+        for (Duality duality : getDeclarations(ReferableType.FUNCTION).values()) {
+            importFlow((FunctionFlow) duality.getSemantics());
         }
         ensureImports();
     }
@@ -91,13 +96,13 @@ public class DiffContext extends FileContext {
     }
 
     @Override
-    public KerboScriptFile getSyntax() {
-        return null; // TODO implement me
+    public @NotNull KerboScriptFile getSyntax() {
+        return ensureFile();
     }
 
     public void checkUsage() {
-        for (Duality<?, FunctionFlow> duality : getDeclarations(ReferableType.FUNCTION).values()) {
-            duality.getSemantics().checkUsages();
+        for (Duality duality : getDeclarations(ReferableType.FUNCTION).values()) {
+            ((FunctionFlow) duality.getSemantics()).checkUsages();
         }
     }
 }

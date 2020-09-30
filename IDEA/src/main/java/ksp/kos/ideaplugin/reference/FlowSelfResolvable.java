@@ -1,6 +1,5 @@
 package ksp.kos.ideaplugin.reference;
 
-import ksp.kos.ideaplugin.dataflow.FunctionFlow;
 import ksp.kos.ideaplugin.dataflow.ReferenceFlow;
 import ksp.kos.ideaplugin.reference.context.Duality;
 import ksp.kos.ideaplugin.reference.context.LocalContext;
@@ -11,8 +10,8 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author ptasha
  */
-public interface FlowSelfResolvable<F extends ReferenceFlow<F>> extends Reference {
-    static FlowSelfResolvable<FunctionFlow> function(LocalContext kingdom, String name) {
+public interface FlowSelfResolvable extends Reference {
+    static FlowSelfResolvable function(LocalContext kingdom, String name) {
         return reference(kingdom, ReferableType.FUNCTION, name);
     }
 
@@ -21,15 +20,15 @@ public interface FlowSelfResolvable<F extends ReferenceFlow<F>> extends Referenc
         return new FlowReferenceImpl(kingdom, type, name);
     }
 
-    default F resolve() {
+    default ReferenceFlow<?> resolve() {
         return getSemantics(getKingdom().resolve(this));
     }
 
-    default F findDeclaration() {
+    default ReferenceFlow<?> findDeclaration() {
         return getSemantics(getKingdom().findDeclaration(this));
     }
 
-    static <F extends ReferenceFlow> F getSemantics(Duality<?, F> duality) {
+    static ReferenceFlow<?> getSemantics(Duality duality) {
         if (duality==null) {
             return null;
         }
