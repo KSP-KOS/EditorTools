@@ -73,6 +73,11 @@ private fun isDeclarationVisibleToUsage(usage: PsiElement, declaration: KerboScr
         return true
     }
 
+    if (usage.containingFile != declaration.containingFile) {
+        // The declaration is local, but they don't share a file, no way it's visible.
+        return false
+    }
+
     // If usage is inside a function declaration (relative to the common ancestor) then all bets on ordering are
     // off, and we'll let this fly.
     val hasFunctionBetweenUsageAndDeclaration =
@@ -102,11 +107,8 @@ private inline fun <reified T : PsiElement> doesTypeExistBetweenCurrentAndCloses
         otherAncestors.zip(currentAncestors).indexOfLast { (a, b) -> a == b }
 
     if (closestCommonAncestorIndex == -1) {
-        throw IllegalStateException(
-            "Unable to find common ancestor: " +
-                    " current=$current@${current.containingFile.name}:${current.textRange} and " +
-                    " other=$other@${other.containingFile.name}:${other.textRange}"
-        )
+        // They don't even share an ancestor, so the type can't exist between them.
+        return false
     }
 
     val closestTypeIndex = currentAncestors.indexOfLast { it is T }
