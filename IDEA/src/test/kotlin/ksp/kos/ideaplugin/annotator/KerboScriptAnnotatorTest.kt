@@ -4,7 +4,7 @@ import ksp.kos.ideaplugin.KerboScriptPlatformTestBase
 
 
 internal class KerboScriptAnnotatorTest : KerboScriptPlatformTestBase() {
-    override val subdir = "AnnotatorUndefinedVariableErrors"
+    override val subdir = "annotatorUndefinedVariableErrors"
 
     fun testAnnotator() {
         myFixture.configureByFiles(
