@@ -12,7 +12,6 @@ class KerboScriptInlineHandlerTest : KerboScriptPlatformTestBase() {
                 LOCAL d to b - 1.
             """,
             """
-
                 LOCAL c to sqrt((a^2)).
                 LOCAL d to (a^2) - 1.
             """
@@ -43,8 +42,6 @@ class KerboScriptInlineHandlerTest : KerboScriptPlatformTestBase() {
                 LOCAL a TO f(b, c).
             """,
             """
-
-
                 LOCAL a TO ((b)^2 + (c)).
             """
     )

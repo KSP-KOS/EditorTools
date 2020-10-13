@@ -32,12 +32,18 @@ kotlin {
 
 dependencies {
     // From Kotlin documentation
-    implementation(kotlin("stdlib"))
-    implementation(kotlin("stdlib-jdk8"))
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.10")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10")
     // just in case, version number specified in buildscript is used by default
-    implementation(kotlin("reflect"))
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.10")
 
+    // IntelliJ test framework needs junit 4.
     testImplementation("junit:junit:4.13")
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.7.0")
+
+    // Use junit 5.
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
 }
 
 intellij {
@@ -49,7 +55,7 @@ intellij {
     sameSinceUntilBuild = true
 
     // Comment out to use the latest EAP snapshot
-    version = "2020.1"
+    version = "2020.2"
 }
 
 project(":") {
@@ -78,6 +84,7 @@ project(":") {
             sourceCompatibility = "1.8"
             targetCompatibility = "1.8"
         }
+
         listOf("compileKotlin", "compileTestKotlin").forEach {
             getByName<KotlinCompile>(it) {
                 kotlinOptions {
@@ -86,6 +93,13 @@ project(":") {
                 }
             }
         }
+    }
+}
+
+tasks.test {
+    useJUnitPlatform()
+    testLogging {
+        events("skipped", "failed")
     }
 }
 

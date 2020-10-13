@@ -1,9 +1,10 @@
-package ksp.kos.ideaplugin;
+package ksp.kos.ideaplugin.highlighting;
 
 import com.intellij.openapi.compiler.CompilerManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.vfs.VirtualFile;
+import ksp.kos.ideaplugin.KerboScriptFileType;
 
 /**
  * Created on 09/01/16.
