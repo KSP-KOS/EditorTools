@@ -14,7 +14,7 @@ repositories {
 
 // Java target version
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
 }
 
 sourceSets {
@@ -25,15 +25,15 @@ sourceSets {
 
 kotlin {
     java {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 }
 
 dependencies {
     // From Kotlin documentation
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.10")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10")
+//    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.4.10")
     // just in case, version number specified in buildscript is used by default
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.10")
 
@@ -55,7 +55,7 @@ intellij {
     sameSinceUntilBuild = true
 
     // Comment out to use the latest EAP snapshot
-    version = "2020.2"
+    version = "2020.3"
 }
 
 project(":") {
@@ -79,16 +79,16 @@ project(":") {
             dependsOn(generateLexer, generateParser)
         }
 
-        // Set the compatibility versions to 1.8
+        // Set the compatibility versions to 11
         withType<JavaCompile> {
-            sourceCompatibility = "1.8"
-            targetCompatibility = "1.8"
+            sourceCompatibility = "11"
+            targetCompatibility = "11"
         }
 
         listOf("compileKotlin", "compileTestKotlin").forEach {
             getByName<KotlinCompile>(it) {
                 kotlinOptions {
-                    jvmTarget = "1.8"
+                    jvmTarget = "11"
                     freeCompilerArgs = listOf("-Xjvm-default=enable")
                 }
             }
