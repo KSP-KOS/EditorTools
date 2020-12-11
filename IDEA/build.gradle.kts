@@ -3,7 +3,7 @@ import org.jetbrains.grammarkit.tasks.GenerateParser
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.jetbrains.intellij") version "0.4.21"
+    id("org.jetbrains.intellij") version "0.6.5"
     id("org.jetbrains.kotlin.jvm") version "1.4.10"
     id("org.jetbrains.grammarkit") version "2020.2.1"
 }
