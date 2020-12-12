@@ -1,7 +1,7 @@
 <idea-plugin url="https://github.com/KSP-KOS/EditorTools/tree/develop/IDEA">
     <id>kos-ksp.idea-plugin</id>
     <name>KerboScript(kOS)</name>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <vendor email="ynicorn@gmail.com" url="https://github.com/valery-labuzhsky">Valery Labuzhsky
     </vendor>
 
@@ -11,6 +11,12 @@ kOS version supported: 1.2.1
     ]]></description>
 
     <change-notes><![CDATA[
+  <strong>Changes in version 1.2.2:</strong>
+<ul>
+    <li>Autocompletion</li>
+    <li>Parser recovery to deal with partially complete statements</li>
+</ul>
+
   <strong>Changes in version 1.2.1:</strong>
 <ul>
     <li>Bugfix</li>
@@ -65,7 +71,7 @@ kOS version supported: 1.2.1
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="193"/>
+    <idea-version since-build="203.3645.34"/>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->

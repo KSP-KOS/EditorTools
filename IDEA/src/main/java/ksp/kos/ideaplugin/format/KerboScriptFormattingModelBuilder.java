@@ -1,11 +1,12 @@
 package ksp.kos.ideaplugin.format;
 
-import com.intellij.formatting.*;
+import com.intellij.formatting.FormattingContext;
+import com.intellij.formatting.FormattingModel;
+import com.intellij.formatting.FormattingModelBuilder;
+import com.intellij.formatting.FormattingModelProvider;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.codeStyle.CodeStyleSettings;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,11 +16,10 @@ import org.jetbrains.annotations.Nullable;
  * @author ptasha
  */
 public class KerboScriptFormattingModelBuilder implements FormattingModelBuilder {
-    @NotNull
     @Override
-    public FormattingModel createModel(PsiElement element, CodeStyleSettings settings) {
-        return FormattingModelProvider.createFormattingModelForPsiFile(element.getContainingFile(),
-                new KerboScriptBlock(element.getNode(), null, null), settings);
+    public @NotNull FormattingModel createModel(@NotNull FormattingContext formattingContext) {
+        return FormattingModelProvider.createFormattingModelForPsiFile(formattingContext.getContainingFile(),
+                new KerboScriptBlock(formattingContext.getNode(), null, null), formattingContext.getCodeStyleSettings());
     }
 
     @Nullable
