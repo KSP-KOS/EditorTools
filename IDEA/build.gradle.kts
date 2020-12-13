@@ -94,7 +94,7 @@ project(":") {
         }
 
         publishPlugin {
-            token(System.getenv("KerboScript_intellijPublishToken")))
+            token(System.getenv("KerboScript_intellijPublishToken"))
         }
     }
 }
