@@ -92,6 +92,10 @@ project(":") {
                 }
             }
         }
+
+        publishPlugin {
+            token(System.getenv("KerboScript_intellijPublishToken")))
+        }
     }
 }
 
