@@ -3,7 +3,6 @@ package ksp.kos.ideaplugin.annotator
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.Annotator
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.openapi.application.ApplicationInfo
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.psi.PsiElement
 import ksp.kos.ideaplugin.psi.KerboScriptAtom
@@ -24,13 +23,8 @@ class KerboScriptAnnotator : Annotator {
 
             if (declaration == null) {
                 val message = "Unknown identifier `${element.name}`"
-                if (ApplicationInfo.getInstance().apiVersion >= "201.3803.71") {
-                    @Suppress("MissingRecentApi")
-                    holder.newAnnotation(HighlightSeverity.ERROR, message).range(element).create()
-                } else {
-                    @Suppress("DEPRECATION")
-                    holder.createErrorAnnotation(element, message)
-                }
+                @Suppress("MissingRecentApi")
+                holder.newAnnotation(HighlightSeverity.ERROR, message).range(element).create()
             }
         }
     }
