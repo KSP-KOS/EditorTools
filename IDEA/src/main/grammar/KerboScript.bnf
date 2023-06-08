@@ -4,12 +4,13 @@
 
     implements="ksp.kos.ideaplugin.psi.KerboScriptBase"
 
-    implements("declare_identifier_clause") = ["ksp.kos.ideaplugin.psi.ExpressionHolder" "ksp.kos.ideaplugin.psi.KerboScriptNamedElement"]
+    implements("declare_identifier_clause") = ["ksp.kos.ideaplugin.psi.ExpressionListHolder" "ksp.kos.ideaplugin.psi.KerboScriptNamedElement"]
 
     extends("atom|declare_identifier_clause|declare_parameter_clause|declare_function_clause|declare_lock_clause|declare_for_clause|run_stmt")="ksp.kos.ideaplugin.psi.impl.KerboScriptNamedElementImpl"
     implements("atom|declare_parameter_clause|declare_function_clause|declare_lock_clause|declare_for_clause|run_stmt")="ksp.kos.ideaplugin.psi.KerboScriptNamedElement"
 
-    implements("set_stmt|return_stmt")="ksp.kos.ideaplugin.psi.ExpressionHolder"
+    implements("set_stmt")="ksp.kos.ideaplugin.psi.ExpressionListHolder"
+    implements("return_stmt")="ksp.kos.ideaplugin.psi.ExpressionHolder"
 
     extends("instruction_block|fromloop_stmt|for_stmt")="ksp.kos.ideaplugin.psi.impl.KerboScriptScopeImpl"
     implements("instruction_block|fromloop_stmt|for_stmt")="ksp.kos.ideaplugin.psi.KerboScriptScope"
@@ -126,7 +127,7 @@
 
 // Rules
 // ===================================================
-Start ::= (instruction)*
+Start ::= (instruction)* 
 instruction_block ::= CURLYOPEN instruction* CURLYCLOSE
 instruction ::= !(CURLYCLOSE | <<eof>>) instruction_inner {
   pin = 1
@@ -176,13 +177,14 @@ private instruction_inner ::= empty_stmt |
                directive // allow directives anywhere for now, let the compiler decide if it's in the wrong place, not the parser.
 
 // ------------ directives --------------------
-lazyglobal_directive ::= ATSIGN LAZYGLOBAL onoff_trailer EOI
-directive            ::= lazyglobal_directive // Add to this list later if we make other directives.
+lazyglobal_directive      ::= LAZYGLOBAL onoff_trailer EOI
+clobberbuiltins_directive ::= CLOBBERBUILTINS onoff_trailer EOI
+directive                 ::= ATSIGN (lazyglobal_directive | clobberbuiltins_directive)
 
 // ------------ statements --------------------
 
 empty_stmt     ::= EOI
-set_stmt       ::= SET varidentifier TO expr EOI
+set_stmt       ::= SET varidentifier TO expr (COMMA varidentifier TO expr)* EOI
 if_stmt        ::= IF expr instruction EOI? (ELSE instruction EOI?)?
 until_stmt     ::= UNTIL expr instruction EOI?
 fromloop_stmt  ::= FROM instruction_block UNTIL expr STEP instruction_block DO instruction EOI?
@@ -192,6 +194,7 @@ on_stmt        ::= ON varidentifier instruction EOI?
 toggle_stmt    ::= TOGGLE varidentifier EOI
 wait_stmt      ::= WAIT UNTIL? expr EOI
 when_stmt      ::= WHEN expr THEN instruction EOI?
+onoff_stmt     ::= varidentifier onoff_trailer EOI
 onoff_trailer  ::= (ON | OFF)
 stage_stmt     ::= STAGE EOI
 clear_stmt     ::= CLEARSCREEN EOI
@@ -200,7 +203,7 @@ remove_stmt    ::= REMOVE expr EOI
 log_stmt       ::= LOG expr TO expr EOI
 break_stmt     ::= BREAK EOI
 preserve_stmt  ::= PRESERVE EOI
-declare_identifier_clause ::= ident (TO|IS) expr EOI
+declare_identifier_clause ::= ident (TO|IS) expr (COMMA ident (TO|IS) expr)* EOI
 declare_parameter_clause  ::= PARAMETER ident ((TO|IS) expr)? (COMMA ident ((TO|IS) expr)?)* EOI
 declare_function_clause   ::= FUNCTION ident instruction_block EOI?
 declare_lock_clause       ::= LOCK ident TO expr EOI

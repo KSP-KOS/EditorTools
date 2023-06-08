@@ -64,7 +64,7 @@ public class VariableFlow extends ExpressionFlow<VariableFlow> implements NamedF
     }
 
     public static VariableFlow parse(KerboScriptSetStmt setStmt) throws SyntaxException {
-        KerboScriptExpr nameExpr = setStmt.getVaridentifier().downTill(KerboScriptExpr.class);
+        KerboScriptExpr nameExpr = setStmt.getVaridentifierList().get(0).downTill(KerboScriptExpr.class);
         if (nameExpr instanceof KerboScriptSuffixterm) {
             KerboScriptAtom atom = ((KerboScriptSuffixterm) nameExpr).getAtom();
             if (atom.getReferableType() == ReferableType.VARIABLE) {
