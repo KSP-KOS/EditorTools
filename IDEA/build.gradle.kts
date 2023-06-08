@@ -3,7 +3,7 @@ import org.jetbrains.grammarkit.tasks.GenerateParserTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.jetbrains.intellij") version "1.13.0"
+    id("org.jetbrains.intellij") version "1.14.1"
     id("org.jetbrains.kotlin.jvm") version "1.8.22"
     id("org.jetbrains.grammarkit") version "2022.3.1"
 }
@@ -32,9 +32,9 @@ kotlin {
 
 dependencies {
     // From Kotlin documentation
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.10")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.22")
     // just in case, version number specified in buildscript is used by default
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.10")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.22")
 
     // IntelliJ test framework needs junit 4.
     testImplementation("junit:junit:4.13")
@@ -91,7 +91,7 @@ project(":") {
         }
 
         publishPlugin {
-            token.set(System.getenv("PUBLISH_TOKEN"))
+            token.set(System.getenv("KerboScript_intellijPublishToken"))
         }
     }
 }
