@@ -17,6 +17,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+import static ksp.kos.ideaplugin.psi.KerboScriptTypes.CURLYCLOSE;
+
 /**
  * Created on 17/01/16.
  *
@@ -41,7 +43,7 @@ public class KerboScriptBlock extends AbstractBlock {
     }
 
     private void addChild(List<Block> blocks, ASTNode child) {
-        if (child.getElementType() != TokenType.WHITE_SPACE && child.getTextRange().getLength()>0) {
+        if (child.getElementType() != TokenType.WHITE_SPACE && child.getTextRange().getLength() > 0) {
             Block block = new KerboScriptBlock(child, null, null);
             blocks.add(block);
         }
@@ -53,11 +55,10 @@ public class KerboScriptBlock extends AbstractBlock {
         if (psi.getParent() == null || psi.getParent() instanceof KerboScriptFile) {
             return Indent.getNoneIndent();
         } else if (psi.getParent() instanceof KerboScriptInstructionBlock) {
-            if (psi instanceof KerboScriptInstruction) {
-                return Indent.getNormalIndent();
-            } else {
+            if (psi.getNode().getElementType() == CURLYCLOSE) {
                 return Indent.getNoneIndent();
             }
+            return Indent.getNormalIndent();
         } else if (psi.getParent() instanceof KerboScriptIfStmt && IF_ELSE.contains(psi.getNode().getElementType())) {
             return Indent.getNoneIndent();
         } else {
@@ -80,6 +81,6 @@ public class KerboScriptBlock extends AbstractBlock {
     @Nullable
     @Override
     protected Indent getChildIndent() {
-        return getNode().getPsi() instanceof KerboScriptInstructionBlock?Indent.getNormalIndent():Indent.getNoneIndent();
+        return getNode().getPsi() instanceof KerboScriptInstructionBlock ? Indent.getNormalIndent() : Indent.getNoneIndent();
     }
 }
