@@ -1,16 +1,22 @@
 <idea-plugin url="https://github.com/KSP-KOS/EditorTools/tree/develop/IDEA">
     <id>kos-ksp.idea-plugin</id>
     <name>KerboScript(kOS)</name>
-    <version>1.2.2</version>
+    <version>1.4</version>
     <vendor email="ynicorn@gmail.com" url="https://github.com/valery-labuzhsky">Valery Labuzhsky
     </vendor>
 
     <description><![CDATA[
 This plugin enables support for kOS KerboScript in IntelliJ IDEA IDE.<br/>
-kOS version supported: 1.2.1
+kOS version supported: 1.4
     ]]></description>
 
     <change-notes><![CDATA[
+  <strong>Changes in version 1.4:</strong>
+<ul>
+    <li>Support of kOS 1.4</li>
+    <li>Bugfix</li>
+</ul>
+
   <strong>Changes in version 1.2.2:</strong>
 <ul>
     <li>Autocompletion</li>
@@ -71,7 +77,7 @@ kOS version supported: 1.2.1
     </change-notes>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="203.3645.34"/>
+    <idea-version since-build="231.9011.34"/>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->

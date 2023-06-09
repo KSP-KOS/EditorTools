@@ -15,11 +15,9 @@ import ksp.kos.ideaplugin.KerboScriptFileType
 class NewKerboScriptFileAction : CreateElementActionBase("KerboScript File", "Create new KerboScript file", AllIcons.FileTypes.Text) {
     override fun create(s: String, psiDirectory: PsiDirectory): Array<PsiElement> = arrayOf()
 
-    override fun getActionName(p0: PsiDirectory?, p1: String?): String = ""
-
     override fun getErrorTitle(): String = "Error"
-
-    override fun invokeDialog(project: Project, directory: PsiDirectory, elementsConsumer: java.util.function.Consumer<Array<PsiElement>>) {
+    override fun getActionName(directory: PsiDirectory, newName: String): String = ""
+    override fun invokeDialog(project: Project, directory: PsiDirectory, elementsConsumer: java.util.function.Consumer<in Array<PsiElement>>) {
         val builder = CreateFileFromTemplateDialog.createDialog(project)
         builder.apply {
             setTitle("Create a new KerboScript file")

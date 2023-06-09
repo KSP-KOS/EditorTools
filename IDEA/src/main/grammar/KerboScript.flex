@@ -105,6 +105,8 @@ EOI          = \.
 //Compiler Directives
 ATSIGN       = @
 LAZYGLOBAL   = lazyglobal
+CLOBBERBUILTINS = clobberbuiltins
+
 //Special
 //EOF          = ^$
 //[Skip]
@@ -197,6 +199,7 @@ COMMENTLINE  = \/\/[^\n]*
 //Compiler Directives
 {ATSIGN}    {return KerboScriptTypes.ATSIGN;}
 {LAZYGLOBAL}    {return KerboScriptTypes.LAZYGLOBAL;}
+{CLOBBERBUILTINS}    {return KerboScriptTypes.CLOBBERBUILTINS;}
 
 {IDENTIFIER}    { return KerboScriptTypes.IDENTIFIER;}
 {FILEIDENT}    {return KerboScriptTypes.FILEIDENT;}

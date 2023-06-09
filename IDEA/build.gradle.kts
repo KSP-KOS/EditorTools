@@ -1,11 +1,11 @@
-import org.jetbrains.grammarkit.tasks.GenerateLexer
-import org.jetbrains.grammarkit.tasks.GenerateParser
+import org.jetbrains.grammarkit.tasks.GenerateLexerTask
+import org.jetbrains.grammarkit.tasks.GenerateParserTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.jetbrains.intellij") version "0.6.5"
-    id("org.jetbrains.kotlin.jvm") version "1.4.10"
-    id("org.jetbrains.grammarkit") version "2020.2.1"
+    id("org.jetbrains.intellij") version "1.14.1"
+    id("org.jetbrains.kotlin.jvm") version "1.8.22"
+    id("org.jetbrains.grammarkit") version "2022.3.1"
 }
 
 repositories {
@@ -14,7 +14,7 @@ repositories {
 
 // Java target version
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
 }
 
 sourceSets {
@@ -25,16 +25,16 @@ sourceSets {
 
 kotlin {
     java {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 
 dependencies {
     // From Kotlin documentation
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.4.10")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.22")
     // just in case, version number specified in buildscript is used by default
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.10")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.22")
 
     // IntelliJ test framework needs junit 4.
     testImplementation("junit:junit:4.13")
@@ -45,32 +45,29 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
 }
 
+// Configure Gradle IntelliJ Plugin
+// Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-    setPlugins("java")
+    version.set("2023.1.2")
+    type.set("IC") // Target IDE Platform
 
-    // Use the since build number from plugin.xml
-    updateSinceUntilBuild = false
-    // Keep an open until build, to avoid automatic downgrades to very old versions of the plugin
-    sameSinceUntilBuild = true
-
-    // Comment out to use the latest EAP snapshot
-    version = "2020.3"
+    plugins.set(listOf("com.intellij.java"))
 }
 
 project(":") {
-    val generateLexer = task<GenerateLexer>("generateLexer") {
-        source = "src/main/grammar/KerboScript.flex"
-        targetDir = "src/gen/ksp/kos/ideaplugin/parser"
-        targetClass = "KerboScriptLexer"
-        purgeOldFiles = true
+    val generateLexer = task<GenerateLexerTask>("generateMyLexer") {
+        sourceFile.set(file("src/main/grammar/KerboScript.flex"))
+        targetDir.set("src/gen/ksp/kos/ideaplugin/parser")
+        targetClass.set("KerboScriptLexer")
+        purgeOldFiles.set(true)
     }
 
-    val generateParser = task<GenerateParser>("generateParser") {
-        source = "src/main/grammar/KerboScript.bnf"
-        targetRoot = "src/gen"
-        pathToParser = "/ksp/kos/ideaplugin/parser/KerboScriptParser.java"
-        pathToPsiRoot = "/ksp/kos/ideaplugin/psi"
-        purgeOldFiles = true
+    val generateParser = task<GenerateParserTask>("generateMyParser") {
+        sourceFile.set(file("src/main/grammar/KerboScript.bnf"))
+        targetRoot.set("src/gen")
+        pathToParser.set("/ksp/kos/ideaplugin/parser/KerboScriptParser.java")
+        pathToPsiRoot.set("/ksp/kos/ideaplugin/psi")
+        purgeOldFiles.set(true)
     }
 
     tasks {
@@ -78,23 +75,23 @@ project(":") {
             dependsOn(generateLexer, generateParser)
         }
 
-        // Set the compatibility versions to 11
+        // Set the compatibility versions to 17
         withType<JavaCompile> {
-            sourceCompatibility = "11"
-            targetCompatibility = "11"
+            sourceCompatibility = "17"
+            targetCompatibility = "17"
         }
 
         listOf("compileKotlin", "compileTestKotlin").forEach {
             getByName<KotlinCompile>(it) {
                 kotlinOptions {
-                    jvmTarget = "11"
+                    jvmTarget = "17"
                     freeCompilerArgs = listOf("-Xjvm-default=enable")
                 }
             }
         }
 
         publishPlugin {
-            token(System.getenv("KerboScript_intellijPublishToken"))
+            token.set(System.getenv("KerboScript_intellijPublishToken"))
         }
     }
 }
