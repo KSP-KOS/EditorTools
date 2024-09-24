@@ -1,0 +1,370 @@
+{
+  "scopeName": "source.kos",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#operators"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#punctuation"
+    },
+    {
+      "include": "#constants"
+    },
+    {
+      "include": "#support"
+    },
+    {
+      "include": "#variables"
+    },
+    {
+      "include": "#functions"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.kos",
+          "begin": "//",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.kos"
+            }
+          },
+          "end": "\\n",
+          "patterns": [
+            {
+              "include": "#todo"
+            }
+          ]
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.conditional.kos",
+          "match": "\\b(?i:(if|else|when|then|on))\\b"
+        },
+        {
+          "name": "keyword.control.loop.kos",
+          "match": "\\b(?i:(for|until))\\b"
+        },
+        {
+          "name": "keyword.control.statement.kos",
+          "match": "\\b(?i:(break|preserve|step))\\b"
+        },
+        {
+          "name": "keyword.operator.logical.kos",
+          "match": "\\b(?i:(and|or|not))\\b"
+        },
+        {
+          "name": "keyword.operator.assignment.kos",
+          "match": "\\b(?i:(set|to|lock|unlock|declare|parameter|toggle|on|off))\\b"
+        },
+        {
+          "name": "keyword.other.kos",
+          "match": "\\b(?i:(print|at|from|volume|in|all))\\b"
+        },
+        {
+          "name": "storage.modifier.kos",
+          "match": "\\b(?i:(global|local|parameter|Function|FUNCTION))\\b"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.comparison.kos",
+          "match": "(<=|>=|<|>|<>|=)"
+        },
+        {
+          "name": "keyword.operator.arithmetic.kos",
+          "match": "(\\+|\\-|\\*|/|\\^|\\(|\\))"
+        },
+        {
+          "name": "punctuation.terminator.kos",
+          "match": "(\\.)\\b"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.kos",
+          "match": "\\b(([0-9]+\\.?[0-9]*)|(\\.[0-9]+))\\b"
+        }
+      ]
+    },
+    "strings": {
+      "patterns": [
+        {
+          "name": "string.quoted.double.kos",
+          "begin": "\"",
+          "end": "\""
+        }
+      ]
+    },
+    "punctuation": {
+      "patterns": [
+        {
+          "name": "punctuation.terminator.kos",
+          "match": "(\\.)\\b"
+        }
+      ]
+    },
+    "constants": {
+      "patterns": [
+        {
+          "name": "support.constant.kos",
+          "match": "\\b(?i:(e|g|pi))\\b"
+        },
+        {
+          "name": "support.constant.kos",
+          "match": "\\b(?i:(true|false|red|green|blue|yellow|cyan|magenta|purple|white|black))\\b"
+        }
+      ]
+    },
+    "support": {
+      "patterns": [
+        {
+          "name": "support.function.kos",
+          "match": "\\b(?i:(add|remove|stage|clearscreen|log|copy|rename|delete|edit|run|compile|reboot|shutdown|batch|deploy))\\b"
+        },
+        {
+          "name": "support.function.kos",
+          "match": "\\b(?i:(undock))\\b"
+        },
+        {
+          "name": "support.function.kos",
+          "match": "\\b(?i:(activate|shutdown))\\b"
+        },
+        {
+          "name": "support.function.kos",
+          "match": "\\b(?i:(toggle))\\b"
+        },
+        {
+          "name": "support.function.kos",
+          "match": "\\b(?i:(list|bodies|targets|resources|parts|engines|sensors|elements|dockingports|files|volumes))\\b"
+        },
+        {
+          "name": "support.function.kos",
+          "match": "\\b(?i:(r|q|heading|lookdirup|angleaxis|rotatefromto))\\b"
+        },
+        {
+          "name": "support.function.kos",
+          "match": "\\b(?i:(vdot|vectordotproduct|vcrs|vectorcrossproduct|vang|vectorangle|vxcl|vectorexclude))\\b"
+        },
+        {
+          "name": "support.function.kos",
+          "match": "\\b(?i:(positionat|velocityat|orbitat))\\b"
+        },
+        {
+          "name": "support.function.kos",
+          "match": "\\b(?i:(abs|ceiling|floor|ln|log10|mod|min|max|round|sqrt|sin|cos|tan|arcsin|arccos|arctan|arctan2))\\b"
+        },
+        {
+          "name": "support.type.kos",
+          "match": "\\b(?i:(v|vector|direction|latlng))\\b"
+        }
+      ]
+    },
+    "variables": {
+      "patterns": [
+        {
+          "name": "constant.language.kos",
+          "match": "\\b(?i:(rgb|rgba|waypoint|allwaypoints|nextnode|ship|soi|mapview|version|sessiontime|time|config))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b(?i:(major|minor))\\b"
+        },
+        {
+          "name": "constant.language.kos",
+          "match": "\\b(?i:(throttle|steering|wheelthrottle|wheelsteering|ship|target|encounter|alt|heading|prograde|retrograde|facing|maxthrust|velocity|geoposition|latitude|longitude|up|north|body|angularmomentum|angularvel|angularvelocity|commrange|mass|verticalspeed|surfacespeed|airspeed|vesselname|altitude|apoapsis|periapsis|sensor|srfprograde|srfretrograde|obt|status|vesselname))\\b"
+        },
+        {
+          "name": "constant.language.kos",
+          "match": "\\b(?i:(sas|rcs|gear|legs|chutes|lights|panels|brakes|abort|ag[1-9][0-9]?))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b(?i:(apoapsis|periapsis|radar))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b(?i:(apoapsis|periapsis|transition))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b\\:(?i:(vector|forevector|topvector|upvector|starvector|rightvector|inverse|Pitch|pitch))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b\\:(?i:(x|y|z|normalized|sqrmagnitude|direction|vec))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b\\:(?i:(lat|lng|distance|terrainheight|heading|bearing|position|altitudeposition))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b\\:(?i:(name|apoapsis|periapsis|body|period|inclination|eccentricity|semimajoraxis|semiminoraxis|lan|longitudeofascendingnode|argumentofperiapsis|trueanomaly|meananomalyatepoch|transition|position|velocity|nextpatch|hasnextpatch))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b\\:(?i:(orbit|surface|name|body|hasbody|hasorbit|hasobt|obt|up|north|prograde|srfprograde|retrograde|srfretrograde|position|velocity|distance|direction|latitude|longitude|altitude|geoposition|patches))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b\\:(?i:(body|exists|oxygen|scale|sealevelpressure|height))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b\\:(?i:(name|description|mass|altitude|rotationperiod|radius|mu|atm|angularvel|geopositionof|altitudeof))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b\\:(?i:(name|amount|capacity|parts))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b\\:(?i:(aquirerange|aquireforce|aquire|torque|reengagedistance|dockedshipname|portfacing|state|targetable))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b\\:(?i:(thrustlimit|maxthrust|thrust|fuelflow|isp|flameout|ignition|allowrestart|allowshutdown|throttlelock))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b\\:(?i:(range|responsespeed|pitchangle|yawangle|rollangle|lock))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b\\:(?i:(deltav|burnvector|eta|prograde|radialout|normal|orbit))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b\\:(?i:(name|title|mass|drymass|wetmass|tag|controlfrom|stage|uid|rotation|position|facing|resources|targetable|ship|modules|allmodules|parent|hasparent|hasphysics|children))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b\\:(?i:(name|part|allfields|allevents|allactions|hasfield|hasevent|hasaction))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b\\:(?i:(active|type|readout|powerconsumption))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b\\:(?i:(ready|number|resources))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b\\:(?i:(control|bearing|heading|maxthrust|facing|mass|wetmass|drymass|verticalspeed|surfacespeed|airspeed|termvelocity|shipname|name|angularmomentum|angularvel|sensors|loaded|patches|rootpart|parts|resources|partsnamed|partstitled|partstagged|partsdubbed|modulesnamed|partsingroup|modulesingroup|allpartstagged))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b\\:(?i:(acc|pres|temp|grav|light))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b\\:(?i:(name|amount|capacity|toggleable|enabled))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b\\:(?i:(name|body|geoposition|position|altitude|agl|nearsurface|grounded|index|clustered))\\b"
+        },
+        {
+          "name": "variable.parameter.kos",
+          "match": "\\b\\:(?i:(r|red|g|green|b|blue|a|alpha|html|hex))\\b"
+        }
+      ]
+    },
+    "functions": {
+      "patterns": [
+        {
+          "name": "support.function.kos",
+          "match": "\\b(?i:(getmodule))\\b"
+        },
+        {
+          "name": "support.function.kos",
+          "match": "\\b(?i:(getfield|setfield|doevent|doaction))\\b"
+        },
+        {
+          "name": "support.function.kos",
+          "match": "\\b(?i:(activate|shutdown))\\b"
+        },
+        {
+          "name": "support.function.kos",
+          "match": "\\b(?i:(toggle))\\b"
+        },
+        {
+          "name": "support.function.kos",
+          "match": "\\b(?i:(undock))\\b"
+        },
+        {
+          "name": "support.function.kos",
+          "match": "\\b(?i:(add|remove|stage|clearscreen|log|copy|rename|delete|edit|run|compile|reboot|shutdown|batch|deploy))\\b"
+        },
+        {
+          "name": "support.function.kos",
+          "match": "\\b(?i:(list|bodies|targets|resources|parts|engines|sensors|elements|dockingports|files|volumes))\\b"
+        },
+        {
+          "name": "support.function.kos",
+          "match": "\\b(?i:(r|q|heading|lookdirup|angleaxis|rotatefromto))\\b"
+        },
+        {
+          "name": "support.function.kos",
+          "match": "\\b(?i:(vdot|vectordotproduct|vcrs|vectorcrossproduct|vang|vectorangle|vxcl|vectorexclude))\\b"
+        },
+        {
+          "name": "support.function.kos",
+          "match": "\\b(?i:(positionat|velocityat|orbitat))\\b"
+        },
+        {
+          "name": "support.function.kos",
+          "match": "\\b(?i:(abs|ceiling|floor|ln|log10|mod|min|max|round|sqrt|sin|cos|tan|arcsin|arccos|arctan|arctan2))\\b"
+        },
+        {
+          "name": "support.function.kos",
+          "match": "\\b(?i:(getmodule))\\b"
+        },
+        {
+          "name": "support.function.kos",
+          "match": "\\b(?i:(getfield|setfield|doevent|doaction))\\b"
+        }
+      ]
+    },
+    "todo": {
+      "patterns": [
+        {
+          "name": "keyword.other.todo.kos",
+          "match": "\\b(TODO|FIX|BUG|TEST|NOTE):"
+        }
+      ]
+    },
+    "unassigned": {
+      "patterns": [
+        {
+          "comment": "unassigned keywords",
+          "name": "support.other.kos",
+          "match": "\\b(?i:(acceleration|action|activevessel|allservos|angleerror|acquireforce|acquirerange|acquiretorque|arch|atend|audioerr|available|availablethrust|bootfilename|calendar|candoactions|canmakenodes|canrevert|canreverttolaunch|canreverttoeditor|cantrackobjects|case|casesensitive|changerate|clock|color|colour|configspeed|created|crewcapacity|currentspeed|currentvolume|day|deployed|dterm|dynamicpressure|electriccharge|empty|error|errorsum|expanded|experience|filetype|forwardkey|freespace|gender|goal|groups|hasdata|hour|id|inoperable|input|inverted|ipu|isdead|isfreemoving|ismoving|iterm|kd|keys|ki|kp|label|length|load|locked|loopback|mag|maneuver|maxcfgposition|maxoutput|maxposition|maxstoppingtime|maxthrustat|meananomolyatepoch|message|mincfgposition|minoutput|minposition|minute|mode|modified|notes|originbody|origineditor|output|pack|patchlimit|pitcherror|pitchtorqueadjust|pitchtorquefactor|pitchts|powerrequirement|pterm|remaining|renameable|repeat|repeatperiod|rerunnable|reversekey|roll|rollerror|rolltorqueadjust|rolltorquefactor|rollts|rt2|safe|second|seconds|servos|setpoint|show|showangularvectors|showfacingvectors|showrcsvectors|showsteeringstats|showthrustvectors|size|speed|stat|groundspeed|targetbody|telnet|tourist|tport|trait|transfer|transferred|ucp|unload|unpack|values|verbose|vessel|width|writecsvfiles|yaw|yawerror|yawtorqueadjust|yawtorquefactor|yawts|year))\\b"
+        }
+      ]
+    }
+  }
+}

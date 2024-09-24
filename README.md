@@ -15,6 +15,7 @@ Syntax definitions are available for the following editors/IDEs:
   * [Notepad++](https://github.com/KSP-KOS/EditorTools/tree/develop/NotepadPlusPlus)
   * [Sublime Text 3](https://github.com/KSP-KOS/EditorTools/tree/develop/SublimeText3)
   * [Vim](https://github.com/KSP-KOS/EditorTools/tree/develop/VIM)
+  * [VSCode](https://github.com/KSP-KOS/EditorTools/tree/develop/VSCode)
 
 ## Utilities
 
