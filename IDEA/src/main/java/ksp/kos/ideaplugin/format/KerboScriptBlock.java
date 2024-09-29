@@ -9,7 +9,6 @@ import com.intellij.psi.impl.source.tree.LeafElement;
 import com.intellij.psi.tree.IElementType;
 import ksp.kos.ideaplugin.KerboScriptFile;
 import ksp.kos.ideaplugin.psi.KerboScriptIfStmt;
-import ksp.kos.ideaplugin.psi.KerboScriptInstruction;
 import ksp.kos.ideaplugin.psi.KerboScriptInstructionBlock;
 import ksp.kos.ideaplugin.psi.KerboScriptTypes;
 import org.jetbrains.annotations.NotNull;
@@ -18,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 import static ksp.kos.ideaplugin.psi.KerboScriptTypes.CURLYCLOSE;
+import static ksp.kos.ideaplugin.psi.KerboScriptTypes.CURLYOPEN;
 
 /**
  * Created on 17/01/16.
@@ -55,7 +55,7 @@ public class KerboScriptBlock extends AbstractBlock {
         if (psi.getParent() == null || psi.getParent() instanceof KerboScriptFile) {
             return Indent.getNoneIndent();
         } else if (psi.getParent() instanceof KerboScriptInstructionBlock) {
-            if (psi.getNode().getElementType() == CURLYCLOSE) {
+            if (psi.getNode().getElementType() == CURLYCLOSE || psi.getNode().getElementType() == CURLYOPEN) {
                 return Indent.getNoneIndent();
             }
             return Indent.getNormalIndent();

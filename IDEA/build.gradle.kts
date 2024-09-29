@@ -1,15 +1,19 @@
 import org.jetbrains.grammarkit.tasks.GenerateLexerTask
 import org.jetbrains.grammarkit.tasks.GenerateParserTask
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.jetbrains.intellij") version "1.14.1"
-    id("org.jetbrains.kotlin.jvm") version "1.8.22"
-    id("org.jetbrains.grammarkit") version "2022.3.1"
+    id("org.jetbrains.intellij.platform") version "2.0.1"
+    id("org.jetbrains.kotlin.jvm") version "2.0.20"
+    id("org.jetbrains.grammarkit") version "2022.3.2.2"
 }
 
 repositories {
     mavenCentral()
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
 // Java target version
@@ -31,6 +35,15 @@ kotlin {
 }
 
 dependencies {
+    intellijPlatform {
+        intellijIdeaCommunity("2024.2.1")
+
+        bundledPlugins(listOf("com.intellij.java"))
+        instrumentationTools()
+
+        testFramework(TestFrameworkType.Platform)
+    }
+
     // From Kotlin documentation
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.22")
     // just in case, version number specified in buildscript is used by default
@@ -47,24 +60,30 @@ dependencies {
 
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
-intellij {
-    version.set("2023.1.2")
-    type.set("IC") // Target IDE Platform
+intellijPlatform {
+    pluginConfiguration {
+        // ...
 
-    plugins.set(listOf("com.intellij.java"))
+        version = "1.4.0.1"
+
+        ideaVersion {
+            sinceBuild = "242.21829.142"
+            untilBuild = provider { null }
+        }
+    }
 }
 
 project(":") {
     val generateLexer = task<GenerateLexerTask>("generateMyLexer") {
         sourceFile.set(file("src/main/grammar/KerboScript.flex"))
-        targetDir.set("src/gen/ksp/kos/ideaplugin/parser")
-        targetClass.set("KerboScriptLexer")
+        targetOutputDir.set(file("src/gen/ksp/kos/ideaplugin/parser"))
+//        targetClass.set("KerboScriptLexer")
         purgeOldFiles.set(true)
     }
 
     val generateParser = task<GenerateParserTask>("generateMyParser") {
         sourceFile.set(file("src/main/grammar/KerboScript.bnf"))
-        targetRoot.set("src/gen")
+        targetRootOutputDir.set(file("src/gen"))
         pathToParser.set("/ksp/kos/ideaplugin/parser/KerboScriptParser.java")
         pathToPsiRoot.set("/ksp/kos/ideaplugin/psi")
         purgeOldFiles.set(true)
@@ -85,7 +104,7 @@ project(":") {
             getByName<KotlinCompile>(it) {
                 kotlinOptions {
                     jvmTarget = "17"
-                    freeCompilerArgs = listOf("-Xjvm-default=enable")
+                    freeCompilerArgs = listOf("-Xjvm-default=all")
                 }
             }
         }
@@ -106,7 +125,6 @@ tasks.test {
 allprojects {
     gradle.projectsEvaluated {
         tasks.withType<JavaCompile> {
-            options.compilerArgs.add("-Werror")
             options.compilerArgs.add("-Xlint:all")
             options.compilerArgs.add("-Xlint:-serial")
         }
