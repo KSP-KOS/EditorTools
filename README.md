@@ -11,6 +11,7 @@ Syntax definitions are available for the following editors/IDEs:
   * [BBEdit](https://github.com/KSP-KOS/EditorTools/tree/develop/BBEdit)
   * [gedit](https://github.com/KSP-KOS/EditorTools/tree/develop/Gedit)
   * [IntelliJ IDEA](https://github.com/KSP-KOS/EditorTools/tree/develop/IDEA)
+  * [Kate/KWrite/KDevelop](https://github.com/KSP-KOS/EditorTools/tree/develop/KDE)
   * [nano](https://github.com/KSP-KOS/EditorTools/tree/develop/Nano)
   * [Notepad++](https://github.com/KSP-KOS/EditorTools/tree/develop/NotepadPlusPlus)
   * [Sublime Text 3](https://github.com/KSP-KOS/EditorTools/tree/develop/SublimeText3)
