@@ -36,7 +36,6 @@
       <item>and</item>
       <item>all</item>
       <item>at</item>
-      <item>break</item>
       <item>choose</item>
       <item>clearscreen</item>
       <item>compile</item>
@@ -57,7 +56,6 @@
       <item>log</item>
       <item>not</item>
       <item>off</item>
-      <item>on</item>
       <item>once</item>
       <item>or</item>
       <item>parameter</item>
@@ -66,7 +64,6 @@
       <item>reboot</item>
       <item>remove</item>
       <item>rename</item>
-      <item>return</item>
       <item>run</item>
       <item>runoncepath</item>
       <item>runpath</item>
@@ -82,11 +79,14 @@
       <item>volume</item>
     </list>
     <list name="controls">
+      <item>break</item>
       <item>else</item>
       <item>do</item>
       <item>if</item>
       <item>for</item>
       <item>from</item>
+      <item>on</item>
+      <item>return</item>
       <item>step</item>
       <item>then</item>
       <item>until</item>
