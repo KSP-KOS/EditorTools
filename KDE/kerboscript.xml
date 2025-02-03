@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE language>
+
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+
+<!--
+     Copyright (C) 2025 Vinícius Schütz Piva https://github.com/vsczpv
+
+     This program is free software: you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation, either version 3 of the License, or
+     (at your option) any later version.
+
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+
+<language name="Kerboscript"
+          version="1"
+          section="Scripts"
+          extensions="*.ks"
+          kateversion="5.0"
+          casesensitive="0"
+          author="Vinícius Schütz Piva"
+          license="GPLv3+"
+          identer="cstyle">
+  <highlighting>
+    <list name="keywords">
+      <item>add</item>
+      <item>and</item>
+      <item>all</item>
+      <item>at</item>
+      <item>choose</item>
+      <item>clearscreen</item>
+      <item>compile</item>
+      <item>copy</item>
+      <item>declare</item>
+      <item>defined</item>
+      <item>delete</item>
+      <item>edit</item>
+      <item>false</item>
+      <item>file</item>
+      <item>function</item>
+      <item>global</item>
+      <item>in</item>
+      <item>is</item>
+      <item>list</item>
+      <item>local</item>
+      <item>lock</item>
+      <item>log</item>
+      <item>not</item>
+      <item>off</item>
+      <item>once</item>
+      <item>or</item>
+      <item>parameter</item>
+      <item>preserve</item>
+      <item>print</item>
+      <item>reboot</item>
+      <item>remove</item>
+      <item>rename</item>
+      <item>run</item>
+      <item>runoncepath</item>
+      <item>runpath</item>
+      <item>set</item>
+      <item>shutdown</item>
+      <item>stage</item>
+      <item>switch</item>
+      <item>to</item>
+      <item>toggle</item>
+      <item>true</item>
+      <item>unlock</item>
+      <item>unset</item>
+      <item>volume</item>
+    </list>
+    <list name="controls">
+      <item>break</item>
+      <item>else</item>
+      <item>do</item>
+      <item>if</item>
+      <item>for</item>
+      <item>from</item>
+      <item>on</item>
+      <item>return</item>
+      <item>step</item>
+      <item>then</item>
+      <item>until</item>
+      <item>wait</item>
+      <item>when</item>
+    </list>
+    <list name="builtins">
+      <item>abs</item>
+      <item>ceiling</item>
+      <item>floor</item>
+      <item>ln</item>
+      <item>log10</item>
+      <item>mod</item>
+      <item>min</item>
+      <item>max</item>
+      <item>random</item>
+      <item>randomseed</item>
+      <item>sqrt</item>
+      <item>char</item>
+      <item>unchar</item>
+      <item>sin</item>
+      <item>cos</item>
+      <item>tan</item>
+      <item>arcsin</item>
+      <item>arccos</item>
+      <item>arctan</item>
+      <item>arctan2</item>
+      <item>v</item>
+      <item>vdot</item>
+      <item>vectordotproduct</item>
+      <item>vcrs</item>
+      <item>vectorcrossproduct</item>
+      <item>vang</item>
+      <item>vectorangle</item>
+      <item>vxcl</item>
+      <item>vectorexclude</item>
+      <item>r</item>
+      <item>q</item>
+      <item>heading</item>
+      <item>lookdirup</item>
+      <item>angleaxis</item>
+      <item>rotatefromto</item>
+      <item>latlng</item>
+
+      <item>ship</item>
+      <item>target</item>
+      <item>hastarget</item>
+
+      <item>throttle</item>
+      <item>steering</item>
+      <item>wheelthrottle</item>
+      <item>wheelsteering</item>
+
+      <item>constant</item>
+      <item>terminal</item>
+      <item>core</item>
+      <item>archive</item>
+      <item>constant</item>
+
+      <item>nextnode</item>
+      <item>hasnode</item>
+      <item>allnodes</item>
+
+      <item>alt</item>
+      <item>eta</item>
+      <item>encounter</item>
+
+      <item>missiontime</item>
+      <item>time</item>
+
+      <item>version</item>
+      <item>sessiontime</item>
+
+      <item>homeconnection</item>
+      <item>controlconnection</item>
+
+      <item>kuniverse</item>
+      <item>config</item>
+      <item>warp</item>
+      <item>warpmode</item>
+      <item>mapview</item>
+      <item>loaddistance</item>
+
+      <item>profileresult</item>
+      <item>opcodesleft</item>
+      <item>addons</item>
+
+      <item>solarprimevector</item>
+
+      <item>steeringmanager</item>
+
+      <item>sasmode</item>
+      <item>navmode</item>
+
+      <item>positionat</item>
+      <item>velocityat</item>
+      <item>orbitat</item>
+
+      <item>path</item>
+      <item>scriptpath</item>
+      <item>volume</item>
+      <item>cd</item>
+      <item>copypath</item>
+      <item>movepath</item>
+      <item>deletepath</item>
+      <item>exists</item>
+      <item>create</item>
+      <item>createdir</item>
+      <item>open</item>
+      <item>writejson</item>
+      <item>readjson</item>
+
+      <item>at</item>
+      <item>processor</item>
+
+      <item>lexicon</item>
+      <item>list</item>
+      <item>queue</item>
+      <item>range</item>
+      <item>stack</item>
+      <item>uniqueset</item>
+    </list>
+    <list name="toggleables">
+      <item>sas</item>
+      <item>rcs</item>
+      <item>gear</item>
+      <item>lights</item>
+      <item>brakes</item>
+      <item>abort</item>
+      <item>legs</item>
+      <item>chutes</item>
+      <item>chutessafe</item>
+      <item>panels</item>
+      <item>radiators</item>
+      <item>ladders</item>
+      <item>bays</item>
+      <item>intakes</item>
+      <item>deploydrills</item>
+      <item>drills</item>
+      <item>fuelcells</item>
+      <item>isru</item>
+
+      <item>ag1</item>
+      <item>ag2</item>
+      <item>ag3</item>
+      <item>ag4</item>
+      <item>ag5</item>
+      <item>ag6</item>
+      <item>ag7</item>
+      <item>ag8</item>
+      <item>ag9</item>
+      <item>ag10</item>
+      <item>agn</item>
+
+    </list>
+    <contexts>
+      <context attribute="NormalText" lineEndContext="#pop" name="NormalText">
+
+        <keyword attribute="Builtin"     context="#stay" String="builtins"/>
+        <keyword attribute="Keyword"     context="#stay" String="keywords"/>
+        <keyword attribute="Control"     context="#stay" String="controls"/>
+        <keyword attribute="Toggleable"  context="#stay" String="toggleables"/>
+
+        <DetectChar attribute="String" context="string" char="&quot;"/>
+
+        <Detect2Chars attribute="Comment" context="Comment" char="/" char1="/" lookAhead="true"/>
+
+        <DetectChar attribute="Operator" context="#stay" char="+"/>
+        <DetectChar attribute="Operator" context="#stay" char="-"/>
+        <DetectChar attribute="Operator" context="#stay" char="*"/>
+        <DetectChar attribute="Operator" context="#stay" char="/"/>
+        <DetectChar attribute="Operator" context="#stay" char="^"/>
+        <DetectChar attribute="Operator" context="#stay" char="&gt;="/>
+        <DetectChar attribute="Operator" context="#stay" char="&lt;="/>
+        <DetectChar attribute="Operator" context="#stay" char="&lt;"/>
+        <DetectChar attribute="Operator" context="#stay" char="&gt;"/>
+        <DetectChar attribute="Operator" context="#stay" char="="/>
+        <DetectChar attribute="Operator" context="#stay" char="("/>
+        <DetectChar attribute="Operator" context="#stay" char=")"/>
+        <DetectChar attribute="Operator" context="#stay" char="["/>
+        <DetectChar attribute="Operator" context="#stay" char="]"/>
+        <DetectChar attribute="Operator" context="#stay" char="{"/>
+        <DetectChar attribute="Operator" context="#stay" char="}"/>
+        <DetectChar attribute="Operator" context="#stay" char=","/>
+
+
+        <RegExpr attribute="NumberFloat" context="NormalText" String="([-+])?\b([0-9_]+\.?[0-9_]*)(e[-+]?[0-9_]+)\b|([-+])?\b([0-9_]+\.?[0-9_]*)\b"/>
+
+        <RegExpr attribute="Operator" context="#stay" String="\.$"/>
+
+        <RegExpr    attribute="UntaggedIdentifier" context="#stay" String="\w+"/>
+        <DetectChar attribute="UntaggedIdentifier" context="ColonContext" char=":"/>
+
+      </context>
+      <context attribute="String" lineEndContext="#stay" name="string">
+        <DetectChar attribute="String" context="#pop" char="&quot;"/>
+      </context>
+      <context attribute="Comment" lineEndContext="#pop" name="Comment">
+        <DetectSpaces/>
+        <IncludeRules context="##Comments"/>
+        <DetectIdentifier/>
+      </context>
+      <!-- Some words in Kerboscript are both used in keyword/builtin AND as structure
+           parameters, which makes it hard to highlight them without some context
+           logic. For example, SHUTDOWN is both a keyword command AND a method on engine
+           structures, so the code "engine:Shutdown()" would, otherwise, be highlighted
+           wrongly. However, as far as I'm concerned, no one will ever something like this:
+
+                     object : if ... {}
+
+           so simply treating everything after a colon as a word should work.
+      -->
+      <context attribute="UntaggedIdentifier" lineEndContext="#pop" name="ColonContext">
+        <RegExpr attribute="UntaggedIdentifier" context="NormalText" String="\w+"/>
+      </context>
+    </contexts>
+    <itemDatas>
+      <itemData name="NormalText"         defStyleNum="dsNormal"/>
+      <itemData name="Keyword"            defStyleNum="dsKeyword"/>
+      <itemData name="Control"            defStyleNum="dsControlFlow"/>
+      <itemData name="String"             defStyleNum="dsString"/>
+      <itemData name="Comment"            defStyleNum="dsComment"/>
+      <itemData name="NumberFloat"        defStyleNum="dsFloat"/>
+      <itemData name="Operator"           defStyleNum="dsOperator"/>
+      <itemData name="UntaggedIdentifier" defStyleNum="dsVariable"/>
+      <itemData name="Builtin"            defStyleNum="dsBuiltIn"/>
+      <itemData name="Toggleable"         defStyleNum="dsExtension"/>
+    </itemDatas>
+  </highlighting>
+  <general>
+    <comments>
+      <comment name="singleLine" start="//"/>
+    </comments>
+    <keywords casesensitive="0"/>
+    <folding  identationsensitive="0"/>
+    <emptyLines>
+      <emptyLine regexpr="\s+"/>
+    </emptyLines>
+  </general>
+</language>
+<!-- kate: space-indent on; indent-width 2; replace-tabs on; -->
