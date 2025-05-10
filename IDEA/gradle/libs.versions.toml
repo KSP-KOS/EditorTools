@@ -1,0 +1,21 @@
+[versions]
+intellij = "2.5.0"
+kotlin = "2.1.20"
+kotlin-std-lib = "1.8.22"
+grammarkit = "2022.3.2.2"
+junit4 = "4.13.1"
+junit5 = "5.7.0"
+
+[libraries]
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+
+junit4 = { module = "junit:junit", version.ref = "junit4" }
+junit-vintage-engine = { module = "org.junit.vintage:junit-vintage-engine", version.ref = "junit5" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit5"}
+junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit5"}
+
+[plugins]
+intellijPlattform = { id = "org.jetbrains.intellij.platform", version.ref = "intellij" }
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+grammarkit = { id = "org.jetbrains.grammarkit", version.ref = "grammarkit" }

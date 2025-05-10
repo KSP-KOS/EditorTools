@@ -35,8 +35,8 @@ public class DiffContext extends FileContext {
         registerFile(origFile.getName());
     }
 
-    public static List<ReferenceResolver<LocalContext>> createDiffResolvers(FileContextResolver fileResolver) {
-        List<ReferenceResolver<LocalContext>> resolvers = FileContext.createResolvers(fileResolver);
+    public static List<ReferenceResolver> createDiffResolvers(FileContextResolver fileResolver) {
+        List<ReferenceResolver> resolvers = FileContext.createResolvers(fileResolver);
         resolvers.add((context, reference, createAllowed) -> {
             if (createAllowed && reference.getName().endsWith("_")) {
                 String name1 = reference.getName();

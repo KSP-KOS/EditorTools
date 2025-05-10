@@ -4,9 +4,9 @@ import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.jetbrains.intellij.platform") version "2.0.1"
-    id("org.jetbrains.kotlin.jvm") version "2.0.20"
-    id("org.jetbrains.grammarkit") version "2022.3.2.2"
+    alias(libs.plugins.intellijPlattform)
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.grammarkit)
 }
 
 repositories {
@@ -18,7 +18,7 @@ repositories {
 
 // Java target version
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
 }
 
 sourceSets {
@@ -29,33 +29,35 @@ sourceSets {
 
 kotlin {
     java {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        compilerOptions {
+            freeCompilerArgs = listOf("-Xjvm-default=all")
+        }
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 }
 
 dependencies {
     intellijPlatform {
-        intellijIdeaCommunity("2024.2.1")
+        intellijIdeaCommunity("2025.1.1")
 
         bundledPlugins(listOf("com.intellij.java"))
-        instrumentationTools()
 
         testFramework(TestFrameworkType.Platform)
     }
 
     // From Kotlin documentation
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.22")
+    implementation(libs.kotlin.stdlib)
     // just in case, version number specified in buildscript is used by default
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.22")
+    implementation(libs.kotlin.reflect)
 
     // IntelliJ test framework needs junit 4.
-    testImplementation("junit:junit:4.13")
-    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.7.0")
+    testImplementation(libs.junit4)
+    testRuntimeOnly(libs.junit.vintage.engine)
 
     // Use junit 5.
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.0")
+    testImplementation(libs.junit.jupiter.api)
+    testRuntimeOnly(libs.junit.jupiter.engine)
 }
 
 // Configure Gradle IntelliJ Plugin
@@ -74,39 +76,31 @@ intellijPlatform {
 }
 
 project(":") {
-    val generateLexer = task<GenerateLexerTask>("generateMyLexer") {
-        sourceFile.set(file("src/main/grammar/KerboScript.flex"))
-        targetOutputDir.set(file("src/gen/ksp/kos/ideaplugin/parser"))
+    val generateLexer = //        targetClass.set("KerboScriptLexer")
+        tasks.register<GenerateLexerTask>("generateMyLexer", fun GenerateLexerTask.() {
+            sourceFile.set(file("src/main/grammar/KerboScript.flex"))
+            targetOutputDir.set(file("src/gen/ksp/kos/ideaplugin/parser"))
 //        targetClass.set("KerboScriptLexer")
-        purgeOldFiles.set(true)
-    }
+            purgeOldFiles.set(true)
+        })
 
-    val generateParser = task<GenerateParserTask>("generateMyParser") {
+    val generateParser = tasks.register<GenerateParserTask>("generateMyParser", fun GenerateParserTask.() {
         sourceFile.set(file("src/main/grammar/KerboScript.bnf"))
         targetRootOutputDir.set(file("src/gen"))
         pathToParser.set("/ksp/kos/ideaplugin/parser/KerboScriptParser.java")
         pathToPsiRoot.set("/ksp/kos/ideaplugin/psi")
         purgeOldFiles.set(true)
-    }
+    })
 
     tasks {
         withType<KotlinCompile> {
             dependsOn(generateLexer, generateParser)
         }
 
-        // Set the compatibility versions to 17
+        // Set the compatibility versions to 21
         withType<JavaCompile> {
-            sourceCompatibility = "17"
-            targetCompatibility = "17"
-        }
-
-        listOf("compileKotlin", "compileTestKotlin").forEach {
-            getByName<KotlinCompile>(it) {
-                kotlinOptions {
-                    jvmTarget = "17"
-                    freeCompilerArgs = listOf("-Xjvm-default=all")
-                }
-            }
+            sourceCompatibility = "21"
+            targetCompatibility = "21"
         }
 
         publishPlugin {

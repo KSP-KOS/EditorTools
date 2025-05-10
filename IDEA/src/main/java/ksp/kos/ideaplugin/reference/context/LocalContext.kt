@@ -4,7 +4,8 @@ import ksp.kos.ideaplugin.psi.KerboScriptNamedElement
 import ksp.kos.ideaplugin.reference.OccurrenceType
 import ksp.kos.ideaplugin.reference.ReferableType
 import ksp.kos.ideaplugin.reference.Reference
-import java.util.*
+import java.util.EnumMap
+import java.util.Locale
 
 /**
  * Created on 04/10/16.
@@ -13,7 +14,7 @@ import java.util.*
  */
 open class LocalContext @JvmOverloads constructor(
     val parent: LocalContext?,
-    private val resolvers: List<ReferenceResolver<LocalContext>> = createResolvers(),
+    private val resolvers: List<ReferenceResolver> = createResolvers(),
 ) {
     private val declarations: MutableMap<ReferableType, ScopeMap<Duality>> =
         EnumMap(ksp.kos.ideaplugin.reference.ReferableType::class.java)
@@ -78,12 +79,22 @@ open class LocalContext @JvmOverloads constructor(
     val fileContext: FileContext?
         get() = (this as? FileContext) ?: parent?.fileContext
 
-    class ScopeMap<T> : LinkedHashMap<String, T>() {
-        private fun String.normalize(): String = this.toLowerCase()
+    class ScopeMap<T>(
+        private val delegate: MutableMap<String, T> = LinkedHashMap()
+    ) : MutableMap<String, T> by delegate {
+        private fun String.normalize(): String = this.lowercase(Locale.getDefault())
 
-        override fun put(key: String, value: T): T? = super.put(key.normalize(), value)
+        override fun put(key: String, value: T): T? = delegate.put(key.normalize(), value)
 
-        override fun get(key: String): T? = super.get(key.normalize())
+        override fun get(key: String): T? = delegate[key.normalize()]
+
+        override fun containsKey(key: String): Boolean = delegate.containsKey(key.normalize())
+
+        override fun getOrDefault(key: String, defaultValue: T) = delegate.getOrDefault(key.normalize(), defaultValue)
+
+        override fun remove(key: String): T? = delegate.remove(key.normalize())
+
+        override fun remove(key: String, value: T): Boolean = delegate.remove(key.normalize(), value)
     }
 
     /**
@@ -91,7 +102,7 @@ open class LocalContext @JvmOverloads constructor(
      *
      * @author ptasha
      */
-    class LocalResolver : ReferenceResolver<LocalContext> {
+    class LocalResolver : ReferenceResolver {
         override fun resolve(context: LocalContext, reference: Reference, createAllowed: Boolean): Duality? =
             context.findLocalDeclaration(reference)
     }
@@ -101,13 +112,13 @@ open class LocalContext @JvmOverloads constructor(
      *
      * @author ptasha
      */
-    open class ParentResolver : ReferenceResolver<LocalContext> {
+    open class ParentResolver : ReferenceResolver {
         override fun resolve(context: LocalContext, reference: Reference, createAllowed: Boolean): Duality? =
             context.parent?.resolve(reference, createAllowed)
     }
 
     companion object {
-        fun createResolvers(): List<ReferenceResolver<LocalContext>> =
+        fun createResolvers(): List<ReferenceResolver> =
             listOf(
                 LocalResolver(),
                 ParentResolver(),
