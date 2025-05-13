@@ -58,6 +58,7 @@ object Magic {
             KerboScriptTypes.UNSET,
             KerboScriptTypes.CHOOSE,
             KerboScriptTypes.ATSIGN,
-            KerboScriptTypes.LAZYGLOBAL
+            KerboScriptTypes.LAZYGLOBAL,
+            KerboScriptTypes.CLOBBERBUILTINS
     )
 }

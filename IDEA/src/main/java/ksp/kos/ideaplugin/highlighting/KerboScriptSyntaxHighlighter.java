@@ -81,7 +81,8 @@ public class KerboScriptSyntaxHighlighter extends SyntaxHighlighterBase {
                     KerboScriptTypes.UNSET,
                     KerboScriptTypes.CHOOSE,
                     KerboScriptTypes.ATSIGN,
-                    KerboScriptTypes.LAZYGLOBAL
+                    KerboScriptTypes.LAZYGLOBAL,
+                    KerboScriptTypes.CLOBBERBUILTINS
             )
     );
 
@@ -93,7 +94,7 @@ public class KerboScriptSyntaxHighlighter extends SyntaxHighlighterBase {
 
     @NotNull
     @Override
-    public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
+    public TextAttributesKey @NotNull [] getTokenHighlights(IElementType tokenType) {
         // TODO - Ideally syntax highlight based off of parser, not lexer, to handle keywords used as variables.
         if (tokenType.equals(KerboScriptTypes.IDENTIFIER)) {
             return createKeys(IDENTIFIER);

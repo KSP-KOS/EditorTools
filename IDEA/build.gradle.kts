@@ -76,11 +76,10 @@ intellijPlatform {
 }
 
 project(":") {
-    val generateLexer = //        targetClass.set("KerboScriptLexer")
+    val generateLexer =
         tasks.register<GenerateLexerTask>("generateMyLexer", fun GenerateLexerTask.() {
             sourceFile.set(file("src/main/grammar/KerboScript.flex"))
             targetOutputDir.set(file("src/gen/ksp/kos/ideaplugin/parser"))
-//        targetClass.set("KerboScriptLexer")
             purgeOldFiles.set(true)
         })
 

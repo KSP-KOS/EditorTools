@@ -10,4 +10,5 @@ class KerboScriptParsingTest : ParsingTestCase("", "ks", KerboScriptParserDefini
 
     fun testBasic() = doTest(true)
     fun testErrorRecovery() = doTest(true)
+    fun testAnnotations() = doTest(true)
 }
