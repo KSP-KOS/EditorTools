@@ -1,6 +1,7 @@
 import org.jetbrains.grammarkit.tasks.GenerateLexerTask
 import org.jetbrains.grammarkit.tasks.GenerateParserTask
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -30,6 +31,7 @@ sourceSets {
 kotlin {
     java {
         compilerOptions {
+            jvmTarget = JvmTarget.JVM_21
             freeCompilerArgs = listOf("-Xjvm-default=all")
         }
         sourceCompatibility = JavaVersion.VERSION_21
