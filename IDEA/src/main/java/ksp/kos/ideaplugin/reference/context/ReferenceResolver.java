@@ -9,6 +9,6 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author ptasha
  */
-public interface ReferenceResolver<C extends LocalContext> {
-    @Nullable Duality resolve(C context, @NotNull Reference reference, boolean createAllowed);
+public interface ReferenceResolver{
+    @Nullable Duality resolve(LocalContext context, @NotNull Reference reference, boolean createAllowed);
 }

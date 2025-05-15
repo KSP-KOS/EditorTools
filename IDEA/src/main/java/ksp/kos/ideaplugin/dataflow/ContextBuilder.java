@@ -31,12 +31,14 @@ public class ContextBuilder { // TODO combine into diff context?
     }
 
     public String getText() {
-        String text = "";
+        StringBuilder text = new StringBuilder();
         for (Flow<?> flow : getList()) {
-            if (!text.isEmpty()) text += "\n";
-            text += flow.getText();
+            if (!text.isEmpty()) {
+				text.append("\n");
+			}
+            text.append(flow.getText());
         }
-        return text;
+        return text.toString();
     }
 
     public void differentiate(LocalContext context, ContextBuilder contextBuilder) {

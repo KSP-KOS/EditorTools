@@ -98,8 +98,8 @@ ARRAYINDEX   = #
 ALL          = all
 IDENTIFIER   = [a-zA-Z_][a-zA-Z0-9_]*
 FILEIDENT    = [a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z0-9_][a-zA-Z0-9_]*)*
-INTEGER      = [0-9]+
-DOUBLE       = [0-9]*\.[0-9]+
+INTEGER      = [0-9][0-9_]*
+DOUBLE       = ([0-9]+(_[0-9]*)*)?\.[0-9]+(_[0-9]*)*
 STRING       = @?\"(\"\"|[^\"])*\"
 EOI          = \.
 //Compiler Directives

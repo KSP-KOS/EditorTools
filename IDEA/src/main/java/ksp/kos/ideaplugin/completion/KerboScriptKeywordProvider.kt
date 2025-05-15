@@ -6,6 +6,7 @@ import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.util.ProcessingContext
 import ksp.kos.ideaplugin.Magic
+import java.util.Locale
 
 class KerboScriptKeywordProvider : CompletionProvider<CompletionParameters>() {
     override fun addCompletions(completionParameters: CompletionParameters, context: ProcessingContext, resultSet: CompletionResultSet) {
@@ -15,8 +16,8 @@ class KerboScriptKeywordProvider : CompletionProvider<CompletionParameters>() {
             // when you type in lowercase, the completion shows uppercase (which can be somewhat unreadable when
             // you're not used to it).
             listOf(
-                    LookupElementBuilder.create(it.toString().toUpperCase()),
-                    LookupElementBuilder.create(it.toString().toLowerCase())
+                    LookupElementBuilder.create(it.toString().uppercase(Locale.getDefault())),
+                    LookupElementBuilder.create(it.toString().lowercase(Locale.getDefault()))
             )
         })
     }

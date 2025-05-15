@@ -25,7 +25,7 @@
     tokenTypeClass="ksp.kos.ideaplugin.psi.KerboScriptTokenType"
 
     extends(".*_stmt|directive|instruction_block")=instruction
-    extends("lazyglobal_directive")=directive
+    extends("lazyglobal_directive|clobberbuiltins_directive")=directive
     extends("function_trailer|array_trailer")=suffixterm_trailer
     extends("[a-z]*_expr|factor|suffix|suffixterm|atom|.*number")=expr
 
@@ -109,13 +109,14 @@
         ALL          = 'regexp:(?i)all'
         IDENTIFIER   = 'regexp:[a-zA-Z_][a-zA-Z0-9_]*'
         FILEIDENT    = 'regexp:[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z0-9_][a-zA-Z0-9_]*)*'
-        INTEGER      = 'regexp:[0-9]+'
-        DOUBLE       = 'regexp:[0-9]*\.[0-9]+'
+        INTEGER      = 'regexp:[0-9][0-9_]*'
+        DOUBLE       = 'regexp:([0-9]+(_[0-9]*)*)?\.[0-9]+(_[0-9]*)*'
         STRING       = 'regexp:@?"(""|[^"])*"'
         EOI          = '.'
         //Compiler Directives
         ATSIGN       = '@'
         LAZYGLOBAL   = 'regexp:(?i)lazyglobal'
+        CLOBBERBUILTINS = 'regexp:(?i)clobberbuiltins'
         //Special
         //EOF          = '$'
         //[Skip]
@@ -127,7 +128,7 @@
 
 // Rules
 // ===================================================
-Start ::= (instruction)* 
+Start ::= (directive|instruction)*
 instruction_block ::= CURLYOPEN instruction* CURLYCLOSE
 instruction ::= !(CURLYCLOSE | <<eof>>) instruction_inner {
   pin = 1
@@ -174,7 +175,6 @@ private instruction_inner ::= empty_stmt |
                unset_stmt |
                instruction_block |
                identifier_led_stmt | // any statement that starts with an identifier.
-               directive // allow directives anywhere for now, let the compiler decide if it's in the wrong place, not the parser.
 
 // ------------ directives --------------------
 lazyglobal_directive      ::= LAZYGLOBAL onoff_trailer EOI

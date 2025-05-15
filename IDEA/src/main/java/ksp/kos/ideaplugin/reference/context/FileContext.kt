@@ -20,7 +20,7 @@ import java.net.URL
 abstract class FileContext protected constructor(
     parent: LocalContext?,
     private val name: String,
-    resolvers: List<ReferenceResolver<LocalContext>>,
+    resolvers: List<ReferenceResolver>,
 ) : LocalContext(parent, resolvers), ReferenceFlow<FileContext>, FileDuality {
 
     constructor(parent: LocalContext?, name: String, fileResolver: FileContextResolver)
@@ -43,7 +43,7 @@ abstract class FileContext protected constructor(
         }
     }
 
-    class FileResolver(private val fileContextResolver: FileContextResolver) : ReferenceResolver<LocalContext> {
+    class FileResolver(private val fileContextResolver: FileContextResolver) : ReferenceResolver {
         override fun resolve(context: LocalContext, reference: Reference, createAllowed: Boolean): Duality? =
             if (reference.referableType == ReferableType.FILE) {
                 fileContextResolver.resolveFile(reference.name)
@@ -54,7 +54,7 @@ abstract class FileContext protected constructor(
 
     override fun getSemantics(): FileContext = this
 
-    class ImportsResolver(private val fileContextResolver: FileContextResolver) : ReferenceResolver<LocalContext> {
+    class ImportsResolver(private val fileContextResolver: FileContextResolver) : ReferenceResolver {
         override fun resolve(context: LocalContext, reference: Reference, createAllowed: Boolean): Duality? =
             context.getDeclarations(ReferableType.FILE)
                 .values
@@ -66,7 +66,7 @@ abstract class FileContext protected constructor(
                 .firstOrNull()
     }
 
-    class BuiltinResolver : ReferenceResolver<LocalContext> {
+    class BuiltinResolver : ReferenceResolver {
         override fun resolve(context: LocalContext, reference: Reference, createAllowed: Boolean): Duality? {
             if (ksFile == null) {
                 tryGetBuiltinKsFile()
@@ -102,7 +102,7 @@ abstract class FileContext protected constructor(
 
     companion object {
         @JvmStatic
-        fun createResolvers(fileResolver: FileContextResolver): MutableList<ReferenceResolver<LocalContext>> =
+        fun createResolvers(fileResolver: FileContextResolver) =
             mutableListOf(
                 FileResolver(fileResolver),
                 LocalResolver(),
