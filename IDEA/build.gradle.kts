@@ -41,7 +41,7 @@ kotlin {
 
 dependencies {
     intellijPlatform {
-        intellijIdeaCommunity("2025.1.1")
+        intellijIdeaCommunity("2025.1.1.1")
 
         bundledPlugins(listOf("com.intellij.java"))
 
@@ -68,10 +68,10 @@ intellijPlatform {
     pluginConfiguration {
         // ...
 
-        version = "1.4.0.1"
+        version = "1.4.0.2"
 
         ideaVersion {
-            sinceBuild = "242.21829.142"
+            sinceBuild = "251.25410.129"
             untilBuild = provider { null }
         }
     }
