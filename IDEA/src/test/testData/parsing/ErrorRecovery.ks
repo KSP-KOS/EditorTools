@@ -9,3 +9,11 @@ IF foo {
     PRINT
 }
 LOCAL baz TO 0.
+
+function test{
+    print "begin".
+    { // Error highlighted here: '{' Unexpected
+        print "inside a code block".
+    }
+    print "end".
+}
