@@ -134,7 +134,7 @@ instruction ::= !(CURLYCLOSE | <<eof>>) instruction_inner {
   pin = 1
   recoverWhile = instruction_recover
 }
-private instruction_first ::= ADD | BREAK | CLEARSCREEN | COMPILE | COPY | DECLARE | DELETE | EDIT | FOR | FROM
+private instruction_first ::= ADD | BREAK | CLEARSCREEN | COMPILE | COPY | CURLYOPEN | DECLARE | DELETE | EDIT | FOR | FROM
     | FUNCTION | GLOBAL | IF | LIST | LOCAL | LOCK | LOG | ON | PARAMETER | PRESERVE | PRINT | REBOOT | REMOVE | RENAME
     | RETURN | RUN | RUNONCEPATH | RUNPATH | SET | SHUTDOWN | STAGE | SWITCH | TOGGLE | UNLOCK | UNSET | UNTIL | WAIT
     | WHEN | COMMENTLINE | ident
