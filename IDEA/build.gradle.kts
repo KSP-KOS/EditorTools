@@ -43,8 +43,6 @@ dependencies {
     intellijPlatform {
         intellijIdeaCommunity("2024.3.4.1")
 
-        bundledPlugins(listOf("com.intellij.java"))
-
         testFramework(TestFrameworkType.Platform)
     }
 
@@ -68,7 +66,7 @@ intellijPlatform {
     pluginConfiguration {
         // ...
 
-        version = "1.4.0.3"
+        version = "1.4.0.4"
 
         ideaVersion {
             sinceBuild = "243.25659.59"
