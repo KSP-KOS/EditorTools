@@ -1,6 +1,5 @@
 package ksp.kos.ideaplugin.highlighting;
 
-import com.intellij.openapi.compiler.CompilerManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -20,7 +19,6 @@ public class KerboScriptHighlightFilter implements Condition<VirtualFile> {
 
     @Override
     public boolean value(final VirtualFile file) {
-        return file.getFileType() == KerboScriptFileType.INSTANCE
-                && !CompilerManager.getInstance(project).isExcludedFromCompilation(file);
+        return file.getFileType() == KerboScriptFileType.INSTANCE;
     }
 }
